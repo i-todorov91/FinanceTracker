@@ -10,6 +10,7 @@ public class User {
 
 	private String firstName;
 	private String lastName;
+	private long id;
 	private String email;
 	private String password;
 	private ArrayList<Budget> budgets;
@@ -19,7 +20,7 @@ public class User {
 		this.password = password;
 		this.budgets = new ArrayList<>();
 	}
-	//setter and getter for the names are needed because they are not mandatory
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -58,6 +59,14 @@ public class User {
 
 	public void addBudget(Budget budget) {
 		this.budgets.add(budget);
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public long getId() {
+		return id;
 	}
 	
 }
