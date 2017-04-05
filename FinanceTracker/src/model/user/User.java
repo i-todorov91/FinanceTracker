@@ -21,12 +21,18 @@ public class User {
 		this.budgets = new HashMap<>();
 	}
 	
+	boolean validateString(String str){
+		return str == null || str.isEmpty() ? false : true;
+	}
+	
 	public String getFirstName() {
 		return firstName;
 	}
 
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		if(validateString(firstName)){
+			this.firstName = firstName;
+		}
 	}
 
 	public String getLastName() {
@@ -34,7 +40,9 @@ public class User {
 	}
 
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		if(validateString(lastName)){
+			this.lastName = lastName;
+		}
 	}
 
 	public String getEmail() {
@@ -42,6 +50,7 @@ public class User {
 	}
 
 	public void setEmail(String email) {
+		// todo validate email with regex
 		this.email = email;
 	}
 
@@ -50,6 +59,8 @@ public class User {
 	}
 
 	public void setPassword(String password) {
+		// todo validate password 
+		// strong password needed
 		this.password = password;
 	}
 
@@ -65,6 +76,7 @@ public class User {
 		this.budgets.put(budget.getName(), budget);
 	}
 	
+	// no need for validation, we use the result from the database
 	public void setId(long id) {
 		this.id = id;
 	}

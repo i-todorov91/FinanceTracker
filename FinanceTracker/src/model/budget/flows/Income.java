@@ -11,10 +11,13 @@ public class Income extends CashFlow {
 	
 	public Income(double quantity, Date date, Category category) throws InvalidCashFlowException {
 		super(quantity, date, category);
+		this.categories = new ArrayList<>();
 	}
 	
 	public void addCategorie(Category category){
-		this.categories.add(category);
+		if(category != null && !validCategory(category)){
+			this.categories.add(category);
+		}
 	}
 
 	@Override

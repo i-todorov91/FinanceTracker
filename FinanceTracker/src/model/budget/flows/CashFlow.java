@@ -13,7 +13,7 @@ public abstract class CashFlow {
 	protected Category category;
 	
 	public CashFlow(double quantity, Date date, Category category) throws InvalidCashFlowException {
-		if (!(validCategory(category) && validQuantity(quantity))) {
+		if (category == null || !(validCategory(category) && validQuantity(quantity))) {
 			throw new InvalidCashFlowException();
 		}
 		this.quantity = quantity;
@@ -25,6 +25,7 @@ public abstract class CashFlow {
 
 	protected abstract boolean validCategory(Category category);
 	
+	// no need for validation because we use the result from the database
 	public void setId(long id) {
 		this.id = id;
 	}
