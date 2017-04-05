@@ -1,4 +1,4 @@
-package model.budget;
+package model.budget.flows;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,13 +7,13 @@ import model.exceptions.InvalidCashFlowException;
 
 public class Expense extends CashFlow{
 
-	private static ArrayList<String> categories;
+	private static ArrayList<Category> categories;
 	
-	public Expense(double quantity, Date date, String category) throws InvalidCashFlowException {
+	public Expense(double quantity, Date date, Category category) throws InvalidCashFlowException {
 		super(quantity, date, category);
 	}
 	
-	public void addCategorie(String category){
+	public void addCategorie(Category category){
 		this.categories.add(category);
 	}
 
@@ -26,7 +26,7 @@ public class Expense extends CashFlow{
 	}
 
 	@Override
-	protected boolean validCategory(String category) {
+	protected boolean validCategory(Category category) {
 		if (categories.contains(category)) {
 			return true;
 		}

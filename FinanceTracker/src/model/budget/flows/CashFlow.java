@@ -1,4 +1,4 @@
-package model.budget;
+package model.budget.flows;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,9 +10,9 @@ public abstract class CashFlow {
 	protected long id;
 	protected double quantity;
 	protected Date date;
-	protected String category;
+	protected Category category;
 	
-	public CashFlow(double quantity, Date date, String category) throws InvalidCashFlowException {
+	public CashFlow(double quantity, Date date, Category category) throws InvalidCashFlowException {
 		if (!(validCategory(category) && validQuantity(quantity))) {
 			throw new InvalidCashFlowException();
 		}
@@ -23,7 +23,7 @@ public abstract class CashFlow {
 	
 	protected abstract boolean validQuantity(double quantity);
 
-	protected abstract boolean validCategory(String category);
+	protected abstract boolean validCategory(Category category);
 	
 	public void setId(long id) {
 		this.id = id;
