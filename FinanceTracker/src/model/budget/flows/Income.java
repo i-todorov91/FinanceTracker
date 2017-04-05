@@ -10,7 +10,7 @@ public class Income extends CashFlow {
 	private static ArrayList<Category> categories;
 	
 	public Income(double quantity, Date date, Category category) throws InvalidCashFlowException {
-		super(quantity, date, category);
+		super(quantity, date, category, CashFlow.TYPES.INCOME);
 		this.categories = new ArrayList<>();
 	}
 	

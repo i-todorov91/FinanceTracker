@@ -25,7 +25,7 @@ public class Budget {
 	}
 	
 	public void addCashFlow(CashFlow flow){
-		if (flow instanceof Income) {
+		if (flow.getType() == CashFlow.TYPES.INCOME) {
 			this.incomes.add((Income)flow);
 		} else {
 			this.expenses.add((Expense)flow);
