@@ -15,13 +15,17 @@ public class Budget {
 	private double balance;
 	
 	public Budget(String name) throws InvalidBudgetException{
+		this(name, 0);
+	}
+	
+	public Budget(String name, double balance) throws InvalidBudgetException{
 		if (name == null || name.isEmpty()) {
 			throw new InvalidBudgetException();
 		}
 		this.name = name;
 		this.expenses = new ArrayList<>();
 		this.incomes = new ArrayList<>();
-		this.balance = 0;
+		this.balance = balance; // the person may have some money in the budget as start
 	}
 	
 	public void addCashFlow(CashFlow flow){

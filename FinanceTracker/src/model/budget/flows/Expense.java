@@ -7,16 +7,15 @@ import model.exceptions.InvalidCashFlowException;
 
 public class Expense extends CashFlow{
 
-	private static ArrayList<Category> categories;
+	private static ArrayList<Category> categories = new ArrayList<>();
 	
 	public Expense(double quantity, Date date, Category category) throws InvalidCashFlowException {
 		super(quantity, date, category, CashFlow.TYPES.EXPENSE);
-		this.categories = new ArrayList<>();
 	}
 	
-	public void addCategorie(Category category){
-		if(category != null && !validCategory(category)){
-			this.categories.add(category);
+	public static void addCategorie(Category category){
+		if(category != null && !categories.contains(category)){
+			Expense.categories.add(category);
 		}
 	}
 
