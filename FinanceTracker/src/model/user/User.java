@@ -1,8 +1,8 @@
 package model.user;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import model.budget.Budget;
 
@@ -13,12 +13,12 @@ public class User {
 	private long id;
 	private String email;
 	private String password;
-	private ArrayList<Budget> budgets;
+	private HashMap<String, Budget> budgets; //BudgetName -> Budget
 	
 	public User(String email, String password) {
 		this.email = email;
 		this.password = password;
-		this.budgets = new ArrayList<>();
+		this.budgets = new HashMap<>();
 	}
 	
 	public String getFirstName() {
@@ -53,12 +53,16 @@ public class User {
 		this.password = password;
 	}
 
-	public List<Budget> getBudgets() {
-		return Collections.unmodifiableList(budgets);
+	public Map<String, Budget> getBudgets() {
+		return Collections.unmodifiableMap(budgets);
 	}
 
 	public void addBudget(Budget budget) {
-		this.budgets.add(budget);
+		if (budgets.containsKey(budget.getName())) {
+			System.out.println("Already has a budget with that name.");
+			return;
+		}
+		this.budgets.put(budget.getName(), budget);
 	}
 	
 	public void setId(long id) {

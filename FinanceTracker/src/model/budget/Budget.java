@@ -33,4 +33,12 @@ public class Budget {
 		this.balance += flow.getQuantity();
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public double getBalance() {
+		return balance;
+	}
+	
 }
