@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mysql.jdbc.Statement;
-
+import model.budget.Budget;
 import model.user.User;
 
 public class UserDAO {
@@ -17,9 +16,8 @@ public class UserDAO {
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
-			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.executeQuery();
-			ResultSet rs = stmt.getGeneratedKeys();
+			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				String firstName = rs.getString("first_name");
 				String secondName = rs.getString("second_name");
@@ -31,7 +29,18 @@ public class UserDAO {
 				x.setLastName(secondName);
 				x.setId(id);
 				// get the budgets
-				// TODO
+				query = "SELECT b.id as id, b.name as name, b.balance as balance FROM budget INNER JOIN user_budget ON id = budget_id INNER JOIN user ON user_id = id";
+				stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
+				stmt.setLong(1, id);
+				ResultSet rs1 = stmt.executeQuery();
+				while(rs1.next()){
+					String budgetName = rs1.getString("name");
+					double budgetBalance = rs1.getDouble("balance");
+					long budgetId = rs1.getLong("id");
+					Budget y = new Budget(budgetName, budgetBalance);
+					// for each budget select the incomes and expenses
+					//query = "SELECT "
+				}
 			}
 		} catch (SQLException e) {
 			System.out.println("UserDAO: " + e.getMessage());

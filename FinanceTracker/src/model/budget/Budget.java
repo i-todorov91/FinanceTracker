@@ -19,10 +19,7 @@ public class Budget {
 		this(name, 0);
 	}
 	
-	public Budget(String name, double balance) throws InvalidBudgetException{
-		if (!Validator.validateString(name)){
-			throw new InvalidBudgetException();
-		}
+	public Budget(String name, double balance) {
 		this.name = name;
 		this.expenses = new ArrayList<>();
 		this.incomes = new ArrayList<>();
