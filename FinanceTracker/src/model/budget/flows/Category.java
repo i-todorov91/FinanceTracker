@@ -1,12 +1,17 @@
 package model.budget.flows;
 
+import model.util.Validator;
+import model.util.exceptions.InvalidCashFlowException;
+
 public class Category {
 
 	private String name;
 	private String icon;
 	
-	public Category(String name, String icon) {
-		super();
+	public Category(String name, String icon) throws InvalidCashFlowException {
+		if(!Validator.validateString(name) || !Validator.validateString(icon)){
+			throw new InvalidCashFlowException();
+		}
 		this.name = name;
 		this.icon = icon;
 	}
