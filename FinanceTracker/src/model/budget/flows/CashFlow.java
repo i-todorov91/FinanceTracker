@@ -2,20 +2,21 @@ package model.budget.flows;
 
 import java.util.Date;
 
+import model.DAO.CategoryDAO;
 import model.util.Validator;
 import model.util.exceptions.InvalidCashFlowException;
 
 public abstract class CashFlow {
 
-	protected long id;
-	protected double quantity;
-	protected Date date;
-	protected Category category;
-	protected TYPES type;
+	private long id;
+	private double quantity;
+	private Date date;
+	private Category category;
+	private TYPES type;
 	public static enum TYPES { INCOME, EXPENSE };
 	
 	public CashFlow(double quantity, Date date, Category category, TYPES type) throws InvalidCashFlowException {
-		if (!(validCategory(category)) || !(Validator.validateQuantity(quantity))) {
+		if (!(Validator.validCategory(category)) || !(Validator.validateQuantity(quantity))) {
 			throw new InvalidCashFlowException();
 		}
 		this.quantity = quantity;
@@ -23,8 +24,6 @@ public abstract class CashFlow {
 		this.category = category;
 		this.type = type;
 	}
-	
-	protected abstract boolean validCategory(Category category);
 	
 	// no need for validation because we use the result from the database
 	public void setId(long id) {
@@ -45,6 +44,10 @@ public abstract class CashFlow {
 
 	public Date getDate() {
 		return date;
+	}
+	
+	public Category getCategory(){
+		return category;
 	}
 	
 }

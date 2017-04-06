@@ -6,7 +6,6 @@ import java.util.Map;
 
 import model.budget.Budget;
 import model.util.Validator;
-import model.util.exceptions.InvalidEmailException;
 
 public class User {
 

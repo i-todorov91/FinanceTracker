@@ -15,6 +15,10 @@ public class Category {
 		this.name = name;
 		this.icon = icon;
 	}
+	
+	public String getName(){
+		return this.name;
+	}
 
 	@Override
 	public int hashCode() {

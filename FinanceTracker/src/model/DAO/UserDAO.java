@@ -3,11 +3,16 @@ package model.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import model.budget.Budget;
+import model.budget.flows.Category;
+import model.budget.flows.Expense;
+import model.budget.flows.Income;
 import model.user.User;
+import model.util.exceptions.InvalidCashFlowException;
 
 public class UserDAO {
 	private static UserDAO instance = null;
@@ -28,6 +33,7 @@ public class UserDAO {
 				x.setFirstName(firstName);
 				x.setLastName(secondName);
 				x.setId(id);
+				
 				// get the budgets
 				query = "SELECT b.id as id, b.name as name, b.balance as balance FROM budget INNER JOIN user_budget ON id = budget_id INNER JOIN user ON user_id = id";
 				stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
@@ -39,25 +45,26 @@ public class UserDAO {
 					long budgetId = rs1.getLong("id");
 					Budget y = new Budget(budgetName, budgetBalance);
 					// for each budget select the incomes and expenses
-					//query = "SELECT "
+					//query = "SELECT "select quantity, date, income.category from cash_flow inner join income on cash_flow.id = income.cash_flow_id inner join budget_income on income_id = income.id inner join budget on budget_id = budget.id";
+					
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println("UserDAO: " + e.getMessage());
 		}
 	}
-	public static UserDAO getInstance(){
+	public synchronized static UserDAO getInstance(){
 		if(instance == null){
 			instance = new UserDAO();
 		}
 		return instance;
 	}
 	
-	public void addUser(User toAdd){
+	public synchronized void addUser(User toAdd){
 		// TODO
 	}
 	
 	public Map<String, User> getAllUsers(){
-		return java.util.Collections.unmodifiableMap(allUsers);
+		return Collections.unmodifiableMap(allUsers);
 	}
 }
