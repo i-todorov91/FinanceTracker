@@ -2,6 +2,7 @@ package model.budget.flows;
 
 import java.util.Date;
 
+import model.util.Validator;
 import model.util.exceptions.InvalidCashFlowException;
 
 public abstract class CashFlow {
@@ -14,7 +15,7 @@ public abstract class CashFlow {
 	public static enum TYPES { INCOME, EXPENSE };
 	
 	public CashFlow(double quantity, Date date, Category category, TYPES type) throws InvalidCashFlowException {
-		if (category == null || !(validCategory(category) && validQuantity(quantity))) {
+		if (!(validCategory(category)) || !(Validator.validateQuantity(quantity))) {
 			throw new InvalidCashFlowException();
 		}
 		this.quantity = quantity;
@@ -23,8 +24,6 @@ public abstract class CashFlow {
 		this.type = type;
 	}
 	
-	protected abstract boolean validQuantity(double quantity);
-
 	protected abstract boolean validCategory(Category category);
 	
 	// no need for validation because we use the result from the database

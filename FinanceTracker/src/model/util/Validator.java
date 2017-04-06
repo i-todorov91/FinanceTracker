@@ -22,4 +22,8 @@ public class Validator {
 	public static boolean validateString(String str){
 		return str == null || str.isEmpty() ? false : true;
 	}
+	
+	public static boolean validateQuantity(double quantity){
+		return quantity == 0 ? false : true;
+	}
 }

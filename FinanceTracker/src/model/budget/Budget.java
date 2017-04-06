@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import model.budget.flows.CashFlow;
 import model.budget.flows.Expense;
 import model.budget.flows.Income;
+import model.util.Validator;
 import model.util.exceptions.InvalidBudgetException;
 
 public class Budget {
@@ -19,7 +20,7 @@ public class Budget {
 	}
 	
 	public Budget(String name, double balance) throws InvalidBudgetException{
-		if (name == null || name.isEmpty()) {
+		if (!Validator.validateString(name)){
 			throw new InvalidBudgetException();
 		}
 		this.name = name;

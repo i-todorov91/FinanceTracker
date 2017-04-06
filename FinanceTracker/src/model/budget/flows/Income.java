@@ -20,16 +20,8 @@ public class Income extends CashFlow {
 	}
 
 	@Override
-	protected boolean validQuantity(double quantity) {
-		if (quantity > 0) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	protected boolean validCategory(Category category) {
-		if (categories.contains(category)) {
+		if (categories != null && categories.contains(category)) {
 			return true;
 		}
 		return false;
