@@ -7,13 +7,15 @@ import model.budget.Budget;
 import model.budget.flows.Category;
 import model.budget.flows.Income;
 import model.user.User;
+import model.util.Validator;
 import model.util.exceptions.InvalidBudgetException;
 import model.util.exceptions.InvalidCashFlowException;
 
 public class Demo {
 
 	public static void main(String[] args) throws InvalidBudgetException, InvalidCashFlowException {
-		User zaki = new User("zpetrov96@gmail.com", "mysecretpassword");
+		User zaki = new User("zaki1993@abv.bg", "mysecretpassword");
+		System.out.println(Validator.isValidEmailAddress(zaki.getEmail()));
 		zaki.addBudget(new Budget("mybudget"));
 		zaki.addBudget(new Budget("mybudget1", 30));
 		Income.addCategorie(new Category("zaki", "na zaki ikonata"));
