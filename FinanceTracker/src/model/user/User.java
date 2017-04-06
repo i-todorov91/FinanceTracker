@@ -17,10 +17,7 @@ public class User {
 	private String password;
 	private HashMap<String, Budget> budgets; //BudgetName -> Budget
 	
-	public User(String email, String password) throws InvalidEmailException {
-		if(!Validator.isValidEmailAddress(email)){
-			throw new InvalidEmailException();
-		}
+	public User(String email, String password) {
 		this.email = email;
 		this.password = password;
 		this.budgets = new HashMap<>();

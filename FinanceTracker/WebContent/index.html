@@ -4,7 +4,44 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+<script type="text/javascript">
+	function login(){
+		var email = document.getElementById("login-email").value;
+		var password = document.getElementById("login-password").value;
+		$.ajax({
+			url: 'test',
+			type: 'POST',
+			data: {email: email, password: password},
+			success: function(result){
+				alert(result);
+			},
+			error: function(result){
+				alert("something went wrong");
+			}
+		});
+	}
+	
+	function register(){
+		var name = document.getElementById("register-email").value;
+		var password = document.getElementById("register-password").value;
+		$.ajax({
+			url: 'test',
+			type: 'POST',
+			data: {name: name, password: password},
+			success: function(result){
+				alert(result);
+			}
+		});
+	}
+</script>
 <body>
-
+	<input id="login-email" type="text">
+	<input id="login-password" type="password">
+	<button onclick="login()">Login</button>
+	
+	<input id="register-email" type="text">
+	<input id="register-password" type="password">
+	<button onclick="register()">Register</button>
 </body>
 </html>

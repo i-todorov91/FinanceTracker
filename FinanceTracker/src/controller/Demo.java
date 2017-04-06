@@ -15,7 +15,7 @@ import model.util.exceptions.InvalidEmailException;
 public class Demo {
 
 	public static void main(String[] args) throws InvalidBudgetException, InvalidCashFlowException, InvalidEmailException {
-		User zaki = new User("zaki1993@abv.bg", "mysecretpassword");
+		User zaki = new User("ribinasdasd@uni-sofia.bg", "mysecretpassword");
 		System.out.println(Validator.isValidEmailAddress(zaki.getEmail()));
 		zaki.addBudget(new Budget("mybudget"));
 		zaki.addBudget(new Budget("mybudget1", 30));
