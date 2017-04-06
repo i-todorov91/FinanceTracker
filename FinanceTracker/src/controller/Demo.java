@@ -6,9 +6,9 @@ import java.util.Map.Entry;
 import model.budget.Budget;
 import model.budget.flows.Category;
 import model.budget.flows.Income;
-import model.exceptions.InvalidBudgetException;
-import model.exceptions.InvalidCashFlowException;
 import model.user.User;
+import model.util.exceptions.InvalidBudgetException;
+import model.util.exceptions.InvalidCashFlowException;
 
 public class Demo {
 

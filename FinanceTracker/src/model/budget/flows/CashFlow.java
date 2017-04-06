@@ -1,9 +1,8 @@
 package model.budget.flows;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-import model.exceptions.InvalidCashFlowException;
+import model.util.exceptions.InvalidCashFlowException;
 
 public abstract class CashFlow {
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import model.budget.flows.CashFlow;
 import model.budget.flows.Expense;
 import model.budget.flows.Income;
-import model.exceptions.InvalidBudgetException;
+import model.util.exceptions.InvalidBudgetException;
 
 public class Budget {
 

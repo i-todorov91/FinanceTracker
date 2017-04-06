@@ -1,3 +1,3 @@
-package model.exceptions;
+package model.util.exceptions;
 
 public class InvalidBudgetException extends Exception {}
