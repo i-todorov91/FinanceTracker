@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import model.budget.Budget;
+import model.util.Validator;
+import model.util.exceptions.InvalidEmailException;
 
 public class User {
 
@@ -15,14 +17,13 @@ public class User {
 	private String password;
 	private HashMap<String, Budget> budgets; //BudgetName -> Budget
 	
-	public User(String email, String password) {
+	public User(String email, String password) throws InvalidEmailException {
+		if(!Validator.isValidEmailAddress(email)){
+			throw new InvalidEmailException();
+		}
 		this.email = email;
 		this.password = password;
 		this.budgets = new HashMap<>();
-	}
-	
-	boolean validateString(String str){
-		return str == null || str.isEmpty() ? false : true;
 	}
 	
 	public String getFirstName() {
@@ -30,7 +31,7 @@ public class User {
 	}
 
 	public void setFirstName(String firstName) {
-		if(validateString(firstName)){
+		if(Validator.validateString(firstName)){
 			this.firstName = firstName;
 		}
 	}
@@ -40,7 +41,7 @@ public class User {
 	}
 
 	public void setLastName(String lastName) {
-		if(validateString(lastName)){
+		if(Validator.validateString(lastName)){
 			this.lastName = lastName;
 		}
 	}
@@ -50,8 +51,9 @@ public class User {
 	}
 
 	public void setEmail(String email) {
-		// todo validate email with regex
-		this.email = email;
+		if(Validator.isValidEmailAddress(email)){
+			this.email = email;
+		}
 	}
 
 	public String getPassword() {

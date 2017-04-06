@@ -18,4 +18,8 @@ public class Validator {
 	   }
 	   return result;
 	}
+	
+	public static boolean validateString(String str){
+		return str == null || str.isEmpty() ? false : true;
+	}
 }

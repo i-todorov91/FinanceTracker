@@ -10,10 +10,11 @@ import model.user.User;
 import model.util.Validator;
 import model.util.exceptions.InvalidBudgetException;
 import model.util.exceptions.InvalidCashFlowException;
+import model.util.exceptions.InvalidEmailException;
 
 public class Demo {
 
-	public static void main(String[] args) throws InvalidBudgetException, InvalidCashFlowException {
+	public static void main(String[] args) throws InvalidBudgetException, InvalidCashFlowException, InvalidEmailException {
 		User zaki = new User("zaki1993@abv.bg", "mysecretpassword");
 		System.out.println(Validator.isValidEmailAddress(zaki.getEmail()));
 		zaki.addBudget(new Budget("mybudget"));
