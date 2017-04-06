@@ -20,6 +20,7 @@ public class CategoryDAO {
 	private static HashMap<String, HashMap<Category, Long>> customAddedCategories = new HashMap<>(); //Category name -> (Category, User id)
 	@SuppressWarnings({ "static-access", "unchecked" })
 	private CategoryDAO(){
+		// TODO add transactions
 		String query = "";
 		PreparedStatement stmt = null;
 		// get all default categories and add them to income and expense categories
