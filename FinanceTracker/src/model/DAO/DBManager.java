@@ -13,7 +13,7 @@ public class DBManager {
 			Class.forName("com.mysql.jdbc.Driver");
 			
 			if(System.getProperty("os.name").startsWith("Linux")){
-				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/financeTracker?autoReconnect=true&useSSL=false", "root", "14eiuqhwdyeuQ*");
+				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/financetracker?autoReconnect=true&useSSL=false", "root", "14eiuqhwdyeuQ*");
 			}
 			else{
 				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/financeTracker?autoReconnect=true&useSSL=false", "root", "injikipliok");

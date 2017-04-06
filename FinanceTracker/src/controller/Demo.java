@@ -19,9 +19,9 @@ public class Demo {
 		System.out.println(Validator.isValidEmailAddress(zaki.getEmail()));
 		zaki.addBudget(new Budget("mybudget"));
 		zaki.addBudget(new Budget("mybudget1", 30));
-		Income.addCategorie(new Category("zaki", "na zaki ikonata"));
 		for(Entry<String, Budget> i : zaki.getBudgets().entrySet()){
-			i.getValue().addCashFlow(new Income(2, new Date(1213123), new Category("zaki", "na zaki ikonata")));
+			i.getValue().addCashFlow(new Income(2, new Date(1213123), new Category("Food", "nqkwa random icona(ne proverqwame po ime na ikona)")));
+			// working
 			System.out.println(i.getValue().getBalance());
 		}
 	}

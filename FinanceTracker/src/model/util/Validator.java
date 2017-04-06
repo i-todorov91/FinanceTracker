@@ -31,7 +31,7 @@ public class Validator {
 	}
 	
 	public static boolean validCategory(Category category){
-		if (category != null && CategoryDAO.getInstance().getAllDefaultCategories().containsKey(category.getName())) {
+		if (category != null && (CategoryDAO.getInstance().getAllDefaultCategories().containsKey(category.getName()) || CategoryDAO.getInstance().getAllCustomAddedCategories().containsKey(category.getName()))) {
 			return true;
 		}
 		return false;
