@@ -8,6 +8,7 @@ import model.budget.flows.Category;
 
 public class Validator {
 	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern VALID_PASSWORD_REGEX = Pattern.compile("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%\\*^&+=]).{8,})", Pattern.CASE_INSENSITIVE);
 	private Validator(){
 		
 	}
@@ -30,5 +31,15 @@ public class Validator {
 			return true;
 		}
 		return false;
+	}
+	
+	public static boolean validPassword(String password){
+		// must contain at least 1 digit
+		// must contain at least 1 small letter
+		// must contain at least 1 capital letter
+		// must contain at least one of the symbols -> @#$%*^&+=
+		// must be at least 8 symbols
+		Matcher matcher = VALID_PASSWORD_REGEX .matcher(password);
+		return matcher.find();
 	}
 }

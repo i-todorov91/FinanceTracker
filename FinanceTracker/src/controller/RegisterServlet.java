@@ -26,7 +26,7 @@ public class RegisterServlet extends HttpServlet {
 		String firstName = request.getParameter("firstName");
 		String secondName = request.getParameter("secondName");
 		JsonObject result = new JsonObject();
-		if(!(Validator.validateString(email) && Validator.validateString(password) && Validator.validateString(firstName) && Validator.validateString(secondName) && Validator.isValidEmailAddress(email))){
+		if(!(Validator.validateString(email) && Validator.validateString(password) && Validator.validateString(firstName) && Validator.validateString(secondName) && Validator.isValidEmailAddress(email) && Validator.validPassword(password))){
 			response.setStatus(200);
 			result.addProperty("success", false);
 		}
