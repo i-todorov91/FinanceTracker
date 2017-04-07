@@ -1,5 +1,7 @@
 package model.DAO;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +10,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
 import com.mysql.jdbc.Statement;
 
 import model.budget.Budget;
@@ -15,7 +21,9 @@ import model.budget.flows.Category;
 import model.budget.flows.Expense;
 import model.budget.flows.Income;
 import model.user.User;
+import model.util.StringUtil;
 import model.util.exceptions.InvalidCashFlowException;
+import model.util.exceptions.InvalidEncryptionException;
 
 public class UserDAO {
 	private static UserDAO instance = null;
@@ -113,7 +121,7 @@ public class UserDAO {
 			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, toAdd.getFirstName());
 			stmt.setString(2, toAdd.getLastName());
-			stmt.setString(3, toAdd.getPassword());
+			stmt.setString(3, StringUtil.getInstance().encrypt(toAdd.getPassword()));
 			stmt.setString(4, toAdd.getEmail());
 			stmt.executeUpdate();
 			ResultSet rs = stmt.getGeneratedKeys();
@@ -143,13 +151,18 @@ public class UserDAO {
 	public boolean validLogin(String email, String password){
 		if(!allUsers.containsKey(email)){
 			return false;
-		}
-		else if(allUsers.get(email).getPassword().equals(password)){
-			return true;
-		}
-		else{
-			return false;
-		}
+		} else
+			try {
+				if(StringUtil.getInstance().decrypt(allUsers.get(email).getPassword()).equals(password)){
+					return true;
+				}
+				else{
+					return false;
+				}
+			} catch (InvalidEncryptionException e) {
+				System.out.println("UserDAO->validLogin: " + e.getMessage());
+				return false;
+			}
 	}
 	
 	public Map<String, User> getAllUsers(){
