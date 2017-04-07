@@ -34,13 +34,13 @@ public class UserDAO {
 				String password = rs.getString("password");
 				String email = rs.getString("email");
 				long id = rs.getLong("id");
-				User user = new User(password, email);
+				User user = new User(email, password);
 				user.setFirstName(firstName);
 				user.setLastName(secondName);
 				user.setId(id);
 				
 				// get the budgets
-				query = "SELECT b.id as id, b.name as name, b.balance as balance FROM budget INNER JOIN user_budget ON id = budget_id INNER JOIN user ON user_id = id";
+				query = "SELECT b.id as id, b.name as name, b.balance as balance FROM budget b INNER JOIN user_budget ON id = budget_id WHERE user_budget.user_id = ?";
 				stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 				stmt.setLong(1, id);
 				ResultSet rs1 = stmt.executeQuery();
@@ -52,7 +52,7 @@ public class UserDAO {
 					// for each budget select the incomes and expenses
 					
 					// find all incomes
-					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash INNER JOIN income inc ON cash.id = inc.cash_flow_id INNER JOIN budget_income bi ON bi.income_id = inc.id INNER JOIN budget bt ON bi.budget_id = bt.id INNER JOIN category c ON c.id = inc.category INNER JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = budgetId";
+					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash INNER JOIN income inc ON cash.id = inc.cash_flow_id INNER JOIN budget_income bi ON bi.income_id = inc.id INNER JOIN budget bt ON bi.budget_id = bt.id INNER JOIN category c ON c.id = inc.category INNER JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
 					stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs2 = stmt.executeQuery();
@@ -69,7 +69,7 @@ public class UserDAO {
 					}
 					
 					// find all expenses
-					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash INNER JOIN expense exp ON cash.id = exp.cash_flow_id INNER JOIN budget_income bi ON bi.income_id = exp.id INNER JOIN budget bt ON bi.budget_id = bt.id INNER JOIN category c ON c.id = exp.category INNER JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = budgetId";
+					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash INNER JOIN expense exp ON cash.id = exp.cash_flow_id INNER JOIN budget_income bi ON bi.income_id = exp.id INNER JOIN budget bt ON bi.budget_id = bt.id INNER JOIN category c ON c.id = exp.category INNER JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
 					stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs3 = stmt.executeQuery();
@@ -81,13 +81,14 @@ public class UserDAO {
 						try {
 							budget.addCashFlow(new Expense(quantity, date, new Category(categoryName, categoryIcon)));
 						} catch (InvalidCashFlowException e) {
-							System.out.println("UserDAO->Budget->Income->	Category: " + e.getMessage());
+							System.out.println("UserDAO->Budget->Income->Category: " + e.getMessage());
 						}
 					}
 					
 					// add the budget to the user
 					user.addBudget(budget);
 				}
+				allUsers.put(user.getEmail(), user);
 			}
 		} catch (SQLException e) {
 			System.out.println("UserDAO: " + e.getMessage());
@@ -107,14 +108,14 @@ public class UserDAO {
 		}
 		long id = 0;
 		PreparedStatement stmt = null;
-		String query = "INSERT INTO user(first_name, second_name, password, email) VALUES(first_name, second_name, password, email)";
+		String query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
 		try {
 			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, toAdd.getFirstName());
 			stmt.setString(2, toAdd.getLastName());
 			stmt.setString(3, toAdd.getPassword());
 			stmt.setString(4, toAdd.getEmail());
-			stmt.executeQuery();
+			stmt.executeUpdate();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
 			id = rs.getLong(1);
@@ -126,7 +127,19 @@ public class UserDAO {
 		allUsers.put(toAdd.getEmail(), toAdd);
 		return true;
 	}
+/*	
+	public synchronized boolean addBudget(Budget toAdd, long userId){
+		
+	}
 	
+	public synchronized boolean addIncome(Income toAdd, long budgetId, long userId){
+		
+	}
+	
+	public synchronized boolean addExpense(Expense toAdd, long budgetId, long userId){
+		
+	}
+*/
 	public Map<String, User> getAllUsers(){
 		return Collections.unmodifiableMap(allUsers);
 	}

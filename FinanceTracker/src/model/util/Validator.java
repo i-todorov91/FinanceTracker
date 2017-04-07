@@ -1,25 +1,20 @@
 package model.util;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import model.DAO.CategoryDAO;
 import model.budget.flows.Category;
 
 public class Validator {
+	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 	private Validator(){
 		
 	}
 	
 	public static boolean isValidEmailAddress(String email) {
-	   boolean result = true;
-	   try {
-	      InternetAddress emailAddr = new InternetAddress(email);
-	      emailAddr.validate();
-	   } catch (AddressException ex) {
-	      result = false;
-	   }
-	   return result;
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+        return matcher.find();
 	}
 	
 	public static boolean validateString(String str){

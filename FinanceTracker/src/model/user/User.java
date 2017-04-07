@@ -8,7 +8,6 @@ import model.budget.Budget;
 import model.util.Validator;
 
 public class User {
-
 	private String firstName;
 	private String lastName;
 	private long id;
@@ -82,5 +81,12 @@ public class User {
 	public long getId() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+		return "User [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", password=" + password
+				+ "]";
+	}
+
 	
 }
