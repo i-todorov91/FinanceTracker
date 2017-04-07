@@ -28,13 +28,15 @@ public class StringUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public String encrypt(String userId) {
+	public String encrypt(String password) {
+		// TODO
+		// add key to the password for more secure
 		BASE64Encoder encoder = new BASE64Encoder();
 
 		// generate the salt
 		byte[] salt = new byte[32];
 		random.nextBytes(salt);
-		return encoder.encode(salt) + encoder.encode(userId.getBytes());
+		return encoder.encode(salt) + encoder.encode(password.getBytes());
 	}
 
 	/**
