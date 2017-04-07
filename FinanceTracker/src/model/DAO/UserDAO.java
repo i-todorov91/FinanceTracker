@@ -34,6 +34,7 @@ public class UserDAO {
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
+			DBManager.getInstance().getConnection().setAutoCommit(false);
 			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
@@ -97,9 +98,22 @@ public class UserDAO {
 					user.addBudget(budget);
 				}
 				allUsers.put(user.getEmail(), user);
+				DBManager.getInstance().getConnection().commit();
 			}
 		} catch (SQLException e) {
 			System.out.println("UserDAO: " + e.getMessage());
+			try {
+				DBManager.getInstance().getConnection().rollback();
+			} catch (SQLException e1) {
+				System.out.println("UserDAO->Cosntructor->rollBack: " + e1.getMessage());
+			}
+		}
+		finally{
+			try {
+				DBManager.getInstance().getConnection().setAutoCommit(true);
+			} catch (SQLException e) {
+				System.out.println("UserDAO->Constructor->setAutoCommit(true): " + e.getMessage());
+			}
 		}
 	}
 	public synchronized static UserDAO getInstance(){
@@ -135,11 +149,57 @@ public class UserDAO {
 		allUsers.put(toAdd.getEmail(), toAdd);
 		return true;
 	}
-/*	
-	public synchronized boolean addBudget(Budget toAdd, long userId){
-		
+
+	public synchronized boolean addBudget(Budget toAdd, User user){
+		if(allUsers.containsKey(user.getEmail())){
+			String query = "INSERT INTO budget(name, balance) VALUES(?, ?)";
+			PreparedStatement stmt = null;
+			long id = 0;
+			try {
+				// insert in budget table and get the budget id
+				DBManager.getInstance().getConnection().setAutoCommit(false);
+				stmt = DBManager.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+				stmt.setString(1, toAdd.getName());
+				stmt.setDouble(2, toAdd.getBalance());
+				stmt.executeUpdate();
+				ResultSet rs = stmt.getGeneratedKeys();
+				rs.next();
+				id = rs.getLong(1);
+				
+				// insert in user_budget table
+				query = "INSERT INTO user_budget(user_id, budget_id) VALUES(?, ?)";
+				stmt = DBManager.getInstance().getConnection().prepareStatement(query);
+				stmt.setLong(1, user.getId());
+				stmt.setLong(2, id);
+				stmt.executeUpdate();
+				
+				// add the budget to the user in the HashMap<String, User>
+				allUsers.get(user.getEmail()).addBudget(toAdd);
+				DBManager.getInstance().getConnection().commit();
+				return true;
+			} catch (SQLException e) {
+				System.out.println("UserDAO->addBudget: " + e.getMessage());
+				try {
+					DBManager.getInstance().getConnection().rollback();
+				} catch (SQLException e1) {
+					System.out.println("UserDAO->addBudget->rollBack: " + e1.getMessage());
+				}
+				return false;
+			}
+			finally{
+				try {
+					DBManager.getInstance().getConnection().setAutoCommit(true);
+				} catch (SQLException e) {
+					System.out.println("UserDAO->addBudget->setAutoCommit(true): " + e.getMessage());
+				}
+			}
+		}
+		else{
+			return false;
+		}
 	}
-	
+
+/*
 	public synchronized boolean addIncome(Income toAdd, long budgetId, long userId){
 		
 	}
