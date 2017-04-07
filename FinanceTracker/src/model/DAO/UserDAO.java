@@ -140,6 +140,18 @@ public class UserDAO {
 		
 	}
 */
+	public boolean validLogin(String email, String password){
+		if(!allUsers.containsKey(email)){
+			return false;
+		}
+		else if(allUsers.get(email).getPassword().equals(password)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
 	public Map<String, User> getAllUsers(){
 		return Collections.unmodifiableMap(allUsers);
 	}

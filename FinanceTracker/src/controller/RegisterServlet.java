@@ -27,23 +27,27 @@ public class RegisterServlet extends HttpServlet {
 		String secondName = request.getParameter("secondName");
 		JsonObject result = new JsonObject();
 		if(!(Validator.validateString(email) && Validator.validateString(password) && Validator.validateString(firstName) && Validator.validateString(secondName) && Validator.isValidEmailAddress(email) && Validator.validPassword(password))){
-			response.setStatus(200);
+			response.setStatus(400); 
+			// status code for bad request
+			// the server cannot or will not process the request due to something that is perceived to be a client error
 			result.addProperty("success", false);
 		}
 		else{
 			User newUser = new User(email, password);
 			newUser.setFirstName(firstName);
 			newUser.setLastName(secondName);
-			response.setStatus(200);
 			if(UserDAO.getInstance().addUser(newUser)){
+				response.setStatus(200);
 				result.addProperty("success", true);
 			}
 			else
 			{
+				response.setStatus(400); 
+				// status code for bad request
+				// the server cannot or will not process the request due to something that is perceived to be a client error
 				result.addProperty("success", false);
 			}
 		}
-		System.out.println(result);
 		response.getWriter().append(result.toString());
 	}
 

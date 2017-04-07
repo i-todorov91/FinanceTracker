@@ -6,28 +6,54 @@
 </head>
 <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
 <script type="text/javascript">	
-	function register(){
-		var email = document.getElementById("register-email").value;
-		var password = document.getElementById("register-password").value;
-		var first = document.getElementById("register-firstName").value;
-		var second = document.getElementById("register-secondName").value;
-		$.ajax({
-			url: 'register',
-			type: 'POST',
-			data: {email: email, firstName: first, secondName: second, password: password},
-			success: function(result){
-				$("#div1").append(result);
-			}
+	$(document).ready(function() {
+		$("#register-btn").click(function(){
+			var email = document.getElementById("register-email").value;
+			var password = document.getElementById("register-password").value;
+			var first = document.getElementById("register-firstName").value;
+			var second = document.getElementById("register-secondName").value;
+			$.ajax({
+				url: 'register',
+				type: 'POST',
+				data: {email: email, firstName: first, secondName: second, password: password},
+				success: function(result){
+					$("#div1").append("Registered successfuly: " + result);
+				},
+				error: function(result){
+					$("#div1").append("Sorry could not register: " + result);
+				}
+			});
 		});
-	}
+		
+		$("#login-btn").click(function (){
+			var email = document.getElementById("login-email").value;
+			var password = document.getElementById("login-password").value;
+			$.ajax({
+				url: 'login',
+				type: 'POST',
+				data: {email: email, password: password},
+				success: function(result){
+					$("#div2").append("Login successfuly: " + result);
+				},
+				error: function(result){
+					$("#div2").append("Sorry could not login: " + result);
+				}
+			});
+		});
+	});
 </script>
 <body>
 	<input id="register-email" type="text">
 	<input id="register-firstName" type="text">
 	<input id="register-secondName" type="text">
 	<input id="register-password" type="password">
-	<button onclick="register()">Register</button>
-	<div id="div1">
-	</div>
+	<button id="register-btn">Register</button>
+	<div id="div1"></div>
+	
+	
+	<input id="login-email" type="text">
+	<input id="login-password" type="password">
+	<button id="login-btn">Login</button>
+	<div id="div2"></div>
 </body>
 </html>
