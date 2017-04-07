@@ -40,6 +40,22 @@
 				}
 			});
 		});
+		
+		$("#add-budget-btn").click(function (){
+			var name = document.getElementById("budget-name").value;
+			var balance = document.getElementById("budget-balance").value;
+			$.ajax({
+				url: 'addbudget',
+				type: 'POST',
+				data: {name: name, balance: balance},
+				success: function(result){
+					$("#div3").append("Budget added successfuly: " + result);
+				},
+				error: function(result){
+					$("#div3").append("Sorry could not add budget: " + result);
+				}
+			});
+		});
 	});
 </script>
 <body>
@@ -55,5 +71,10 @@
 	<input id="login-password" type="password">
 	<button id="login-btn">Login</button>
 	<div id="div2"></div>
+	
+	<input id="budget-name" type="text">
+	<input id="budget-balance" type="number">
+	<button id="add-budget-btn">addBudget</button>
+	<div id="div3"></div>
 </body>
 </html>

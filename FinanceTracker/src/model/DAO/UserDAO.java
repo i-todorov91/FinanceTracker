@@ -34,7 +34,6 @@ public class UserDAO {
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
-			DBManager.getInstance().getConnection().setAutoCommit(false);
 			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
@@ -98,24 +97,12 @@ public class UserDAO {
 					user.addBudget(budget);
 				}
 				allUsers.put(user.getEmail(), user);
-				DBManager.getInstance().getConnection().commit();
 			}
 		} catch (SQLException e) {
 			System.out.println("UserDAO: " + e.getMessage());
-			try {
-				DBManager.getInstance().getConnection().rollback();
-			} catch (SQLException e1) {
-				System.out.println("UserDAO->Cosntructor->rollBack: " + e1.getMessage());
-			}
-		}
-		finally{
-			try {
-				DBManager.getInstance().getConnection().setAutoCommit(true);
-			} catch (SQLException e) {
-				System.out.println("UserDAO->Constructor->setAutoCommit(true): " + e.getMessage());
-			}
 		}
 	}
+	
 	public synchronized static UserDAO getInstance(){
 		if(instance == null){
 			instance = new UserDAO();
@@ -152,7 +139,10 @@ public class UserDAO {
 
 	public synchronized boolean addBudget(Budget toAdd, User user){
 		if(allUsers.containsKey(user.getEmail())){
-			String query = "INSERT INTO budget(name, balance) VALUES(?, ?)";
+			if(user.getBudgets().containsKey(toAdd.getName())){
+				return false;
+			}
+			String query = "INSERT IGNORE INTO budget(name, balance) VALUES(?, ?)";
 			PreparedStatement stmt = null;
 			long id = 0;
 			try {
@@ -167,7 +157,7 @@ public class UserDAO {
 				id = rs.getLong(1);
 				
 				// insert in user_budget table
-				query = "INSERT INTO user_budget(user_id, budget_id) VALUES(?, ?)";
+				query = "INSERT IGNORE INTO user_budget(user_id, budget_id) VALUES(?, ?)";
 				stmt = DBManager.getInstance().getConnection().prepareStatement(query);
 				stmt.setLong(1, user.getId());
 				stmt.setLong(2, id);
