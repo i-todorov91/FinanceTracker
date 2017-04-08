@@ -27,7 +27,10 @@ public class LoginServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
 			// TODO
-			// redirect to home page
+			session.setAttribute("logged", false);
+			session.removeAttribute("username");
+			session.removeAttribute("IP");
+			response.sendRedirect("index.html");
 		}
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");

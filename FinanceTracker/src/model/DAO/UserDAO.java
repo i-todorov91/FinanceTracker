@@ -70,7 +70,7 @@ public class UserDAO {
 						String categoryName = rs2.getString("name");
 						String categoryIcon = rs2.getString("icon");
 						try {
-							budget.addCashFlow(new Income(quantity, date, new Category(categoryName, categoryIcon)));
+							budget.addCashFlow(new Income(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.INCOME)));
 						} catch (InvalidCashFlowException e) {
 							System.out.println("UserDAO->Budget->Income->	Category: " + e.getMessage());
 						}
@@ -87,7 +87,7 @@ public class UserDAO {
 						String categoryName = rs3.getString("name");
 						String categoryIcon = rs3.getString("icon");
 						try {
-							budget.addCashFlow(new Expense(quantity, date, new Category(categoryName, categoryIcon)));
+							budget.addCashFlow(new Expense(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.EXPENSE)));
 						} catch (InvalidCashFlowException e) {
 							System.out.println("UserDAO->Budget->Income->Category: " + e.getMessage());
 						}

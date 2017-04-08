@@ -24,7 +24,7 @@ public class CategoryDAO {
 		String query = "";
 		PreparedStatement stmt = null;
 		// get all default categories and add them to income and expense categories
-		query = "SELECT category.name AS name, default_icon.name AS icon FROM category INNER JOIN default_icon ON default_icon.id = category.icon_id WHERE category.type_id = 1";
+		query = "SELECT category.type_id as type, category.name AS name, default_icon.name AS icon FROM category INNER JOIN default_icon ON default_icon.id = category.icon_id WHERE category.role_id = 1";
 		try {
 			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 			ResultSet rs2 = stmt.executeQuery();
@@ -32,7 +32,14 @@ public class CategoryDAO {
 				try {
 					String categorieName = rs2.getString("name");
 					String categorieIcon = rs2.getString("icon");
-					Category newCategory = new Category(categorieName, categorieIcon);
+					long categorieType = rs2.getLong("type");
+					Category newCategory = null;
+					if(categorieType == 1){
+						newCategory = new Category(categorieName, categorieIcon, Category.TYPE.INCOME);
+					}
+					else{
+						newCategory = new Category(categorieName, categorieIcon, Category.TYPE.EXPENSE);
+					}
 					
 					// add to all default categories
 					defaultCategories.put(newCategory.getName(), newCategory);
@@ -42,17 +49,26 @@ public class CategoryDAO {
 			}
 			
 		// get all custom user Categories
-		query = "SELECT category.name AS name, default_icon.name AS icon, user_category.user_id AS user_id FROM category INNER JOIN default_icon ON category.icon_id = default_icon.id INNER JOIN user_category ON user_category.category_id = category.id";
+		query = "SELECT category.type_id as type, category.name AS name, default_icon.name AS icon, user_category.user_id AS user_id FROM category INNER JOIN default_icon ON category.icon_id = default_icon.id INNER JOIN user_category ON user_category.category_id = category.id";
 			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
 			ResultSet categories = stmt.executeQuery();
 			while(categories.next()){
-				String categorieName = categories.getString("name");
-				String categorieIcon = categories.getString("icon");
-				long userId = categories.getLong("user_id");
-				
-				// add to all custom categories
 				try {
-					customAddedCategories.put(categorieName, (HashMap<Category, Long>) new HashMap<>().put(new Category(categorieName, categorieIcon), userId));
+					String categorieName = categories.getString("name");
+					String categorieIcon = categories.getString("icon");
+					long categorieType = categories.getLong("type");
+					long userId = categories.getLong("user_id");
+					
+					// add to all custom categories
+					Category newCategory = null;
+					if(categorieType == 1){
+						newCategory = new Category(categorieName, categorieIcon, Category.TYPE.INCOME);
+					}
+					else{
+						newCategory = new Category(categorieName, categorieIcon, Category.TYPE.EXPENSE);
+					}
+				
+					customAddedCategories.put(categorieName, (HashMap<Category, Long>) new HashMap<>().put(newCategory, userId));
 				} catch (InvalidCashFlowException e) {
 					System.out.println("CategoryDAO->Custom categories->InvalidCashFlow: " + e.getMessage());
 				}

@@ -5,21 +5,31 @@ import model.util.exceptions.InvalidCashFlowException;
 
 public class Category {
 
+	public static enum TYPE { INCOME, EXPENSE };
 	private String name;
 	private String icon;
+	private TYPE type;
 	
-	public Category(String name, String icon) throws InvalidCashFlowException {
+	public Category(String name, String icon, TYPE type) throws InvalidCashFlowException {
 		if(!Validator.validateString(name) || !Validator.validateString(icon)){
 			throw new InvalidCashFlowException();
 		}
 		this.name = name;
 		this.icon = icon;
+		this.type = type;
 	}
 	
 	public String getName(){
 		return this.name;
 	}
-
+	
+	public String getIcon(){
+		return this.icon;
+	}
+	
+	public TYPE getType(){
+		return this.type;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

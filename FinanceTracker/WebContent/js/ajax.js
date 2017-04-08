@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
-<script type="text/javascript">	
-	$(document).ready(function() {
+$(document).ready(function() {
 		$("#register-btn").click(function(){
 			var email = document.getElementById("register-email").value;
 			var password = document.getElementById("register-password").value;
@@ -57,24 +49,3 @@
 			});
 		});
 	});
-</script>
-<body>
-	<input id="register-email" type="text">
-	<input id="register-firstName" type="text">
-	<input id="register-secondName" type="text">
-	<input id="register-password" type="password">
-	<button id="register-btn">Register</button>
-	<div id="div1"></div>
-	
-	
-	<input id="login-email" type="text">
-	<input id="login-password" type="password">
-	<button id="login-btn">Login</button>
-	<div id="div2"></div>
-	
-	<input id="budget-name" type="text">
-	<input id="budget-balance" type="number">
-	<button id="add-budget-btn">addBudget</button>
-	<div id="div3"></div>
-</body>
-</html>
