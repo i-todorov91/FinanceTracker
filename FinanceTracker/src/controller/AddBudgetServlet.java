@@ -22,11 +22,14 @@ import model.util.Validator;
 @WebServlet("/addbudget")
 public class AddBudgetServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO check if user is logged, session, etc
 		HttpSession session = request.getSession();
+		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
+			session.invalidate();
+			// TODO
+			// redirect to home page
+		}
 		JsonObject result = new JsonObject();
 		Object balance = request.getParameter("balance");
-		System.out.println(Validator.isValidNumber(balance));
 		if((Boolean) session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("username") != null && UserDAO.getInstance().getAllUsers().containsKey((String) session.getAttribute("username")) && balance != null && Validator.isValidNumber(balance)) {
 			String name = request.getParameter("name");
 			double balance1 = Double.parseDouble((String) balance);

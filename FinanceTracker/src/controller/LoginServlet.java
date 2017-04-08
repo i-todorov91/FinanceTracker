@@ -13,19 +13,26 @@ import com.google.gson.JsonObject;
 
 import model.DAO.UserDAO;
 import model.util.Validator;
-
 /**
  * Servlet implementation class LoginServlet
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doPost(req, resp);
+	}
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO validations for logged user, IP, etc
-		
+		HttpSession session = request.getSession();
+		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
+			session.invalidate();
+			// TODO
+			// redirect to home page
+		}
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		JsonObject result = new JsonObject();
-		HttpSession session = request.getSession();
 		if(Validator.isValidEmailAddress(email) && Validator.validPassword(password)){
 			if(UserDAO.getInstance().validLogin(email, password)){
 				response.setStatus(200);
