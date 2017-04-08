@@ -17,22 +17,6 @@ $(document).ready(function() {
 			});
 		});
 		
-		$("#login-btn").click(function (){
-			var email = document.getElementById("login-email").value;
-			var password = document.getElementById("login-password").value;
-			$.ajax({
-				url: 'login',
-				type: 'POST',
-				data: {email: email, password: password},
-				success: function(result){
-					$("#div2").append("Login successfuly: " + result);
-				},
-				error: function(result){
-					$("#div2").append("Sorry could not login: " + result);
-				}
-			});
-		});
-		
 		$("#add-budget-btn").click(function (){
 			var name = document.getElementById("budget-name").value;
 			var balance = document.getElementById("budget-balance").value;

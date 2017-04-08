@@ -14,6 +14,9 @@ public class Validator {
 	}
 	
 	public static boolean isValidEmailAddress(String email) {
+		if(!validateString(email)){
+			return false;
+		}
 		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
         return matcher.find();
 	}
@@ -34,6 +37,9 @@ public class Validator {
 	}
 	
 	public static boolean validPassword(String password){
+		if(!validateString(password)){
+			return false;
+		}
 		// must contain at least 1 digit
 		// must contain at least 1 small letter
 		// must contain at least 1 capital letter

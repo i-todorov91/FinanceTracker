@@ -6,18 +6,34 @@
 	<title>Finance Tracker - Login</title>
 
 	<!-- Google Fonts -->
+
 	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" href="../css/login-animate.css">
-	<link rel="stylesheet" href="../css/login.css">
-
-	<script src="../js/jquery.1.8.3.min.js"></script>
+	<link rel="stylesheet" href="css/login-animate.css">
+	<link rel="stylesheet" href="css/login.css">
+	<script src="js/jquery.1.8.3.min.js"></script>
+	<script src="js/login.js"></script>
+	<style>
+		a{
+			font-weight: bold;
+			color: black;
+		}
+		
+		a:hover{
+			font-weight: bold;
+			color: black;
+		}
+		
+		.error{
+			border: solid 2px #FF0000;  
+		}
+	</style>
 </head>
 
 <body>
 	<div class="container">
 		<div class="top">
-			<h1 id="title" class="hidden"><span id="logo">Finance Tracker</span></h1>
+			<h1 id="title" class="hidden"><a href="index.html"><span id="logo">Finance Tracker</span></a></h1>
 		</div>
 		<div class="login-box animated fadeInUp">
 			<div class="box-header">
@@ -31,9 +47,10 @@
 			<br/>
 			<input type="password" id="password">
 			<br/>
-			<button type="submit">Sign In</button>
+			<button id="login-btn" type="submit">Sign In</button>
 			<br/>
 		</div>
+		<div id="div2"></div>
 	</div>
 </body>
 

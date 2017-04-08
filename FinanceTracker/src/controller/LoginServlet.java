@@ -30,37 +30,41 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute("logged", false);
 			session.removeAttribute("username");
 			session.removeAttribute("IP");
-			response.sendRedirect("index.html");
+			JsonObject result = new JsonObject();
+			response.setStatus(400);
+			result.addProperty("login", false);
 		}
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		JsonObject result = new JsonObject();
-		if(Validator.isValidEmailAddress(email) && Validator.validPassword(password)){
-			if(UserDAO.getInstance().validLogin(email, password)){
-				response.setStatus(200);
-				result.addProperty("login", "successful");
-				session.setAttribute("logged", true);
-				session.setAttribute("username", email);
-				session.setAttribute("IP", request.getRemoteAddr());
-				session.setMaxInactiveInterval(60);
+		else{
+			String email = request.getParameter("email");
+			String password = request.getParameter("password");
+			JsonObject result = new JsonObject();
+			if(Validator.isValidEmailAddress(email) && Validator.validPassword(password)){
+				if(UserDAO.getInstance().validLogin(email, password)){
+					response.setStatus(200);
+					result.addProperty("login", true);
+					session.setAttribute("logged", true);
+					session.setAttribute("username", email);
+					session.setAttribute("IP", request.getRemoteAddr());
+					session.setMaxInactiveInterval(60);
+				}
+				else
+				{
+					// status code for bad request
+					// the server cannot or will not process the request due to something that is perceived to be a client error
+					response.setStatus(400);
+					result.addProperty("login", false);
+					session.setAttribute("logged", false);
+				}
 			}
-			else
-			{
+			else{
 				// status code for bad request
 				// the server cannot or will not process the request due to something that is perceived to be a client error
 				response.setStatus(400);
-				result.addProperty("login", "failed");
+				result.addProperty("login", false);
 				session.setAttribute("logged", false);
 			}
+			response.getWriter().append(result.toString());
 		}
-		else{
-			// status code for bad request
-			// the server cannot or will not process the request due to something that is perceived to be a client error
-			response.setStatus(400);
-			result.addProperty("login", "failed");
-			session.setAttribute("logged", false);
-		}
-		response.getWriter().append(result.toString());
 	}
 
 }
