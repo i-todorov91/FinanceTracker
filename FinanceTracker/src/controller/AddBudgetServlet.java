@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 import model.DAO.UserDAO;
 import model.budget.Budget;
 import model.user.User;
+import model.util.Validator;
 
 /**
  * Servlet implementation class AddBudgetServlet
@@ -24,13 +25,15 @@ public class AddBudgetServlet extends HttpServlet {
 		// TODO check if user is logged, session, etc
 		HttpSession session = request.getSession();
 		JsonObject result = new JsonObject();
-		if((Boolean) session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+		Object balance = request.getParameter("balance");
+		System.out.println(Validator.isValidNumber(balance));
+		if((Boolean) session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("username") != null && UserDAO.getInstance().getAllUsers().containsKey((String) session.getAttribute("username")) && balance != null && Validator.isValidNumber(balance)) {
 			String name = request.getParameter("name");
-			double balance = Double.parseDouble(request.getParameter("balance"));
-			Budget toAdd = new Budget(name, balance);
+			double balance1 = Double.parseDouble((String) balance);
+			Budget toAdd = new Budget(name, balance1);
 			String username = (String) session.getAttribute("username");
 			User user = UserDAO.getInstance().getAllUsers().get(username);
-			if(UserDAO.getInstance().addBudget(toAdd, user)){
+			if(Validator.validBalance(balance1) && Validator.validateString(name) && UserDAO.getInstance().addBudget(toAdd, user)){
 				response.setStatus(200);
 				result.addProperty("success", true);
 			}

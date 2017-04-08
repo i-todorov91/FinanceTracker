@@ -13,7 +13,7 @@
 			var first = document.getElementById("register-firstName").value;
 			var second = document.getElementById("register-secondName").value;
 			$.ajax({
-				url: '/register',
+				url: 'register',
 				type: 'POST',
 				data: {email: email, firstName: first, secondName: second, password: password},
 				success: function(result){
@@ -29,7 +29,7 @@
 			var email = document.getElementById("login-email").value;
 			var password = document.getElementById("login-password").value;
 			$.ajax({
-				url: '/login',
+				url: 'login',
 				type: 'POST',
 				data: {email: email, password: password},
 				success: function(result){
@@ -45,7 +45,7 @@
 			var name = document.getElementById("budget-name").value;
 			var balance = document.getElementById("budget-balance").value;
 			$.ajax({
-				url: '/addbudget',
+				url: 'addbudget',
 				type: 'POST',
 				data: {name: name, balance: balance},
 				success: function(result){
