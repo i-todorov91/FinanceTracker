@@ -26,7 +26,6 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
-			session.invalidate();
 			// TODO
 			// redirect to home page
 		}
@@ -40,6 +39,7 @@ public class LoginServlet extends HttpServlet {
 				session.setAttribute("logged", true);
 				session.setAttribute("username", email);
 				session.setAttribute("IP", request.getRemoteAddr());
+				session.setMaxInactiveInterval(60);
 			}
 			else
 			{

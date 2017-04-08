@@ -24,7 +24,7 @@ public class AddBudgetServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
-			session.invalidate();
+			response.sendRedirect("/logout");
 			// TODO
 			// redirect to home page
 		}
