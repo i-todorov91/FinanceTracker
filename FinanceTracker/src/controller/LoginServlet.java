@@ -25,19 +25,18 @@ public class LoginServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
-			// TODO
+		JsonObject result = new JsonObject();
+		if((session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != null && session.getAttribute("IP") != request.getRemoteAddr())){
 			session.setAttribute("logged", false);
 			session.removeAttribute("username");
 			session.removeAttribute("IP");
-			JsonObject result = new JsonObject();
-			response.setStatus(400);
-			result.addProperty("login", false);
+			session.invalidate();
+			response.setStatus(200);
+			result.addProperty("redirect", true);
 		}
 		else{
 			String email = request.getParameter("email");
 			String password = request.getParameter("password");
-			JsonObject result = new JsonObject();
 			if(Validator.isValidEmailAddress(email) && Validator.validPassword(password)){
 				if(UserDAO.getInstance().validLogin(email, password)){
 					response.setStatus(200);
@@ -49,22 +48,18 @@ public class LoginServlet extends HttpServlet {
 				}
 				else
 				{
-					// status code for bad request
-					// the server cannot or will not process the request due to something that is perceived to be a client error
-					response.setStatus(400);
+					response.setStatus(200);
 					result.addProperty("login", false);
 					session.setAttribute("logged", false);
 				}
 			}
 			else{
-				// status code for bad request
-				// the server cannot or will not process the request due to something that is perceived to be a client error
-				response.setStatus(400);
+				response.setStatus(200);
 				result.addProperty("login", false);
 				session.setAttribute("logged", false);
 			}
-			response.getWriter().append(result.toString());
 		}
+		response.getWriter().append(result.toString());
 	}
 
 }

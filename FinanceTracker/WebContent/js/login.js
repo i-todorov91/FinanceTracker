@@ -23,10 +23,18 @@ $(document).ready(function() {
 				type: 'POST',
 				data: {email: email, password: password},
 				success: function(result){
-					$("#div2").append("Login successfuly: " + result);
-				},
-				error: function(result){
-					$("#div2").append("Sorry could not login: " + result);
+					var obj = $.parseJSON(result);
+					if(obj['redirect'] == true){
+						// redirect to home page
+						window.location.href="http://localhost:8080/FinanceTracker/";
+					}
+					else if(obj['login'] == true){
+						// redirect to logged in page
+						// TODO
+					}
+					else{
+						$(".alert").css("visibility", "visible");
+					}
 				}
 			});
 		}
