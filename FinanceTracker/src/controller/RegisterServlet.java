@@ -23,21 +23,19 @@ public class RegisterServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
+		JsonObject result = new JsonObject();
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr()){
 			session.invalidate();
-			// TODO
-			// redirect to home page
+			response.setStatus(200);
+			result.addProperty("register", "redirect");
 		}
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String firstName = request.getParameter("firstName");
 		String secondName = request.getParameter("secondName");
-		JsonObject result = new JsonObject();
 		if(!(Validator.validateString(email) && Validator.validateString(password) && Validator.validateString(firstName) && Validator.validateString(secondName) && Validator.isValidEmailAddress(email) && Validator.validPassword(password))){
-			response.setStatus(400); 
-			// status code for bad request
-			// the server cannot or will not process the request due to something that is perceived to be a client error
-			result.addProperty("success", false);
+			response.setStatus(200); 
+			result.addProperty("register", "invalid email");
 		}
 		else{
 			User newUser = new User(email, password);
@@ -45,16 +43,15 @@ public class RegisterServlet extends HttpServlet {
 			newUser.setLastName(secondName);
 			if(UserDAO.getInstance().addUser(newUser)){
 				response.setStatus(200);
-				result.addProperty("success", true);
+				result.addProperty("register", true);
 			}
 			else
 			{
-				response.setStatus(400); 
-				// status code for bad request
-				// the server cannot or will not process the request due to something that is perceived to be a client error
-				result.addProperty("success", false);
+				response.setStatus(200); 
+				result.addProperty("register", false);
 			}
 		}
+		System.out.println(result);
 		response.getWriter().append(result.toString());
 	}
 }

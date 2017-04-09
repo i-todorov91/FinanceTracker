@@ -175,8 +175,32 @@ a:hover{
 	visibility: hidden;
 }
 
+.alert-register-fail {
+	text-align: center;
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	width: 300px;
+	margin: auto;
+	visibility: hidden;
+}
+
+.alert-register-ok {
+	text-align: center;
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	width: 300px;
+	margin: auto;
+	visibility: hidden;
+}
+
 @media only screen and (max-width: 479px){
-    .alert { width: auto }
+    .alert { width: auto; }
+    .alert-register-fail { width: auto; }
+    .alert-register-ok { width: auto; }
 }
 
 .alert-dismissable {
@@ -194,4 +218,20 @@ a:hover{
 	background-color: #f2dede;
 	border-color: #ebccd1;
 	color: #a94442;
+}
+
+.alert-danger-register {
+	background-color: #f2dede;
+	border-color: #ebccd1;
+	color: #a94442;
+}
+
+.alert-success-register {
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+	color: #3c763d;
+}
+
+.register-box{
+	margin-top: -75px;	
 }

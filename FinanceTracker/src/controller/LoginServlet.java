@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
 			session.removeAttribute("IP");
 			session.invalidate();
 			response.setStatus(200);
-			result.addProperty("redirect", true);
+			result.addProperty("login", "redirect");
 		}
 		else{
 			String email = request.getParameter("email");
