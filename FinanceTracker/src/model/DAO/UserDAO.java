@@ -23,10 +23,10 @@ public class UserDAO {
 	
 	private static UserDAO instance = null;
 	private static final HashMap<String, User> allUsers = new HashMap<>();
+	private static Connection con = DBManager.getInstance().getConnection();
 	
 	private UserDAO(){
 		
-		Connection con = DBManager.getInstance().getConnection();
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
@@ -127,7 +127,7 @@ public class UserDAO {
 		PreparedStatement stmt = null;
 		String query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
 		try {
-			stmt = DBManager.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, toAdd.getFirstName());
 			stmt.setString(2, toAdd.getLastName());
 			stmt.setString(3, StringUtil.getInstance().encrypt(toAdd.getPassword()));
@@ -146,6 +146,7 @@ public class UserDAO {
 	}
 
 	public synchronized boolean addBudget(Budget toAdd, User user){
+	
 		if(allUsers.containsKey(user.getEmail())){
 			if(user.getBudgets().containsKey(toAdd.getName())){
 				return false;
@@ -155,8 +156,8 @@ public class UserDAO {
 			long id = 0;
 			try {
 				// insert in budget table and get the budget id
-				DBManager.getInstance().getConnection().setAutoCommit(false);
-				stmt = DBManager.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+				con.setAutoCommit(false);
+				stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 				stmt.setString(1, toAdd.getName());
 				stmt.setDouble(2, toAdd.getBalance());
 				stmt.executeUpdate();
@@ -166,26 +167,26 @@ public class UserDAO {
 				
 				// insert in user_budget table
 				query = "INSERT IGNORE INTO user_budget(user_id, budget_id) VALUES(?, ?)";
-				stmt = DBManager.getInstance().getConnection().prepareStatement(query);
+				stmt = con.prepareStatement(query);
 				stmt.setLong(1, user.getId());
 				stmt.setLong(2, id);
 				stmt.executeUpdate();
 				
 				// add the budget to the user in the HashMap<String, User>
 				allUsers.get(user.getEmail()).addBudget(toAdd);
-				DBManager.getInstance().getConnection().commit();
+				con.commit();
 				return true;
 			} catch (SQLException e) {
 				System.out.println("UserDAO->addBudget: " + e.getMessage());
 				try {
-					DBManager.getInstance().getConnection().rollback();
+					con.rollback();
 				} catch (SQLException e1) {
 					System.out.println("UserDAO->addBudget->rollBack: " + e1.getMessage());
 				}
 				return false;
 			} finally {
 				try {
-					DBManager.getInstance().getConnection().setAutoCommit(true);
+					con.setAutoCommit(true);
 				} catch (SQLException e) {
 					System.out.println("UserDAO->addBudget->setAutoCommit(true): " + e.getMessage());
 				}
@@ -194,15 +195,159 @@ public class UserDAO {
 		return false;
 	}
 
-/*
-	public synchronized boolean addIncome(Income toAdd, long budgetId, long userId){
+
+	public synchronized boolean addIncome(Income toAdd, long budgetId, User user){
 		
+		String query = "SELECT name FROM budget WHERE id = ?";
+		String budgetName = null;
+		Budget budget = null;
+		PreparedStatement stmt = null;
+		long cashFlowId = 0;
+		
+		try {
+			
+			stmt = con.prepareStatement(query);
+			stmt.setLong(1, budgetId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				budgetName = rs.getString("name");
+				budget = user.getBudgets().get(budgetName);
+			} else {
+				System.out.println("UserDAO->addIncome : There is no such budget!");
+				return false;
+			}
+			
+			con.setAutoCommit(false);
+			
+			//insert into cash_flow & get id
+			query = "INSERT IGNORE INTO cash_flow(quantity, date) VALUES(?, ?)";
+			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setDouble(1, toAdd.getQuantity());
+			stmt.setDate(2, (Date) toAdd.getDate());
+			stmt.executeUpdate();
+			rs = stmt.getGeneratedKeys();
+			rs.next();
+			cashFlowId = rs.getLong(1);
+			
+			// insert into income table
+			query = "INSERT IGNORE INTO income(id, category, cash_flow_id) VALUES(?, ?, ?)";
+			stmt = con.prepareStatement(query);
+			stmt.setLong(1, cashFlowId);
+			stmt.setLong(2, toAdd.getCategory().getId());
+			stmt.setLong(3, cashFlowId);
+			stmt.executeUpdate();
+			
+			// insert into budget_income table
+			query = "INSERT IGNORE INTO budget_income(budget_id, income_id) VALUES(?, ?)";
+			stmt = con.prepareStatement(query);
+			stmt.setLong(1, budgetId);
+			stmt.setLong(2, cashFlowId);
+			stmt.executeUpdate();
+			
+			//add to budget, get budget new balance, update budget balance
+			budget.addCashFlow(toAdd);
+			double newBalance = budget.getBalance();
+			query = "UPDATE budget SET balance = ? WHERE id = ?";
+			stmt = con.prepareStatement(query);
+			stmt.setDouble(1, newBalance);
+			stmt.setLong(2, budgetId);
+
+			return true;
+		} catch (SQLException e) {
+			System.out.println("UserDAO->addIncome: " + e.getMessage());
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				System.out.println("UserDAO->addIncome->rollBack: " + e1.getMessage());
+			}
+			return false;
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				System.out.println("UserDAO->addIncome->setAutoCommit(true): " + e.getMessage());
+			}
+		}
 	}
 	
-	public synchronized boolean addExpense(Expense toAdd, long budgetId, long userId){
+	public synchronized boolean addExpense(Expense toAdd, long budgetId, User user){
 		
+		String query = "SELECT name FROM budget WHERE id = ?";
+		String budgetName = null;
+		Budget budget = null;
+		PreparedStatement stmt = null;
+		long cashFlowId = 0;
+		
+		try {
+			
+			stmt = con.prepareStatement(query);
+			stmt.setLong(1, budgetId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				budgetName = rs.getString("name");
+				budget = user.getBudgets().get(budgetName);
+			} else {
+				System.out.println("UserDAO->addExpense : There is no such budget!");
+				return false;
+			}
+			
+			con.setAutoCommit(false);
+			
+			//insert into cash_flow & get id
+			query = "INSERT IGNORE INTO cash_flow(quantity, date) VALUES(?, ?)";
+			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setDouble(1, toAdd.getQuantity());
+			stmt.setDate(2, (Date) toAdd.getDate());
+			stmt.executeUpdate();
+			rs = stmt.getGeneratedKeys();
+			rs.next();
+			cashFlowId = rs.getLong(1);
+			
+			// insert into expense table
+			query = "INSERT IGNORE INTO expense(id, category, cash_flow_id) VALUES(?, ?, ?)";
+			stmt = con.prepareStatement(query);
+			stmt.setLong(1, cashFlowId);
+			stmt.setLong(2, toAdd.getCategory().getId());
+			stmt.setLong(3, cashFlowId);
+			stmt.executeUpdate();
+			
+			// insert into budget_expense table
+			query = "INSERT IGNORE INTO budget_expense(budget_id, expense_id) VALUES(?, ?)";
+			stmt = con.prepareStatement(query);
+			stmt.setLong(1, budgetId);
+			stmt.setLong(2, cashFlowId);
+			stmt.executeUpdate();
+			
+			//add to budget, get budget new balance, update budget balance
+			budget.addCashFlow(toAdd);
+			double newBalance = budget.getBalance();
+			query = "UPDATE budget SET balance = ? WHERE id = ?";
+			stmt = con.prepareStatement(query);
+			stmt.setDouble(1, newBalance);
+			stmt.setLong(2, budgetId);
+
+			return true;
+		} catch (SQLException e) {
+			System.out.println("UserDAO->addExpense: " + e.getMessage());
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				System.out.println("UserDAO->addExpense->rollBack: " + e1.getMessage());
+			}
+			return false;
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				System.out.println("UserDAO->addExpense->setAutoCommit(true): " + e.getMessage());
+			}
+		}
 	}
-*/
+
 	
 	public boolean validLogin(String email, String password){
 		if(!allUsers.containsKey(email)){
@@ -224,4 +369,5 @@ public class UserDAO {
 	public Map<String, User> getAllUsers(){
 		return Collections.unmodifiableMap(allUsers);
 	}
+	
 }

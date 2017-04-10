@@ -9,6 +9,7 @@ public class Category {
 	private String name;
 	private String icon;
 	private TYPE type;
+	private long id;
 	
 	public Category(String name, String icon, TYPE type) throws InvalidCashFlowException {
 		if(!Validator.validateString(name) || !Validator.validateString(icon)){
@@ -53,6 +54,14 @@ public class Category {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	public long getId() {
+		return id;
+	}
+	
+	public void setId(long id){
+		this.id = id;
 	}
 	
 		

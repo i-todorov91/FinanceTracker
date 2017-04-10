@@ -62,7 +62,7 @@ public class User {
 	}
 
 	public Map<String, Budget> getBudgets() {
-		return Collections.unmodifiableMap(budgets);
+		return budgets;
 	}
 
 	public void addBudget(Budget budget) {
