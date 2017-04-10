@@ -1,5 +1,6 @@
 package model.DAO;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,11 +24,13 @@ public class UserDAO {
 	private static final HashMap<String, User> allUsers = new HashMap<>();
 	@SuppressWarnings("static-access")
 	private UserDAO(){
-		// TODO add transactions
+		
+		Connection con = DBManager.getInstance().getConnection();
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
-			stmt = DBManager.getInstance().getConnection().prepareStatement(query);
+			con.setAutoCommit(false);
+			stmt = con.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				String firstName = rs.getString("first_name");
@@ -91,8 +94,21 @@ public class UserDAO {
 				}
 				allUsers.put(user.getEmail(), user);
 			}
+			con.commit();
 		} catch (SQLException e) {
-			System.out.println("UserDAO: " + e.getMessage());
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				System.out.println("UserDAO: could not rollback " + e.getMessage());
+			}
+			System.out.println("UserDAO: connection not commited -" + e.getMessage());
+		}
+		finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				System.out.println("UserDAO: could not return autoCommit " + e.getMessage());
+			}
 		}
 	}
 	
