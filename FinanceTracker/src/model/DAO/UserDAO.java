@@ -20,9 +20,10 @@ import model.util.exceptions.InvalidCashFlowException;
 import model.util.exceptions.InvalidEncryptionException;
 
 public class UserDAO {
+	
 	private static UserDAO instance = null;
 	private static final HashMap<String, User> allUsers = new HashMap<>();
-	@SuppressWarnings("static-access")
+	
 	private UserDAO(){
 		
 		Connection con = DBManager.getInstance().getConnection();
@@ -44,8 +45,8 @@ public class UserDAO {
 				user.setId(id);
 				
 				// get the budgets
-				query = "SELECT b.id as id, b.name as name, b.balance as balance FROM budget b INNER JOIN user_budget ON id = budget_id WHERE user_budget.user_id = ?";
-				stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
+				query = "SELECT b.id as id, b.name as name, b.balance as balance FROM budget b JOIN user_budget ub ON id = budget_id WHERE ub.user_id = ?";
+				stmt = con.prepareStatement(query);
 				stmt.setLong(1, id);
 				ResultSet rs1 = stmt.executeQuery();
 				while(rs1.next()){
@@ -56,8 +57,8 @@ public class UserDAO {
 					// for each budget select the incomes and expenses
 					
 					// find all incomes
-					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash INNER JOIN income inc ON cash.id = inc.cash_flow_id INNER JOIN budget_income bi ON bi.income_id = inc.id INNER JOIN budget bt ON bi.budget_id = bt.id INNER JOIN category c ON c.id = inc.category INNER JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
-					stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
+					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash JOIN income inc ON cash.id = inc.cash_flow_id JOIN budget_income bi ON bi.income_id = inc.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = inc.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
+					stmt = con.prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs2 = stmt.executeQuery();
 					while(rs2.next()){
@@ -73,8 +74,8 @@ public class UserDAO {
 					}
 					
 					// find all expenses
-					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash INNER JOIN expense exp ON cash.id = exp.cash_flow_id INNER JOIN budget_income bi ON bi.income_id = exp.id INNER JOIN budget bt ON bi.budget_id = bt.id INNER JOIN category c ON c.id = exp.category INNER JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
-					stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
+					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash JOIN expense exp ON cash.id = exp.cash_flow_id JOIN budget_income bi ON bi.income_id = exp.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = exp.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
+					stmt = con.prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs3 = stmt.executeQuery();
 					while(rs2.next()){
@@ -102,8 +103,7 @@ public class UserDAO {
 				System.out.println("UserDAO: could not rollback " + e.getMessage());
 			}
 			System.out.println("UserDAO: connection not commited -" + e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException e) {
@@ -183,8 +183,7 @@ public class UserDAO {
 					System.out.println("UserDAO->addBudget->rollBack: " + e1.getMessage());
 				}
 				return false;
-			}
-			finally{
+			} finally {
 				try {
 					DBManager.getInstance().getConnection().setAutoCommit(true);
 				} catch (SQLException e) {
@@ -192,9 +191,7 @@ public class UserDAO {
 				}
 			}
 		}
-		else{
-			return false;
-		}
+		return false;
 	}
 
 /*
