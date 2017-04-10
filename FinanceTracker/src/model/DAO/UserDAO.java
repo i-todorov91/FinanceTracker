@@ -119,7 +119,6 @@ public class UserDAO {
 		return instance;
 	}
 	
-	@SuppressWarnings("static-access")
 	public synchronized boolean addUser(User toAdd){
 		if(allUsers.containsKey(toAdd.getEmail())){
 			return false;
@@ -128,7 +127,7 @@ public class UserDAO {
 		PreparedStatement stmt = null;
 		String query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
 		try {
-			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt = DBManager.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, toAdd.getFirstName());
 			stmt.setString(2, toAdd.getLastName());
 			stmt.setString(3, StringUtil.getInstance().encrypt(toAdd.getPassword()));
