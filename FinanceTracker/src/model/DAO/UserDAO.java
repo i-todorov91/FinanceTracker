@@ -27,7 +27,7 @@ public class UserDAO {
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
-			stmt = DBManager.getInstance().getInstance().getConnection().prepareStatement(query);
+			stmt = DBManager.getInstance().getConnection().prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				String firstName = rs.getString("first_name");

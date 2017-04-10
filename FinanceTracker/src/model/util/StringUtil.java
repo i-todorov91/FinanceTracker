@@ -10,9 +10,7 @@ import sun.misc.BASE64Encoder;
 
 public class StringUtil {
 	private static StringUtil instance = null;
-	private StringUtil(){
-		
-	}
+	private StringUtil(){}
 	public static StringUtil getInstance(){
 		if(instance == null){
 			instance = new StringUtil();
