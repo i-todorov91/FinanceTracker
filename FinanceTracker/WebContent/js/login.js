@@ -19,8 +19,7 @@ $(document).ready(function() {
 						window.location.href="http://localhost:8080/FinanceTracker/";
 					}
 					else if(obj['login'] == true){
-						// redirect to logged in page
-						// TODO
+						window.location.href="http://localhost:8080/FinanceTracker/main.html";
 					}
 					else{
 						$(".alert").css("visibility", "visible");

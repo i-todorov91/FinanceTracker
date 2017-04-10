@@ -29,10 +29,11 @@ public class Budget {
 	public void addCashFlow(CashFlow flow){
 		if (flow.getType() == CashFlow.TYPES.INCOME) {
 			this.incomes.add((Income)flow);
+			this.balance += flow.getQuantity();
 		} else {
 			this.expenses.add((Expense)flow);
+			this.balance -= flow.getQuantity();
 		}
-		this.balance += flow.getQuantity();
 	}
 	
 	public String getName() {

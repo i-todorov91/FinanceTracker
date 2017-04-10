@@ -27,10 +27,6 @@ public class LoginServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		JsonObject result = new JsonObject();
 		if((session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != null && session.getAttribute("IP") != request.getRemoteAddr())){
-			session.setAttribute("logged", false);
-			session.removeAttribute("username");
-			session.removeAttribute("IP");
-			session.invalidate();
 			response.setStatus(200);
 			result.addProperty("login", "redirect");
 		}
