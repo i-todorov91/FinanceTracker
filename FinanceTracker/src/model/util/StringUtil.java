@@ -9,14 +9,18 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 public class StringUtil {
+	
 	private static StringUtil instance = null;
+	
 	private StringUtil(){}
+	
 	public static StringUtil getInstance(){
 		if(instance == null){
 			instance = new StringUtil();
 		}
 		return instance;
 	}
+	
 	private static Random random = new Random((new Date()).getTime());
 
 	/**
