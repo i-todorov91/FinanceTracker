@@ -20,13 +20,11 @@ import model.util.exceptions.InvalidCashFlowException;
 import model.util.exceptions.InvalidEncryptionException;
 
 public class UserDAO {
-	
 	private static UserDAO instance = null;
 	private static final HashMap<String, User> allUsers = new HashMap<>();
 	private static Connection con = DBManager.getInstance().getConnection();
 	
 	private UserDAO(){
-		
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
@@ -146,7 +144,6 @@ public class UserDAO {
 	}
 
 	public synchronized boolean addBudget(Budget toAdd, User user){
-	
 		if(allUsers.containsKey(user.getEmail())){
 			if(user.getBudgets().containsKey(toAdd.getName())){
 				return false;
@@ -197,7 +194,6 @@ public class UserDAO {
 
 
 	public synchronized boolean addIncome(Income toAdd, long budgetId, User user){
-		
 		String query = "SELECT name FROM budget WHERE id = ?";
 		String budgetName = null;
 		Budget budget = null;
@@ -205,7 +201,6 @@ public class UserDAO {
 		long cashFlowId = 0;
 		
 		try {
-			
 			stmt = con.prepareStatement(query);
 			stmt.setLong(1, budgetId);
 			
@@ -273,7 +268,6 @@ public class UserDAO {
 	}
 	
 	public synchronized boolean addExpense(Expense toAdd, long budgetId, User user){
-		
 		String query = "SELECT name FROM budget WHERE id = ?";
 		String budgetName = null;
 		Budget budget = null;
@@ -281,7 +275,6 @@ public class UserDAO {
 		long cashFlowId = 0;
 		
 		try {
-			
 			stmt = con.prepareStatement(query);
 			stmt.setLong(1, budgetId);
 			
@@ -352,7 +345,8 @@ public class UserDAO {
 	public boolean validLogin(String email, String password){
 		if(!allUsers.containsKey(email)){
 			return false;
-		} else
+		} 
+		else{
 			try {
 				if(StringUtil.getInstance().decrypt(allUsers.get(email).getPassword()).equals(password)){
 					return true;
@@ -364,6 +358,7 @@ public class UserDAO {
 				System.out.println("UserDAO->validLogin: " + e.getMessage());
 				return false;
 			}
+		}
 	}
 	
 	public Map<String, User> getAllUsers(){
