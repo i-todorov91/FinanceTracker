@@ -117,19 +117,33 @@ public class UserDAO {
 		return instance;
 	}
 	
-	public synchronized boolean addUser(User toAdd){
-		if(allUsers.containsKey(toAdd.getEmail())){
+	public synchronized boolean addUser(String email, String password, String firstName, String secondName){
+		if(allUsers.containsKey(email)){
 			return false;
 		}
 		long id = 0;
 		PreparedStatement stmt = null;
-		String query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
+		String query = "SELECT PASSWORD(?) AS pass";
+		String pass = null;
 		try {
+			stmt = con.prepareStatement(query);
+			stmt.setString(1, password);
+			ResultSet res = stmt.executeQuery();
+			res.next();
+			pass = res.getString("pass");
+		} catch (SQLException e1) {
+			System.out.println("UserDAO->getPass: " + e1.getMessage());
+			return false;
+		}
+		
+		query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
+		try {
+			pass = StringUtil.getInstance().encrypt(pass);
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, toAdd.getFirstName());
-			stmt.setString(2, toAdd.getLastName());
-			stmt.setString(3, StringUtil.getInstance().encrypt(toAdd.getPassword()));
-			stmt.setString(4, toAdd.getEmail());
+			stmt.setString(1, firstName);
+			stmt.setString(2, secondName);
+			stmt.setString(3, pass);
+			stmt.setString(4, email);
 			stmt.executeUpdate();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -138,6 +152,9 @@ public class UserDAO {
 			System.out.println("UserDAO->addUser: " + e.getMessage());
 			return false;
 		}
+		User toAdd = new User(email, pass);
+		toAdd.setFirstName(firstName);
+		toAdd.setLastName(secondName);
 		toAdd.setId(id);
 		allUsers.put(toAdd.getEmail(), toAdd);
 		return true;
@@ -348,13 +365,20 @@ public class UserDAO {
 		} 
 		else{
 			try {
-				if(StringUtil.getInstance().decrypt(allUsers.get(email).getPassword()).equals(password)){
+				String query = "SELECT PASSWORD(?) AS pass";
+				PreparedStatement stmt = con.prepareStatement(query);
+				stmt.setString(1, password);
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				String pass = rs.getString("pass");
+				
+				if(StringUtil.getInstance().decrypt(allUsers.get(email).getPassword()).equals(pass)){
 					return true;
 				}
 				else{
 					return false;
 				}
-			} catch (InvalidEncryptionException e) {
+			} catch (InvalidEncryptionException | SQLException e) {
 				System.out.println("UserDAO->validLogin: " + e.getMessage());
 				return false;
 			}

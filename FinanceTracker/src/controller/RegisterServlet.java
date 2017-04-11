@@ -46,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
 														Validator.validateString(secondName) &&
 																Validator.isValidEmailAddress(email) &&
 																		Validator.validPassword(password) &&
-																				Validator.validPassword(confirmPassword);
+																				Validator.validPassword(confirmPassword) && password.equals(confirmPassword);
 		
 		// if it is not correct add invalid property
 		if(!isValid){
@@ -54,10 +54,7 @@ public class RegisterServlet extends HttpServlet {
 			result.addProperty("register", "invalid");
 		}
 		else{
-			User newUser = new User(email, password);
-			newUser.setFirstName(firstName);
-			newUser.setLastName(secondName);
-			if(UserDAO.getInstance().addUser(newUser)){
+			if(UserDAO.getInstance().addUser(email, password, firstName, secondName)){
 				response.setStatus(200);
 				result.addProperty("register", true);
 			}
