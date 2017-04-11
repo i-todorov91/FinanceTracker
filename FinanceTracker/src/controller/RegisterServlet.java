@@ -24,18 +24,34 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		JsonObject result = new JsonObject();
+		
+		// if already logged invalidate the session
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr()){
 			session.invalidate();
 			response.setStatus(200);
 			result.addProperty("register", "redirect");
 		}
+		
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
+		String confirmPassword = request.getParameter("confirmPassword");
 		String firstName = request.getParameter("firstName");
 		String secondName = request.getParameter("secondName");
-		if(!(Validator.validateString(email) && Validator.validateString(password) && Validator.validateString(firstName) && Validator.validateString(secondName) && Validator.isValidEmailAddress(email) && Validator.validPassword(password))){
+		
+		// check if all the input is correct
+		boolean isValid = Validator.validateString(email) && 
+								Validator.validateString(password) &&
+										Validator.validateString(confirmPassword) &&
+												Validator.validateString(firstName) &&
+														Validator.validateString(secondName) &&
+																Validator.isValidEmailAddress(email) &&
+																		Validator.validPassword(password) &&
+																				Validator.validPassword(confirmPassword);
+		
+		// if it is not correct add invalid property
+		if(!isValid){
 			response.setStatus(200); 
-			result.addProperty("register", "invalid email");
+			result.addProperty("register", "invalid");
 		}
 		else{
 			User newUser = new User(email, password);
