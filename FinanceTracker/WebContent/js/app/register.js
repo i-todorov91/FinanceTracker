@@ -1,10 +1,10 @@
 $(document).ready(function() {	
 	$("#register-btn").click(function (){
-		var email = document.getElementById("username").value;
-		var firstName = document.getElementById("firstname").value;
-		var secondName = document.getElementById("lastname").value;
-		var password = document.getElementById("password").value;
-		var confirmPassword = document.getElementById("confirm-password").value;
+		var email = document.getElementById("username").value.trim();
+		var firstName = document.getElementById("firstname").value.trim();
+		var secondName = document.getElementById("lastname").value.trim();
+		var password = document.getElementById("password").value.trim();
+		var confirmPassword = document.getElementById("confirm-password").value.trim();
 		var validEmail = validateEmail(email);
 		var validPassword = validatePassword(password);
 		var validConfirmPassword = validatePassword(confirmPassword);

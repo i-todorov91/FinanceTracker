@@ -1,7 +1,7 @@
 $(document).ready(function() {	
 	$("#login-btn").click(function (){
-		var email = document.getElementById("username").value;
-		var password = document.getElementById("password").value;
+		var email = document.getElementById("username").value.trim();
+		var password = document.getElementById("password").value.trim();
 		var validEmail = validateEmail(email);
 		var validPassword = validatePassword(password);
 		
