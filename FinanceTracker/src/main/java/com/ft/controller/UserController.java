@@ -31,9 +31,6 @@ public class UserController {
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
 		
-		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			return "main";
-		}
 		String email = holder.getEmail();
 		String password = holder.getPassword();
 		if(UserDAO.getInstance().validLogin(email, password)){
@@ -83,6 +80,11 @@ public class UserController {
 	@RequestMapping(value="/register", method=RequestMethod.GET)
 	public ModelAndView registerPage(HttpSession session) {
 		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.invalidate();
+			return new ModelAndView("redirect:/login", "userRegister", new User());
+		}
+		
 		if(session.getAttribute("register") != null){
 			session.setAttribute("register", null);
 		}
@@ -91,6 +93,10 @@ public class UserController {
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public String register(@Valid @ModelAttribute("userRegister") User user, BindingResult result, HttpSession session){
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.invalidate();
+		}
 		
 		session.setAttribute("register", null);
 		if(result.hasErrors()){
