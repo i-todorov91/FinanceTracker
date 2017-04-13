@@ -1,16 +1,10 @@
 package com.ft.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 import javax.validation.Valid;
 
-import org.elasticsearch.common.netty.handler.codec.http.HttpResponse;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,41 +13,36 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
+import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
 
 @Controller
 public class UserController {
 	
+	@RequestMapping(value="/login", method=RequestMethod.GET)
+	public ModelAndView loginPage() {
+		return new ModelAndView("login", "userLogin", new Holder());
+	}
+	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public String login(Model model, HttpSession session, HttpServletRequest request) {
-
-		if((session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != null && session.getAttribute("IP") != request.getRemoteAddr())){
-			return "redirect:index";
+	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			return "main";
 		}
-		else{
-			String email = request.getParameter("email");
-			String password = request.getParameter("password");
-			if(Validator.isValidEmailAddress(email) && Validator.validPassword(password)){
-				if(UserDAO.getInstance().validLogin(email, password)){
-					session.setAttribute("logged", true);
-					session.setAttribute("username", email);
-					session.setAttribute("IP", request.getRemoteAddr());
-					session.setMaxInactiveInterval(60);
-					return "redirect:main";
-				}
-				else
-				{
-					session.setAttribute("logged", false);
-					model.addAttribute("login", false);
-					return "redirect:login";
-				}
-			}
-			else{
-				session.setAttribute("logged", false);
-				model.addAttribute("login", false);
-				return "redirect:login";
-			}
+		String email = holder.getEmail();
+		String password = holder.getPassword();
+		if(UserDAO.getInstance().validLogin(email, password)){
+			session.setAttribute("logged", true);
+			session.setAttribute("username", email);
+			session.setMaxInactiveInterval(60);
+			return "main";
+		}
+		else
+		{
+			session.setAttribute("logged", false);
+			return "login";
 		}
 	}
 	
@@ -116,11 +105,5 @@ public class UserController {
 			}
 		}
         return "register";
-	}
-	
-	@RequestMapping(value="/loginpage", method=RequestMethod.GET)
-	public String loginPage() {
-		
-		return "login";
 	}
 }

@@ -74,7 +74,7 @@ function resizeText() {
           <li><a href="#service">Services</a></li>
           <li><a href="#team">Team</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><a id="redirect-login" href="loginpage">Login</a></li>
+          <li><a id="redirect-login" href="login">Login</a></li>
           <li><a id="redirect-register" href="register">Register</a></li>
         </ul>
         <ul class="">
@@ -82,7 +82,7 @@ function resizeText() {
           <li><a href="#service">Services</a></li>
           <li><a href="#team">Team</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><a id="redirect-login" href="loginpage">Login</a></li>
+          <li><a id="redirect-login" href="login">Login</a></li>
           <li><a id="redirect-register" href="register">Register</a></li>
         </ul>
       </nav>

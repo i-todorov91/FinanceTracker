@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
@@ -35,13 +38,17 @@
 			<div class="box-header">
 				<h2>Log In</h2>
 			</div>
-			<label for="username">Email</label> <br /> <input type="text"
-				id="username"> <br /> <label for="password">Password</label>
-			<br /> <input type="password" id="password"> <br />
-			<button id="login-btn" type="submit">Sign In</button>
-			<br />
+			<form:form action="login" method="post" id="login-form" commandName="userLogin">
+				<form:label path="email">Email</form:label>
+				<br/>
+				<form:input path="email"/> <br />
+				<form:label path="password">Password</form:label>
+				<br/> 
+				<form:password path="password"/>
+				<br/>
+				<input id="login-btn" type="Submit" value="Sign in">
+			</form:form>
 		</div>
-		<div id="div2"></div>
 	</div>
 </body>
 
