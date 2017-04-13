@@ -37,7 +37,9 @@ public class UserDAO {
 				String password = rs.getString("password");
 				String email = rs.getString("email");
 				long id = rs.getLong("id");
-				User user = new User(email, password);
+				User user = new User();
+				user.setEmail(email);
+				user.setPassword(password);
 				user.setFirstName(firstName);
 				user.setLastName(secondName);
 				user.setId(id);
@@ -117,8 +119,8 @@ public class UserDAO {
 		return instance;
 	}
 	
-	public synchronized boolean addUser(String email, String password, String firstName, String secondName){
-		if(allUsers.containsKey(email)){
+	public synchronized boolean addUser(User toAdd){
+		if(allUsers.containsKey(toAdd.getEmail())){
 			return false;
 		}
 		long id = 0;
@@ -127,7 +129,7 @@ public class UserDAO {
 		String pass = null;
 		try {
 			stmt = con.prepareStatement(query);
-			stmt.setString(1, password);
+			stmt.setString(1, toAdd.getPassword());
 			ResultSet res = stmt.executeQuery();
 			res.next();
 			pass = res.getString("pass");
@@ -140,10 +142,10 @@ public class UserDAO {
 		try {
 			pass = StringUtil.getInstance().encrypt(pass);
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, firstName);
-			stmt.setString(2, secondName);
+			stmt.setString(1, toAdd.getFirstName());
+			stmt.setString(2, toAdd.getLastName());
 			stmt.setString(3, pass);
-			stmt.setString(4, email);
+			stmt.setString(4, toAdd.getEmail());
 			stmt.executeUpdate();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -152,9 +154,6 @@ public class UserDAO {
 			System.out.println("UserDAO->addUser: " + e.getMessage());
 			return false;
 		}
-		User toAdd = new User(email, pass);
-		toAdd.setFirstName(firstName);
-		toAdd.setLastName(secondName);
 		toAdd.setId(id);
 		allUsers.put(toAdd.getEmail(), toAdd);
 		return true;

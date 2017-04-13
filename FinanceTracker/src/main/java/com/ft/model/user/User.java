@@ -3,20 +3,39 @@ package com.ft.model.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+
 import com.ft.model.budget.Budget;
 import com.ft.model.util.Validator;
 
+
 public class User {
+	@NotNull
+	@Size(min=2, max=30)
 	private String firstName;
+	
+	@NotNull
+	@Size(min=2, max=30)
 	private String lastName;
+	
 	private long id;
+	
+	@NotNull
+	@Email
 	private String email;
+	
+	@NotNull
+	@Size(min=8, max=20)
+	@Pattern(regexp="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%\\*^&+=]).{8,})")
 	private String password;
+	
 	private HashMap<String, Budget> budgets; //BudgetName -> Budget
 	
-	public User(String email, String password) {
-		this.email = email;
-		this.password = password;
+	public User() {
 		this.budgets = new HashMap<>();
 	}
 	

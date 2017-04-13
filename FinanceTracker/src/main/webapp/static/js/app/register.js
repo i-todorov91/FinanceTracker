@@ -20,38 +20,7 @@ $(document).ready(function() {
 			$("#confirm-password").css("background-color", "white");
 			$("#firstname").css("background-color", "white");
 			$("#secondname").css("background-color", "white");
-			$.ajax({
-				url: 'register',
-				type: 'POST',
-				data: {"email": email, "password": password, "confirmPassword": confirmPassword, "firstName": firstName, "secondName": secondName},
-				 async : true,
-				 beforeSend: function(xhr) {
-				        xhr.setRequestHeader("Accept", "application/json");
-				        xhr.setRequestHeader("Content-Type", "application/json")
-				 },
-				success: function(result){
-					console.log(result);
-					var obj = $.parseJSON(result);
-					if(obj['register'] == "redirect"){
-						// redirect to home page
-						window.location.href="http://localhost:8080/FinanceTracker/";
-					}
-					else if(obj['register'] == true){
-						$(".alert-register-ok").css("visibility", "visible");
-						$(".alert-register-fail").css("visibility", "hidden");
-					}
-					else if(obj['register'] == "invalid"){
-						$(".alert-register-fail").html("Some of the fields contains incorrect data!");
-						$(".alert-register-fail").css("visibility", "visible");
-						$(".alert-register-ok").css("visibility", "hidden");
-					}
-					else{
-						$(".alert-register-fail").html("User with this email already exists");
-						$(".alert-register-fail").css("visibility", "visible");
-						$(".alert-register-ok").css("visibility", "hidden");
-					}
-				}
-			});
+			$("#register-form").submit();
 		}
 		else{
 			// set email field to pink if error otherwise set it to white

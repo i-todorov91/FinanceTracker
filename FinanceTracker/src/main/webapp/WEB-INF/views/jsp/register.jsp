@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
@@ -15,7 +17,7 @@
 	<link rel="stylesheet" href="css/login.css">
 	<script src="js/lib/jquery.1.8.3.min.js"></script>
 	<script src="js/app/validate.js"></script>
-	<script src="js/app/register.js"></script>
+	<!-- <script src="js/app/register.js"></script> -->
 	<script src="js/lib/bootstrap.js"></script>
 </head>
 
@@ -29,34 +31,35 @@
 		<div class="alert-register-ok alert-dismissible alert-success-register">
 			Registered successfully. Click here to <a href="login.html">login</a>.
 		</div>
+		<h1>${userRegister}</h1>
 		<div class="login-box animated fadeInUp register-box">
 			<div class="box-header">
 				<h2>Register</h2>
 			</div>
-			<form action="register" method="POST">
-				<label for="username">Email</label>
+			<form:form action="register" method="post" id="register-form" commandName="userRegister">
+				<form:label path="Email">Email</form:label>
 				<br/>
-				<input type="text" id="username">
+				<form:input path="Email"/>
+				<form:errors path="email" cssClass="error"/>
 				<br/>
-				<label for="firstname">First name</label>
+				<form:label path="FirstName">First name</form:label>
 				<br/>
-				<input type="text" id="firstname">
+				<form:input path="FirstName"/>
+				<form:errors path="FirstName" cssClass="error"/>
 				<br/>
-				<label for="lastname">Last name</label>
+				<form:label path="LastName">Last name</form:label>
 				<br/>
-				<input type="text" id="lastname">
+				<form:input path="LastName"/>
+				<form:errors path="LastName" cssClass="error"/>
 				<br/>
-				<label for="password">Password</label>
+				<form:label path="Password">Password</form:label>
 				<br/>
-				<input type="password" id="password">
+				<form:password path="Password"/>
+				<form:errors path="Password" cssClass="error"/>
 				<br/>
-				<label for="confirm-password">Confirm Password</label>
+				<input id="register-btn1" type="submit" value="Register"/>
 				<br/>
-				<input type="password" id="confirm-password">
-				<br/>
-				<button id="register-btn1" type="submit">Register</button>
-				<br/>
-			</form>
+			</form:form>
 		</div>
 	</div>
 </body>
