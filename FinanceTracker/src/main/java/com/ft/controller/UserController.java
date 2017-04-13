@@ -49,7 +49,7 @@ public class UserController {
 	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "redirect:index";
+		return "redirect:index.html";
 	}
 	
 	@RequestMapping(value="/addbudget", method=RequestMethod.POST)

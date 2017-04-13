@@ -1,6 +1,9 @@
 <%@page errorPage="error.jsp"%>
 <%@ page language="java" contentType="text/html; charset=windows-1256"
 	pageEncoding="windows-1256" import="java.io.IOException"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -64,7 +67,9 @@ function resizeText() {
 </script>
 </head>
 <body>
-
+<c:if test="${sessionScope.logged == null || sessionScope.logged == false}">
+	<c:redirect url="index.html"></c:redirect>
+</c:if>
 <!--Header_section-->
 <header id="header_outer">
   <div class="container">
@@ -73,11 +78,11 @@ function resizeText() {
       <nav class="nav" id="nav">
         <ul class="toggle">
           <li><a id="main-contact" href="javascript:void(0)">Contact us</a></li>
-          <li><a id="main-logout" onclick="logout()" href="javascript:void(0)">Logout</a></li>
+          <li><a id="main-logout" href="logout">Logout</a></li>
         </ul>
         <ul class="">
           <li><a id="main-contact" href="javascript:void(0)">Contact us</a></li>
-          <li><a id="main-logout" onclick="logout()" href="javascript:void(0)">Logout</a></li>
+          <li><a id="main-logout" href="logout">Logout</a></li>
         </ul>
       </nav>
       <a class="res-nav_click animated wobble wow"  href="javascript:void(0)"><i class="fa-bars"></i></a> </div>
@@ -87,7 +92,7 @@ function resizeText() {
 
   <div class="container">
     <div class="footer_bottom"> 
-        <span>Â© Finance Tracker 2017</span> 
+        <span>� Finance Tracker 2017</span> 
         <div class="credits">
             <!-- 
                 All the links in the footer should remain intact. 
