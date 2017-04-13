@@ -2,6 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
@@ -26,12 +28,11 @@
 		<div class="top">
 			<h1 id="title" class="hidden"><a href="index.html"><span id="logo">Finance Tracker</span></a></h1>
 		</div>
-		<div class="alert-register-fail alert-dismissible alert-danger-register">
-		</div>
-		<div class="alert-register-ok alert-dismissible alert-success-register">
-			Registered successfully. Click here to <a href="login.html">login</a>.
-		</div>
-		<h1>${userRegister}</h1>
+		<c:if test="${sessionScope.register != null}">
+			<div class="alert-register alert-dismissible <c:out value="${sessionScope.color}"></c:out>">
+					<h1> ${sessionScope.register} </h1>
+			</div>
+		</c:if>
 		<div class="login-box animated fadeInUp register-box">
 			<div class="box-header">
 				<h2>Register</h2>
@@ -40,22 +41,18 @@
 				<form:label path="Email">Email</form:label>
 				<br/>
 				<form:input path="Email"/>
-				<form:errors path="email" cssClass="error"/>
 				<br/>
 				<form:label path="FirstName">First name</form:label>
 				<br/>
 				<form:input path="FirstName"/>
-				<form:errors path="FirstName" cssClass="error"/>
 				<br/>
 				<form:label path="LastName">Last name</form:label>
 				<br/>
 				<form:input path="LastName"/>
-				<form:errors path="LastName" cssClass="error"/>
 				<br/>
 				<form:label path="Password">Password</form:label>
 				<br/>
 				<form:password path="Password"/>
-				<form:errors path="Password" cssClass="error"/>
 				<br/>
 				<input id="register-btn1" type="submit" value="Register"/>
 				<br/>

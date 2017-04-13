@@ -1,9 +1,13 @@
 package com.ft.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.PageContext;
 import javax.validation.Valid;
 
+import org.elasticsearch.common.netty.handler.codec.http.HttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -85,24 +89,33 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.GET)
-	public ModelAndView registerPage(ModelMap model) {
+	public ModelAndView registerPage(HttpSession session) {
+		
+		if(session.getAttribute("register") != null){
+			session.setAttribute("register", null);
+		}
 		return new ModelAndView("register", "userRegister", new User());
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public String register(@Valid @ModelAttribute("userRegister") User user, BindingResult result, Model model){
+	public String register(@Valid @ModelAttribute("userRegister") User user, BindingResult result, HttpSession session){
+		
+		session.setAttribute("register", null);
 		if(result.hasErrors()){
-			model.addAttribute("register", "Could not register. Please, enter a valid data!");
+			session.setAttribute("register", "Could not register. Please, enter a valid data!");
+			session.setAttribute("color", "alert-danger-register");
 		}
 		else{
 			if(UserDAO.getInstance().addUser(user)){
-				model.addAttribute("register", "The user already exists!");
+				session.setAttribute("register", "Successfully registered. You can <a href=\"login\">login</a> now.");
+				session.setAttribute("color", "alert-success-register");
 			}
 			else{
-				model.addAttribute("register", "Successfully registered. You can login now.");
+				session.setAttribute("register", "The user already exists!");
+				session.setAttribute("color", "alert-danger-register");
 			}
 		}
-        return "redirect:/register";
+        return "register";
 	}
 	
 	@RequestMapping(value="/loginpage", method=RequestMethod.GET)
