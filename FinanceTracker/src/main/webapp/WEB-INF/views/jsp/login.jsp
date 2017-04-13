@@ -31,9 +31,12 @@
 				<a href="index.html"><span id="logo">Finance Tracker</span></a>
 			</h1>
 		</div>
-		<div class="alert alert-dismissible alert-danger">
-			<strong>Incorrect email or password. Please try again.</strong>
-		</div>
+		<c:if test="${sessionScope.logged != null}">
+			<div class="alert-register alert-dismissible alert-danger-register">
+				<h3><c:out value=" ${sessionScope.message}"></c:out></h3>
+			</div>
+		</c:if>
+
 		<div class="login-box animated fadeInUp">
 			<div class="box-header">
 				<h2>Log In</h2>

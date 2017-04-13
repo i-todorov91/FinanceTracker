@@ -22,6 +22,9 @@ public class UserController {
 	
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
+		
+		session.setAttribute("logged", null);
+		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
@@ -42,6 +45,7 @@ public class UserController {
 		else
 		{
 			session.setAttribute("logged", false);
+			session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
 			return "login";
 		}
 	}
@@ -98,7 +102,6 @@ public class UserController {
 			session.invalidate();
 		}
 		
-		session.setAttribute("register", null);
 		if(result.hasErrors()){
 			session.setAttribute("register", "Could not register. Please, enter a valid data!");
 			session.setAttribute("color", "alert-danger-register");
