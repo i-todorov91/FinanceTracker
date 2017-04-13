@@ -21,7 +21,10 @@ import com.ft.model.util.Validator;
 public class UserController {
 	
 	@RequestMapping(value="/login", method=RequestMethod.GET)
-	public ModelAndView loginPage() {
+	public ModelAndView loginPage(HttpSession session) {
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			return new ModelAndView("main", "userLogin", new Holder());
+		}
 		return new ModelAndView("login", "userLogin", new Holder());
 	}
 	
