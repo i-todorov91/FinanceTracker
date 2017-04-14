@@ -20,10 +20,9 @@ import com.ft.model.util.Validator;
 @Controller
 public class UserController {
 	
+	// login controllers
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
-		
-		session.setAttribute("logged", null);
 		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			return new ModelAndView("main", "userLogin", new Holder());
@@ -33,6 +32,11 @@ public class UserController {
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
+		
+		if(session.isNew()){
+			session.invalidate();
+			return "redirect:login";
+		}
 		
 		String email = holder.getEmail();
 		String password = holder.getPassword();
@@ -50,12 +54,16 @@ public class UserController {
 		}
 	}
 	
+	
+	//logout conrller
 	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "redirect:index.html";
 	}
 	
+	
+	//addbudget controller
 	@RequestMapping(value="/addbudget", method=RequestMethod.POST)
 	public String addBudget(HttpSession session, HttpServletRequest request){
 		
@@ -81,6 +89,8 @@ public class UserController {
 		return "redirect:main";
 	}
 	
+	
+	//register controllers
 	@RequestMapping(value="/register", method=RequestMethod.GET)
 	public ModelAndView registerPage(HttpSession session) {
 		
