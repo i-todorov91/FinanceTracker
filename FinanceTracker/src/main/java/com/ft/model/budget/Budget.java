@@ -1,6 +1,8 @@
 package com.ft.model.budget;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Expense;
@@ -41,6 +43,14 @@ public class Budget {
 	
 	public double getBalance() {
 		return balance;
+	}
+	
+	public List<CashFlow> getExpenses(){
+		return Collections.unmodifiableList(expenses);
+	}
+	
+	public List<CashFlow> getIncomes(){
+		return Collections.unmodifiableList(incomes);
 	}
 	
 }
