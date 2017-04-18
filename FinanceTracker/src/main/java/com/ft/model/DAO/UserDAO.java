@@ -28,7 +28,6 @@ public class UserDAO {
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
-			con.setAutoCommit(false);
 			stmt = con.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
@@ -95,20 +94,10 @@ public class UserDAO {
 				}
 				allUsers.put(user.getEmail(), user);
 			}
-			con.commit();
 		} catch (SQLException e) {
-			try {
-				con.rollback();
-			} catch (SQLException e1) {
-				System.out.println("UserDAO: could not rollback " + e.getMessage());
-			}
-			System.out.println("UserDAO: connection not commited -" + e.getMessage());
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e) {
-				System.out.println("UserDAO: could not return autoCommit " + e.getMessage());
-			}
+			System.out.println("UserDAO: Constructor -" + e.getMessage());
+			//TODO
+			//resent e and catch it in controllers
 		}
 	}
 	
