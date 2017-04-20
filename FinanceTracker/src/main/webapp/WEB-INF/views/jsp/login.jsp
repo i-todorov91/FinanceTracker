@@ -19,8 +19,6 @@
 <link rel="stylesheet" href="css/login-animate.css">
 <link rel="stylesheet" href="css/login.css">
 <script src="js/lib/jquery.1.8.3.min.js"></script>
-<script src="js/app/validate.js"></script>
-<script src="js/app/login.js"></script>
 <script src="js/lib/bootstrap.js"></script>
 </head>
 

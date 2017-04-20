@@ -284,8 +284,6 @@ function resizeText() {
 			event.preventDefault();
 		});
 	})
-</script> 
-<script src="contactform/contactform.js"></script>
-
+</script>
 </body>
 </html>
