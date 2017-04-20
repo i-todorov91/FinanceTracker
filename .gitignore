@@ -1,7 +1,6 @@
 *.class
 /RemoteSystemsTempFiles/
 
-FinanceTracker/target
 */target
 /.metadata
 /.recommenders
