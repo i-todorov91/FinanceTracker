@@ -1,6 +1,7 @@
 *.class
 /RemoteSystemsTempFiles/
 
+*/target
 /.metadata
 /.recommenders
 */.metadata

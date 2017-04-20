@@ -27,7 +27,6 @@ public class CategoryDAO {
 		// get all default categories and add them to income and expense categories
 		query = "SELECT category.id as id, category.type_id as type, category.name AS name, default_icon.name AS icon FROM category INNER JOIN default_icon ON default_icon.id = category.icon_id WHERE category.role_id = 1";
 		try {
-			con.setAutoCommit(false);
 			stmt = con.prepareStatement(query);
 			ResultSet rs2 = stmt.executeQuery();
 			while(rs2.next()){
@@ -82,20 +81,9 @@ public class CategoryDAO {
 					System.out.println("CategoryDAO->Custom categories->InvalidCashFlow: " + e.getMessage());
 				}
 			}
-			con.commit();
 		} catch (SQLException e) {
-			try {
-				con.rollback();
-			} catch (SQLException e1) {
-				System.out.println("CategoryDAO->Rollback: " + e.getMessage());
-			}
 			System.out.println("CategoryDAO->Constructor: " + e.getMessage());
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e) {
-				System.out.println("CategoryDAO->setAutoCommit(true): " + e.getMessage());
-			}
+			//TODO
 		}
 	}
 		

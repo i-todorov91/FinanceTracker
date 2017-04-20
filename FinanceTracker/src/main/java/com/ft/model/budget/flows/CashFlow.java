@@ -5,7 +5,7 @@ import java.util.Date;
 import com.ft.model.util.Validator;
 import com.ft.model.util.exceptions.InvalidCashFlowException;
 
-public abstract class CashFlow {
+public abstract class CashFlow implements Comparable<CashFlow>{
 
 	private long id;
 	private double quantity;
@@ -47,6 +47,16 @@ public abstract class CashFlow {
 	
 	public Category getCategory(){
 		return category;
+	}
+	
+	@Override
+	public int compareTo(CashFlow o) {
+		if (this.getDate().before(o.getDate())) {
+			return -1;
+		} else if (this.getDate().after(o.getDate())) {
+			return 1;
+		}
+		return 0;
 	}
 	
 }
