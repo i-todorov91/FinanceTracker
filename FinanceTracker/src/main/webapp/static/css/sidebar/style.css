@@ -100,9 +100,6 @@ Header
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-#top_content{
-      margin-top: 85px;
-    }
 .cd-main-header::after {
   clear: both;
   content: "";
@@ -670,6 +667,20 @@ Sidebar
 #top_content{
   	margin-top: 85px;
 }
+
+
+@media only screen and (max-width: 454px) {
+	.cd-nav-trigger{
+		margin-top: -67px;
+	}
+}
+
+@media only screen and (min-width: 455px) and (max-width: 767px){
+	.cd-nav-trigger{
+		margin-top: 25px;
+	}
+}
+
 @media only screen and (max-width: 767px) {
 .cd-side-nav{
   	margin-top: 85px;
@@ -680,10 +691,13 @@ Sidebar
 }
  
 #top_content{
-	padding-left: 10%;
+	padding: 5%;
 }
+
 }
 
 .sidebar a{
 	font-weight: bolder;
 }
+
+
