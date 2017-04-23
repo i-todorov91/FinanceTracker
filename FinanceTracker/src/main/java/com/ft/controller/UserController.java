@@ -27,11 +27,19 @@ public class UserController {
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
-		return new ModelAndView("login", "userLogin", new Holder());
+		else if(session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged")){
+			return new ModelAndView("login", "userLogin", new Holder());
+		}
+		else{
+			return new ModelAndView("login", "userLogin", new Holder());
+		}
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
+		if(session.getAttribute("logged") != null){
+			return "redirect:login";
+		}
 		
 		if(session.isNew()){
 			session.invalidate();

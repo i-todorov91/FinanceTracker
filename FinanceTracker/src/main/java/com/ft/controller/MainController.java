@@ -11,8 +11,8 @@ public class MainController {
 	
 	@RequestMapping(value="/index.html", method=RequestMethod.GET)
 	public String getIndex(HttpSession session){
-		
-		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+
+		if(session.getAttribute("logged") != null){
 			session.invalidate();
 		}
 		return "index";
