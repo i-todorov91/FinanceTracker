@@ -285,6 +285,7 @@ Sidebar
 
 -------------------------------- */
 .cd-side-nav {
+  margin-right: 5%;
   position: absolute;
   z-index: 1;
   left: 0;
@@ -658,6 +659,7 @@ Sidebar
 	-moz-transition:all 0.2s ease-in-out;
 	-webkit-transition:all 0.2s ease-in-out;	
 	}
+	
 .cd-nav ul li a:hover{
 	color:#428bca;
 }
@@ -676,4 +678,12 @@ Sidebar
 .logo{
 	padding-right: 150px;
 }
+ 
+#top_content{
+	padding-left: 10%;
+}
+}
+
+.sidebar a{
+	font-weight: bolder;
 }

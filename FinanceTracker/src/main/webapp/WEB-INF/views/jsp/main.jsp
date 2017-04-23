@@ -55,14 +55,11 @@
   <main class="cd-main-content">
     <nav class="cd-side-nav">
       <ul>
-        <li class="has-children overview">
-          <a href="#0">Overview</a>
-          
-          <ul>
-            <li><a href="#0">All Data</a></li>
-            <li><a href="#0">Category 1</a></li>
-            <li><a href="#0">Category 2</a></li>
-          </ul>
+       	<li class="sidebar">
+       		<a href="#">Add budget</a>
+       	</li>
+        <li class="sidebar">
+          	<a href="#">Add transaction</a>
         </li>
     </nav>
 
