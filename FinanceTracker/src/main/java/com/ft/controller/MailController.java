@@ -34,7 +34,14 @@ public class MailController {
 		if (session.getAttribute("logged") == null || !(Boolean)session.getAttribute("logged")) {
 			return "redirect: index.html";
 		}
+		session.removeAttribute("contact");
 		return "redirect: login";
+	}
+	
+	@RequestMapping(value="/login/contact", method=RequestMethod.GET)
+	public String sendEmailLogged(HttpSession session) {
+		session.setAttribute("contact", true);
+		return "redirect: ../login";
 	}
 	
 }
