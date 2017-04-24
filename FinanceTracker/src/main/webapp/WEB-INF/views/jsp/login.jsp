@@ -15,7 +15,7 @@
 <link
 	href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900'
 	rel='stylesheet' type='text/css'>
-
+<link rel="icon" href="img/favicon.png" type="image/png">
 <link rel="stylesheet" href="css/login-animate.css">
 <link rel="stylesheet" href="css/login.css">
 <script src="js/lib/jquery.1.8.3.min.js"></script>

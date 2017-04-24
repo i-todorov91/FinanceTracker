@@ -15,7 +15,6 @@ import com.ft.model.budget.flows.Category;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.User;
-import com.ft.model.util.StringUtil;
 import com.ft.model.util.exceptions.InvalidCashFlowException;
 import com.ft.model.util.exceptions.InvalidEncryptionException;
 
@@ -129,7 +128,6 @@ public class UserDAO {
 		
 		query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
 		try {
-			pass = StringUtil.getInstance().encrypt(pass);
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, toAdd.getFirstName());
 			stmt.setString(2, toAdd.getLastName());
@@ -359,14 +357,14 @@ public class UserDAO {
 				ResultSet rs = stmt.executeQuery();
 				rs.next();
 				String pass = rs.getString("pass");
-				
-				if(StringUtil.getInstance().decrypt(allUsers.get(email).getPassword()).equals(pass)){
+				System.out.println(pass);
+				if(allUsers.get(email).getPassword().equals(pass)){
 					return true;
 				}
 				else{
 					return false;
 				}
-			} catch (InvalidEncryptionException | SQLException e) {
+			} catch (SQLException e) {
 				System.out.println("UserDAO->validLogin: " + e.getMessage());
 				return false;
 			}

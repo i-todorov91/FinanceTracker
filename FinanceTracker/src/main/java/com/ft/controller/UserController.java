@@ -67,19 +67,18 @@ public class UserController {
 		}
 	}
 	
-	
-	//logout controller
-	@RequestMapping(value="/logout", method=RequestMethod.GET)
-	public String logout(HttpSession session) {
-		session.setAttribute("logged", false);
-		session.invalidate();
-		return "redirect:index.html";
+	// login -> addbudget controller
+	@RequestMapping(value="/login/addbudget", method=RequestMethod.GET)
+	public String addbudgetGet(HttpSession session) {
+		session.removeAttribute("contact");
+		session.removeAttribute("addtransaction");
+		session.setAttribute("addbudget", true);
+		return "redirect: ../login";
 	}
 	
-	
 	//addbudget controller
-	@RequestMapping(value="/addbudget", method=RequestMethod.POST)
-	public String addBudget(HttpSession session, HttpServletRequest request){
+	@RequestMapping(value="/login/addbudget", method=RequestMethod.POST)
+	public String addBudgetPost(HttpSession session, HttpServletRequest request){
 		
 		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
 			return "redirect:/logout";
@@ -103,6 +102,22 @@ public class UserController {
 		return "redirect:main";
 	}
 	
+	// login -> addtransaction controller
+	@RequestMapping(value="/login/addtransaction", method=RequestMethod.GET)
+	public String addTransactionGet(HttpSession session) {
+		session.setAttribute("addtransaction", true);
+		session.removeAttribute("contact");
+		session.removeAttribute("addbudget");
+		return "redirect: ../login";
+	}
+	
+	//logout controller
+	@RequestMapping(value="/logout", method=RequestMethod.GET)
+	public String logout(HttpSession session) {
+		session.setAttribute("logged", false);
+		session.invalidate();
+		return "redirect:index.html";
+	}
 	
 	//register controllers
 	@RequestMapping(value="/register", method=RequestMethod.GET)

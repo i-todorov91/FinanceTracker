@@ -542,6 +542,10 @@ Sidebar
   display: none;
   background-color: #2c3136;
 }
+
+.has-children {
+	font-weight: bolder;
+}
 .has-children > a::after {
   /* arrow icon */
   position: absolute;
@@ -689,11 +693,13 @@ Sidebar
 .logo{
 	padding-right: 150px;
 }
+
+}
  
 #top_content{
-	padding: 10%;
-}
-
+	padding-top: 5%;
+	padding-right: 5%;
+	padding-left: 10%;
 }
 
 .sidebar a{

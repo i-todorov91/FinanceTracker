@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
-  <link rel="icon" href="jsp/favicon.png" type="image/png">
+  <link rel="icon" href="img/favicon.png" type="image/png">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="css/style.css" rel="stylesheet" type="text/css">
   <link href="css/responsive.css" rel="stylesheet" type="text/css">
@@ -31,11 +31,6 @@
     
   <title>Finance Tracker</title>
 </head>
-<style>
-.cd-top-nav a:hover{
-	color:#428bca;
-}
-</style>
 <body>
   <header class="cd-main-header" id="header_outer"> 
     <div class="container">
@@ -56,11 +51,24 @@
   <main class="cd-main-content">
     <nav class="cd-side-nav">
       <ul>
+        <li class="has-children">
+        
+          <c:if test="${sessionScope.budgets==null}">
+          	<h1>nema</h1>
+          </c:if>
+			<a href="#">Current budget></a>
+			
+			<ul>
+				<li><a href="#0">Tuk</a></li>
+				<li><a href="#0">Shte</a></li>
+				<li><a href="#0">loadvame budgetite</a></li>
+			</ul>
+		</li>
        	<li class="sidebar">
-       		<a href="#">Add budget</a>
+       		<a href="login/addbudget">Add budget</a>
        	</li>
         <li class="sidebar">
-          	<a href="#">Add transaction</a>
+          	<a href="login/addtransaction">Add transaction</a>
         </li>
     </nav>
 
@@ -69,31 +77,49 @@
         <div class="top_content">
           <div class="row">
           
+          <c:if test="${sessionScope.addtransaction == true}">
+          		pole za dobavqne na tranzakciiiiii man
+          </c:if>
+          
+          <c:if test="${sessionScope.addbudget == true}">
+          		pole za dobavqne na budget
+          </c:if>
+          
           <c:if test="${sessionScope.contact == true}">
-	          <div class="form">
-	                <div id="sendmessage">Your message has been sent. Thank you!</div>
-	                <div id="errormessage"></div>
-	                <form action="email" method="post" role="form" class="contactForm">
-	                    <div class="form-group">
-	                        <input type="text" name="name" class="form-control input-text" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-	                        <div class="validation"></div>
-	                    </div>
-	                    <div class="form-group">
-	                        <input type="email" class="form-control input-text" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
-	                        <div class="validation"></div>
-	                    </div>
-	                    <div class="form-group">
-	                        <input type="text" class="form-control input-text" name="subject" id="subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
-	                        <div class="validation"></div>
-	                    </div>
-	                    <div class="form-group">
-	                        <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
-	                        <div class="validation"></div>
-	                    </div>
-	                  
-	                  <button type="submit" class="btn input-btn">SEND MESSAGE</button>
-	                </form>
-	          </div>
+	           <div class="row">
+	           
+			    <section class="main-section contact" id="contact">
+			      <div class="contact_section">
+			        <div class="col-lg-5">
+			          <div class="form">
+			                <div id="sendmessage">Your message has been sent. Thank you!</div>
+			                <div id="errormessage"></div>
+			                <form action="email" method="post" role="form" class="contactForm">
+			
+			                    <div class="form-group">
+			                        <input type="text" name="name" class="form-control input-text" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+			                        <div class="validation"></div>
+			                    </div>
+			                    <div class="form-group">
+			                        <input type="email" class="form-control input-text" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+			                        <div class="validation"></div>
+			                    </div>
+			                    <div class="form-group">
+			                        <input type="text" class="form-control input-text" name="subject" id="subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
+			                        <div class="validation"></div>
+			                    </div>
+			                    <div class="form-group">
+			                        <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
+			                        <div class="validation"></div>
+			                    </div>
+			                  
+			                  <button type="submit" class="btn input-btn">SEND MESSAGE</button>
+			                </form>
+			          </div>
+		          	<div>
+		           </div>
+		          </section>
+		        </div>
           </c:if>
           </div>
       </div>
