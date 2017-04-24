@@ -50,16 +50,6 @@ public class Validator {
 	}
 	
 	public static boolean validBalance(double balance){
-		return balance >= 0 ? true : false;
-	}
-	
-	public static boolean isValidNumber(Object balance){
-		try{
-			double x = Double.parseDouble((String) balance);
-		} catch(Exception e){
-			System.out.println(e.getMessage());
-			return false;
-		}
-		return true;
+		return balance >= 0;
 	}
 }

@@ -53,15 +53,19 @@
       <ul>
         <li class="has-children">
         
-          <c:if test="${sessionScope.budgets==null}">
-          	<h1>nema</h1>
+          <c:if test="${sessionScope.budgets.isEmpty()}">
+          	<a href="#">No budgets</a>
           </c:if>
-			<a href="#">Current budget></a>
-			
+          <c:if test="${sessionScope.budgets.isEmpty() == false}">
+          	<c:set var="selected" scope="session" value="${budgets.entrySet().iterator().next().getKey()}"></c:set>
+          	<a href="#">${selected}</a>
+          </c:if>
 			<ul>
-				<li><a href="#0">Tuk</a></li>
-				<li><a href="#0">Shte</a></li>
-				<li><a href="#0">loadvame budgetite</a></li>
+				<c:forEach items="${sessionScope.budgets.entrySet()}" var="item">
+					<c:if test="${!selected.equals(item.key)}">
+				    	<li><a href="#">${item.key}</a></li>
+					</c:if>
+				</c:forEach>
 			</ul>
 		</li>
        	<li class="sidebar">
@@ -78,50 +82,16 @@
           <div class="row">
           
           <c:if test="${sessionScope.addtransaction == true}">
-          		pole za dobavqne na tranzakciiiiii man
+          		<%@ include file="transaction.jsp" %>
           </c:if>
           
           <c:if test="${sessionScope.addbudget == true}">
-          		pole za dobavqne na budget
+          		<%@ include file="budget.jsp" %>
           </c:if>
           
           <c:if test="${sessionScope.contact == true}">
-	           <div class="row">
-	           
-			    <section class="main-section contact" id="contact">
-			      <div class="contact_section">
-			        <div class="col-lg-5">
-			          <div class="form">
-			                <div id="sendmessage">Your message has been sent. Thank you!</div>
-			                <div id="errormessage"></div>
-			                <form action="email" method="post" role="form" class="contactForm">
-			
-			                    <div class="form-group">
-			                        <input type="text" name="name" class="form-control input-text" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-			                        <div class="validation"></div>
-			                    </div>
-			                    <div class="form-group">
-			                        <input type="email" class="form-control input-text" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
-			                        <div class="validation"></div>
-			                    </div>
-			                    <div class="form-group">
-			                        <input type="text" class="form-control input-text" name="subject" id="subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
-			                        <div class="validation"></div>
-			                    </div>
-			                    <div class="form-group">
-			                        <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
-			                        <div class="validation"></div>
-			                    </div>
-			                  
-			                  <button type="submit" class="btn input-btn">SEND MESSAGE</button>
-			                </form>
-			          </div>
-		          	<div>
-		           </div>
-		          </section>
-		        </div>
+			    <%@ include file="contact.jsp" %>
           </c:if>
-          </div>
       </div>
     </div>
   </section>
