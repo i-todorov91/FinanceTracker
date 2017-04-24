@@ -2,6 +2,7 @@ package com.ft.model.DAO;
 
 import java.util.Date;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -24,8 +25,8 @@ public class EmailSender {
 	}
 
     public synchronized void notify(String email) throws MessagingException{
-        try{
-        	
+
+    	try{
             String host ="smtp.gmail.com" ;
             String sender = "financetrackeritt@gmail.com";
             String pass = "financeTrackerITT1";
@@ -67,6 +68,53 @@ public class EmailSender {
 				throw e;
 			}
 		}
+    }
+    
+    public synchronized void contactUs(String nameFromUser, String emailFromUser, String subjectFromUser, String messageFromUser) throws Exception{
+      
+    	try{
+        	String host ="smtp.gmail.com" ;
+            String sender = "financetrackeritt@gmail.com";
+            String pass = "financeTrackerITT1";
+            String from = "financetrackeritt@gmail.com";
+            String subject = "Contact us information from " + nameFromUser + " FinanceTracker!";
+            String email = null;
+            if (new Random().nextBoolean()) {
+				email = "zpetrov96@gmail.com";
+			} else {
+				email = "memfi91@gmail.com";
+			}
+            String messageHtml = "Hi,<br><br>You have a new contact us masage from <strong>"+nameFromUser+"</strong>, with the following subject and message:<br><br>Subject: <strong>" + subjectFromUser + "</strong><br>Message: " + messageFromUser 
+            		+ "<br><br> Contact him on - \"" + emailFromUser + "\"<br><br> Have a nice day!";
+            boolean sessionDebug = false;
+
+            Properties props = System.getProperties();
+
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", host);
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.required", "true");
+
+            //java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+            Session mailSession = Session.getDefaultInstance(props, null);
+            mailSession.setDebug(sessionDebug);
+            Message msg = new MimeMessage(mailSession);
+            msg.setFrom(new InternetAddress(from));
+            InternetAddress[] address = {new InternetAddress(email)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject(subject); msg.setSentDate(new Date());
+            msg.setContent(messageHtml, "text/html; charset=utf-8");
+
+           Transport transport=mailSession.getTransport("smtp");
+           transport.connect(host, sender, pass);
+           transport.sendMessage(msg, msg.getAllRecipients());
+           transport.close();
+           System.out.println("message send successfully");
+        }catch(Exception ex){
+            System.out.println("Not sent" + ex.getMessage());
+            throw ex;
+        }
 
     }
     
