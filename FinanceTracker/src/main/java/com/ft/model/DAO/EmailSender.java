@@ -70,22 +70,22 @@ public class EmailSender {
 		}
     }
     
-    public synchronized void contactUs(String nameFromUser, String emailFromUser, String subjectFromUser, String messageFromUser){
+    public synchronized void contactUs(String nameFromUser, String emailFromUser, String subjectFromUser, String messageFromUser) throws Exception{
       
     	try{
         	String host ="smtp.gmail.com" ;
             String sender = "financetrackeritt@gmail.com";
             String pass = "financeTrackerITT1";
             String from = "financetrackeritt@gmail.com";
-            String subject = "Contact us information from" + nameFromUser + " FinanceTracker!";
+            String subject = "Contact us information from " + nameFromUser + " FinanceTracker!";
             String email = null;
             if (new Random().nextBoolean()) {
 				email = "zpetrov96@gmail.com";
 			} else {
 				email = "memfi91@gmail.com";
 			}
-            String messageHtml = "Hi,<br><br>You have a new contact us masage from "+nameFromUser+", with the following subject and message:<br><br>\"" + subjectFromUser + "<br>" + messageFromUser 
-            		+ "\"<br><br> contact him on - \"" + emailFromUser + "\"<br><br> Have a nice day!";
+            String messageHtml = "Hi,<br><br>You have a new contact us masage from <strong>"+nameFromUser+"</strong>, with the following subject and message:<br><br>Subject: <strong>" + subjectFromUser + "</strong><br>Message: " + messageFromUser 
+            		+ "<br><br> Contact him on - \"" + emailFromUser + "\"<br><br> Have a nice day!";
             boolean sessionDebug = false;
 
             Properties props = System.getProperties();
@@ -111,9 +111,9 @@ public class EmailSender {
            transport.sendMessage(msg, msg.getAllRecipients());
            transport.close();
            System.out.println("message send successfully");
-        }catch(Exception ex)
-        {
+        }catch(Exception ex){
             System.out.println("Not sent" + ex.getMessage());
+            throw ex;
         }
 
     }
