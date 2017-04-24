@@ -79,11 +79,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Map<String, Budget> getBudgets() {
+	public synchronized Map<String, Budget> getBudgets() {
 		return budgets;
 	}
 
-	public void addBudget(Budget budget) {
+	public synchronized void addBudget(Budget budget) {
 		if (budgets.containsKey(budget.getName())) {
 			System.out.println("Already has a budget with that name.");
 			return;
