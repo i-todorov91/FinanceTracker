@@ -26,6 +26,9 @@ public class UserController {
 		
 		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			String userEmail = (String) session.getAttribute("username");
+			User user = UserDAO.getInstance().getAllUsers().get(userEmail);
+			session.setAttribute("budgets", user.getBudgets());
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
 		session.setAttribute("logged", false);

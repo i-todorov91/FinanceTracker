@@ -21,7 +21,7 @@ import com.ft.model.util.exceptions.InvalidEncryptionException;
 
 public class UserDAO {
 	private static UserDAO instance = null;
-	private static final HashMap<String, User> allUsers = new HashMap<>();
+	private static final HashMap<String, User> allUsers = new HashMap<>(); // email -> User
 	private static Connection con = DBManager.getInstance().getConnection();
 	
 	private UserDAO(){
