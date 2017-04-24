@@ -40,7 +40,7 @@ public class UserController {
 		}
 		
 		if(session.getAttribute("logged") == null){
-			return "login";
+			return "redirect:login";
 		}
 		
 		if(session.isNew()){
