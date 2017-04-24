@@ -44,8 +44,7 @@ public class UserController {
 		}
 		
 		if(session.isNew()){
-			session.invalidate();
-			return "login";
+			return "redirect:logout";
 		}
 		
 		String email = holder.getEmail();
