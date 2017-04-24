@@ -26,9 +26,6 @@ public class UserController {
 		
 		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			String userEmail = (String) session.getAttribute("username");
-			User user = UserDAO.getInstance().getAllUsers().get(userEmail);
-			session.setAttribute("budgets", user.getBudgets());
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
 		session.setAttribute("logged", false);
@@ -39,6 +36,7 @@ public class UserController {
 	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			
 			return "main";
 		}
 		
@@ -56,6 +54,9 @@ public class UserController {
 			session.setAttribute("logged", true);
 			session.setAttribute("username", email);
 			session.setMaxInactiveInterval(60);
+			String userEmail = (String) session.getAttribute("username");
+			User user = UserDAO.getInstance().getAllUsers().get(userEmail);
+			session.setAttribute("budgets", user.getBudgets());
 			return "main";
 		}
 		else
