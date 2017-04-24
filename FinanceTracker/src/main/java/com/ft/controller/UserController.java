@@ -23,27 +23,29 @@ public class UserController {
 	// login controllers
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
+		
 		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
-		else if(session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged")){
-			return new ModelAndView("login", "userLogin", new Holder());
-		}
-		else{
-			return new ModelAndView("login", "userLogin", new Holder());
-		}
+		session.setAttribute("logged", false);
+		return new ModelAndView("login", "userLogin", new Holder());
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
-		if(session.getAttribute("logged") != null){
-			return "redirect:login";
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			return "main";
+		}
+		
+		if(session.getAttribute("logged") == null){
+			return "login";
 		}
 		
 		if(session.isNew()){
 			session.invalidate();
-			return "redirect:login";
+			return "login";
 		}
 		
 		String email = holder.getEmail();
@@ -63,9 +65,10 @@ public class UserController {
 	}
 	
 	
-	//logout conrller
+	//logout controller
 	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public String logout(HttpSession session) {
+		session.setAttribute("logged", false);
 		session.invalidate();
 		return "redirect:index.html";
 	}
