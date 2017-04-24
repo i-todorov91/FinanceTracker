@@ -1,5 +1,6 @@
 package com.ft.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -10,12 +11,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MainController {
 	
 	@RequestMapping(value="/index.html", method=RequestMethod.GET)
-	public String getIndex(HttpSession session){
-
+	public String getIndexGet(HttpSession session){
+		
 		if(session.getAttribute("logged") != null){
 			session.invalidate();
 		}
 		return "index";
 	}
 	
+	@RequestMapping(value="/index.html", method=RequestMethod.POST)
+	public String getIndexPost(HttpSession session, HttpServletRequest req){
+
+		if(session.getAttribute("logged") != null){
+			session.invalidate();
+		}
+		
+		// for the contact us form
+		
+		return "index";
+	}
 }

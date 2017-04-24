@@ -199,6 +199,7 @@ function resizeText() {
                 <div id="sendmessage">Your message has been sent. Thank you!</div>
                 <div id="errormessage"></div>
                 <form action="email" method="post" role="form" class="contactForm">
+
                     <div class="form-group">
                         <input type="text" name="name" class="form-control input-text" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
                         <div class="validation"></div>

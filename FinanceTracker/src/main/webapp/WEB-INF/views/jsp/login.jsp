@@ -29,7 +29,7 @@
 				<a href="index.html"><span id="logo">Finance Tracker</span></a>
 			</h1>
 		</div>
-		<c:if test="${sessionScope.logged != null}">
+		<c:if test="${sessionScope.logged != null && sessionScope.logged == false && sessionScope.message != null}">
 			<div class="alert-register alert-dismissible alert-danger-register">
 				<h3><c:out value=" ${sessionScope.message}"></c:out></h3>
 			</div>

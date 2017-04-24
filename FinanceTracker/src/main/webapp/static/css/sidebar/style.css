@@ -642,6 +642,10 @@ Sidebar
     opacity: 1;
     visibility: visible;
   }
+  
+  .cd-nav ul li a:hover{
+	color:#428bca;
+}
 }
 
 .cd-nav ul li a{
