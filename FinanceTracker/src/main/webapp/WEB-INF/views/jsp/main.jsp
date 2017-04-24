@@ -52,6 +52,10 @@
     <nav class="cd-side-nav">
       <ul>
         <li class="has-children">
+        
+          <c:if test="${sessionScope.budgets==null}">
+          	<h1>nema</h1>
+          </c:if>
 			<a href="#">Current budget></a>
 			
 			<ul>
