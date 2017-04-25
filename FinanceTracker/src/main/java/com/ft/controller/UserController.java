@@ -1,6 +1,5 @@
 package com.ft.controller;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -78,7 +77,7 @@ public class UserController {
 	}
 	
 	//addbudget controller
-	@RequestMapping(value="/addbudget", method=RequestMethod.POST)
+	@RequestMapping(value="/login/addbudget", method=RequestMethod.POST)
 	public String addBudgetPost(HttpSession session, @RequestParam("name") String name, @RequestParam("amount") Double amount){
 		
 		if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
@@ -89,7 +88,7 @@ public class UserController {
 					(Boolean) session.getAttribute("logged") &&
 						session.getAttribute("username") != null &&
 							UserDAO.getInstance().getAllUsers().containsKey(email) &&
-								amount != null;
+								amount != null && Validator.isValidBudget(name, amount);
 		if(valid){
 			Budget toAdd = new Budget(name, amount);
 			String username = (String) session.getAttribute("username");
@@ -97,7 +96,7 @@ public class UserController {
 			UserDAO.getInstance().addBudget(toAdd, user);
 		}
 		session.removeAttribute("addbudget");
-		return "redirect: login";
+		return "redirect: ../login";
 	}
 	
 	// login -> addtransaction controller

@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form class="form-horizontal" method="post" action="addbudget">
+	<form class="form-horizontal" method="post" action="login/addbudget">
 	  <fieldset>
 	    <div class="form-group">
 	      <label for="inputEmail" class="col-lg-2 control-label">Name</label>
