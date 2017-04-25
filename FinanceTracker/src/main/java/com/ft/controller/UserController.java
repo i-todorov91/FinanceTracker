@@ -1,5 +1,6 @@
 package com.ft.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -17,22 +18,19 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ft.model.DAO.CategoryDAO;
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
-import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Category;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
-import com.ft.model.util.Validator;
 import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class UserController {
 	
-	// login controllers
+	// login coogin", method=RequestMethod.GET)
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
-		
 		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			return new ModelAndView("main", "userLogin", new Holder());
@@ -59,23 +57,27 @@ public class UserController {
 		
 		String email = holder.getEmail();
 		String password = holder.getPassword();
-		if(UserDAO.getInstance().validLogin(email, password)){
-			session.setAttribute("logged", true);
-			session.setAttribute("username", email);
-			session.setMaxInactiveInterval(60);
-			String userEmail = (String) session.getAttribute("username");
-			User user = UserDAO.getInstance().getAllUsers().get(userEmail);
-			session.setAttribute("budgets", user.getBudgets());
-			if(!user.getBudgets().isEmpty()){
-				session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue()); // get the first element
+		
+		try {
+			UserDAO userDAO = UserDAO.getInstance();
+			if(userDAO.validLogin(email, password)){
+				session.setAttribute("logged", true);
+				session.setAttribute("username", email);
+				session.setMaxInactiveInterval(60);
+				String userEmail = (String) session.getAttribute("username");
+				User user = userDAO.getAllUsers().get(userEmail);
+				session.setAttribute("budgets", user.getBudgets());
+				return "main";
 			}
-			return "main";
-		}
-		else
-		{
-			session.setAttribute("logged", false);
-			session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
-			return "login";
+			else
+			{
+				session.setAttribute("logged", false);
+				session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
+				return "login";
+			}
+		} catch (Exception e) {
+			System.out.println("UserController -> getInstance for UserDAO :" + e.getMessage());
+			return "error500";
 		}
 	}
 	
@@ -91,35 +93,52 @@ public class UserController {
 	//addbudget controller
 	@RequestMapping(value="/login/addbudget", method=RequestMethod.POST)
 	public String addBudgetPost(HttpSession session, @RequestParam("name") String name, @RequestParam("amount") Double amount){
-		
-		if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
-			return "redirect: logout";
+
+		try {
+			UserDAO userDAO = UserDAO.getInstance();
+			if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
+				return "redirect: logout";
+			}
+			String email = (String) session.getAttribute("username");
+			boolean valid = (Boolean) session.getAttribute("logged") != null &&
+						(Boolean) session.getAttribute("logged") &&
+							session.getAttribute("username") != null &&
+								UserDAO.getInstance().getAllUsers().containsKey(email) &&
+									amount != null;
+			if(valid){
+				Budget toAdd = new Budget(name, amount);
+				String username = (String) session.getAttribute("username");
+				User user = UserDAO.getInstance().getAllUsers().get(username);
+				UserDAO.getInstance().addBudget(toAdd, user);
+			}
+			session.removeAttribute("addbudget");
+			return "redirect: login";
+		} catch (Exception e) {
+			System.out.println("UseController -> addBudgetPost: " + e.getMessage());
+			return "error500";
 		}
-		String email = (String) session.getAttribute("username");
-		boolean valid = (Boolean) session.getAttribute("logged") != null &&
-					(Boolean) session.getAttribute("logged") &&
-						session.getAttribute("username") != null &&
-							UserDAO.getInstance().getAllUsers().containsKey(email) &&
-								amount != null && Validator.isValidBudget(name, amount);
-		if(valid){
-			Budget toAdd = new Budget(name, amount);
-			String username = (String) session.getAttribute("username");
-			User user = UserDAO.getInstance().getAllUsers().get(username);
-			UserDAO.getInstance().addBudget(toAdd, user);
-		}
-		session.removeAttribute("addbudget");
-		return "redirect: ../login";
 	}
 	
 	// login -> addtransaction controller
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.GET)
 	public String addTransactionGet(HttpSession session) {
 		String username = (String) session.getAttribute("username");
-		long userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+		long userId = 0;
+		try {
+			userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+		} catch (Exception e){
+			System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
+			return "redirect: error500";
+		}
 		session.setAttribute("addtransaction", true);
 		session.removeAttribute("contact");
 		session.removeAttribute("addbudget");
-		session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
+		try {
+			session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
+		} catch (Exception e) {
+			System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
+			return "redirect: error500";
+		}
 		session.setAttribute("types", Category.TYPE.values());
 		return "redirect: ../login";
 	}
@@ -139,7 +158,7 @@ public class UserController {
 			try {
 				Income flow = new Income(quantity, date, category);
 				UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
-			} catch (InvalidCashFlowException e) {
+			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
 				return "redirect: error500";
 			}
@@ -148,7 +167,7 @@ public class UserController {
 			try {
 				Expense flow = new Expense(quantity, date, category);
 				UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
-			} catch (InvalidCashFlowException e) {
+			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
 				return "redirect: error500";
 			}
@@ -191,13 +210,18 @@ public class UserController {
 			session.setAttribute("color", "alert-danger-register");
 		}
 		else{
-			if(UserDAO.getInstance().addUser(user)){
-				session.setAttribute("register", "Successfully registered. You can <a href=\"login\">login</a> now.");
-				session.setAttribute("color", "alert-success-register");
-			}
-			else{
-				session.setAttribute("register", "The user already exists!");
-				session.setAttribute("color", "alert-danger-register");
+			try {
+				if(UserDAO.getInstance().addUser(user)){
+					session.setAttribute("register", "Successfully registered. You can <a href=\"login\">login</a> now.");
+					session.setAttribute("color", "alert-success-register");
+				}
+				else{
+					session.setAttribute("register", "The user already exists!");
+					session.setAttribute("color", "alert-danger-register");
+				}
+			} catch (Exception e) {
+				System.out.println("UseController -> register: " + e.getMessage());
+				return "error500";
 			}
 		}
         return "register";

@@ -23,7 +23,7 @@ public class UserDAO {
 	private static final HashMap<String, User> allUsers = new HashMap<>(); // email -> User
 	private static Connection con = DBManager.getInstance().getConnection();
 	
-	private UserDAO(){
+	private UserDAO() throws SQLException, InvalidCashFlowException{
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
 		try {
@@ -68,6 +68,7 @@ public class UserDAO {
 							budget.addCashFlow(new Income(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.INCOME)));
 						} catch (InvalidCashFlowException e) {
 							System.out.println("UserDAO->Budget->Income->	Category: " + e.getMessage());
+							throw e;
 						}
 					}
 					
@@ -85,6 +86,7 @@ public class UserDAO {
 							budget.addCashFlow(new Expense(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.EXPENSE)));
 						} catch (InvalidCashFlowException e) {
 							System.out.println("UserDAO->Budget->Income->Category: " + e.getMessage());
+							throw e;
 						}
 					}
 					
@@ -95,19 +97,18 @@ public class UserDAO {
 			}
 		} catch (SQLException e) {
 			System.out.println("UserDAO: Constructor -" + e.getMessage());
-			//TODO
-			//resent e and catch it in controllers
+			throw e;
 		}
 	}
 	
-	public synchronized static UserDAO getInstance(){
+	public synchronized static UserDAO getInstance() throws SQLException, InvalidCashFlowException{
 		if(instance == null){
 			instance = new UserDAO();
 		}
 		return instance;
 	}
 	
-	public synchronized boolean addUser(User toAdd){
+	public synchronized boolean addUser(User toAdd) throws SQLException{
 		if(allUsers.containsKey(toAdd.getEmail())){
 			return false;
 		}
@@ -123,7 +124,7 @@ public class UserDAO {
 			pass = res.getString("pass");
 		} catch (SQLException e1) {
 			System.out.println("UserDAO->getPass: " + e1.getMessage());
-			return false;
+			throw e1;
 		}
 		query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
 		try {
@@ -138,7 +139,7 @@ public class UserDAO {
 			id = rs.getLong(1);
 		} catch (SQLException e) {
 			System.out.println("UserDAO->addUser: " + e.getMessage());
-			return false;
+			throw e;
 		}
 		toAdd.setId(id);
 		toAdd.setPassword(pass);
@@ -146,7 +147,7 @@ public class UserDAO {
 		return true;
 	}
 
-	public synchronized boolean addBudget(Budget toAdd, User user){
+	public synchronized boolean addBudget(Budget toAdd, User user) throws SQLException{
 		if(allUsers.containsKey(user.getEmail())){
 			if(user.getBudgets().containsKey(toAdd.getName())){
 				return false;
@@ -182,21 +183,23 @@ public class UserDAO {
 					con.rollback();
 				} catch (SQLException e1) {
 					System.out.println("UserDAO->addBudget->rollBack: " + e1.getMessage());
+					throw e1;
 				}
-				return false;
+				throw e;
 			} finally {
 				try {
 					con.setAutoCommit(true);
 				} catch (SQLException e) {
 					System.out.println("UserDAO->addBudget->setAutoCommit(true): " + e.getMessage());
+					throw e;
 				}
 			}
 		}
 		return false;
 	}
 
-
-	public synchronized boolean addIncome(Income toAdd, long budgetId, String username){
+	public synchronized boolean addIncome(Income toAdd, long budgetId, String username) throws SQLException{
+	
 		String query = "SELECT name FROM budget WHERE id = ?";
 		String budgetName = null;
 		Budget budget = null;
@@ -259,18 +262,21 @@ public class UserDAO {
 				con.rollback();
 			} catch (SQLException e1) {
 				System.out.println("UserDAO->addIncome->rollBack: " + e1.getMessage());
+				throw e1;
 			}
-			return false;
+			throw e;
 		} finally {
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException e) {
 				System.out.println("UserDAO->addIncome->setAutoCommit(true): " + e.getMessage());
+				throw e;
 			}
 		}
 	}
 	
-	public synchronized boolean addExpense(Expense toAdd, long budgetId, String username){
+	public synchronized boolean addExpense(Expense toAdd, long budgetId, String username) throws SQLException{
+	
 		String query = "SELECT name FROM budget WHERE id = ?";
 		String budgetName = null;
 		Budget budget = null;
@@ -333,19 +339,21 @@ public class UserDAO {
 				con.rollback();
 			} catch (SQLException e1) {
 				System.out.println("UserDAO->addExpense->rollBack: " + e1.getMessage());
+				throw e1;
 			}
-			return false;
+			throw e;
 		} finally {
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException e) {
 				System.out.println("UserDAO->addExpense->setAutoCommit(true): " + e.getMessage());
+				throw e;
 			}
 		}
 	}
 
 	
-	public boolean validLogin(String email, String password){
+	public boolean validLogin(String email, String password) throws SQLException{
 		if(!allUsers.containsKey(email)){
 			return false;
 		} 
@@ -365,7 +373,7 @@ public class UserDAO {
 				}
 			} catch (SQLException e) {
 				System.out.println("UserDAO->validLogin: " + e.getMessage());
-				return false;
+				throw e;
 			}
 		}
 	}

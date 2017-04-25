@@ -20,18 +20,18 @@ public class DBManager {
 				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/financetracker?autoReconnect=true&useSSL=false", "root", "injikipliok");
 			}
 		}catch(Exception ex){
-			System.out.println(ex.getMessage());
+			System.out.println("DBManager: " + ex.getMessage());
 		}
 	}
 	
-	public synchronized Connection getConnection(){
+	public synchronized Connection getConnection() {
 		if(db == null){
 			getInstance();
 		}
 		return DBManager.db.con;
 	}
 	
-	public synchronized static DBManager getInstance(){
+	public synchronized static DBManager getInstance() {
 		if(DBManager.db == null){
 			DBManager.db = new DBManager();
 		}

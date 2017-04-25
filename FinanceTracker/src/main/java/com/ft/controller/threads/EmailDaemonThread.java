@@ -1,5 +1,6 @@
 package com.ft.controller.threads;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -16,6 +17,7 @@ import com.ft.model.budget.Budget;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.User;
+import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Component
 public class EmailDaemonThread extends Thread {
@@ -24,7 +26,12 @@ public class EmailDaemonThread extends Thread {
 	@Override
 	public void run() {
 		
-		Map<String, User> allUsers = UserDAO.getInstance().getAllUsers();
+		Map<String, User> allUsers = null;
+		try {
+			allUsers = UserDAO.getInstance().getAllUsers();
+		} catch (Exception e) {
+			System.out.println("EmailDaemonThread -> getAllUsers: " + e.getMessage());
+		}
 		while(true){
 			
 			for (Entry<String, User> entryUser : allUsers.entrySet()) {
@@ -77,9 +84,10 @@ public class EmailDaemonThread extends Thread {
 				}
 			}
 			try {
-				Thread.sleep(5*24*60*60*1000);//5 days
+				Thread.sleep(24*60*60*1000);//1 days
 			} catch (InterruptedException e) {
 				System.out.println("EmailDaemondThread -> interupted !");
+				break;
 			}
 		}	
 	}
