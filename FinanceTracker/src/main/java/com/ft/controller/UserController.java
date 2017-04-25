@@ -1,5 +1,8 @@
 package com.ft.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -14,10 +17,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ft.model.DAO.CategoryDAO;
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
+import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Category;
+import com.ft.model.budget.flows.Expense;
+import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
+import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class UserController {
@@ -59,6 +66,9 @@ public class UserController {
 			String userEmail = (String) session.getAttribute("username");
 			User user = UserDAO.getInstance().getAllUsers().get(userEmail);
 			session.setAttribute("budgets", user.getBudgets());
+			if(!user.getBudgets().isEmpty()){
+				session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue()); // get the first element
+			}
 			return "main";
 		}
 		else
@@ -115,10 +125,34 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
-	public String addTransactionPost(HttpSession session) {
-		session.setAttribute("addtransaction", true);
-		session.removeAttribute("contact");
-		session.removeAttribute("addbudget");
+	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") Date date, @RequestParam("category") String categoryName) {
+		Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
+		Category category = null;
+		ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
+		for(Category i : categories){
+			if(i.getName().equals(categoryName)){
+				category = i;
+				break;
+			}
+		}
+		if(type.equals(Category.TYPE.INCOME)){
+			try {
+				Income flow = new Income(quantity, date, category);
+				UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
+			} catch (InvalidCashFlowException e) {
+				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+				return "redirect: error500";
+			}
+		}
+		else{
+			try {
+				Expense flow = new Expense(quantity, date, category);
+				UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
+			} catch (InvalidCashFlowException e) {
+				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+				return "redirect: error500";
+			}
+		}
 		return "redirect: ../login";
 	}
 	

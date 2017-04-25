@@ -35,7 +35,7 @@
 	    <div class="form-group">
 	      <label for="inputEmail" class="col-lg-2 control-label">Category</label>
 	      <div class="col-lg-10">
-	      	<select name="type">
+	      	<select name="category">
 		      	<c:forEach var="item" items="${sessionScope.categories}">
 		      		<option>${item.getName()}</option>
 		      	</c:forEach>

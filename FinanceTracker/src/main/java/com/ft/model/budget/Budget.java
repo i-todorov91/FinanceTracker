@@ -20,6 +20,7 @@ public class Budget {
 	private ArrayList<Expense> expenses;
 	private ArrayList<Income> incomes;
 	private double balance;
+	private long id;
 	
 	public Budget(String name) throws InvalidBudgetException{
 		this(name, 0);
@@ -48,6 +49,14 @@ public class Budget {
 	
 	public double getBalance() {
 		return balance;
+	}
+	
+	public long getId(){
+		return id;
+	}
+	
+	public void setId(long id){
+		this.id = id;
 	}
 	
 	public List<CashFlow> getExpenses(){

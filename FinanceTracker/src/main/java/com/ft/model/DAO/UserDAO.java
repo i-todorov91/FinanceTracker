@@ -196,7 +196,7 @@ public class UserDAO {
 	}
 
 
-	public synchronized boolean addIncome(Income toAdd, long budgetId, User user){
+	public synchronized boolean addIncome(Income toAdd, long budgetId, String username){
 		String query = "SELECT name FROM budget WHERE id = ?";
 		String budgetName = null;
 		Budget budget = null;
@@ -211,7 +211,7 @@ public class UserDAO {
 			
 			if (rs.next()) {
 				budgetName = rs.getString("name");
-				budget = user.getBudgets().get(budgetName);
+				budget = getAllUsers().get(username).getBudgets().get(budgetName);
 			} else {
 				System.out.println("UserDAO->addIncome : There is no such budget!");
 				return false;
@@ -270,7 +270,7 @@ public class UserDAO {
 		}
 	}
 	
-	public synchronized boolean addExpense(Expense toAdd, long budgetId, User user){
+	public synchronized boolean addExpense(Expense toAdd, long budgetId, String username){
 		String query = "SELECT name FROM budget WHERE id = ?";
 		String budgetName = null;
 		Budget budget = null;
@@ -285,7 +285,7 @@ public class UserDAO {
 			
 			if (rs.next()) {
 				budgetName = rs.getString("name");
-				budget = user.getBudgets().get(budgetName);
+				budget = getAllUsers().get(username).getBudgets().get(budgetName);
 			} else {
 				System.out.println("UserDAO->addExpense : There is no such budget!");
 				return false;

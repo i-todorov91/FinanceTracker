@@ -57,7 +57,7 @@
           	<a href="#">No budgets</a>
           </c:if>
           <c:if test="${sessionScope.budgets.isEmpty() == false}">
-          	<c:set var="selected" scope="session" value="${budgets.entrySet().iterator().next().getKey()}"></c:set>
+          	<c:set var="selected" scope="session" value="${selectedBudget.getName()}"></c:set>
           	<a href="#">${selected}</a>
           </c:if>
 			<ul>
