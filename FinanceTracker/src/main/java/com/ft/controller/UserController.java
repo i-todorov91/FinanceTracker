@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ft.model.DAO.UserDAO;
@@ -77,29 +78,26 @@ public class UserController {
 	}
 	
 	//addbudget controller
-	@RequestMapping(value="/login/addbudget", method=RequestMethod.POST)
-	public String addBudgetPost(HttpSession session, HttpServletRequest request){
+	@RequestMapping(value="/addbudget", method=RequestMethod.POST)
+	public String addBudgetPost(HttpSession session, @RequestParam("name") String name, @RequestParam("amount") Double amount){
 		
-		if(session.isNew() || (session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && session.getAttribute("IP") != request.getRemoteAddr())){
-			return "redirect:/logout";
+		if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
+			return "redirect: logout";
 		}
-		Object balance = request.getParameter("balance");
 		String email = (String) session.getAttribute("username");
 		boolean valid = (Boolean) session.getAttribute("logged") != null &&
 					(Boolean) session.getAttribute("logged") &&
 						session.getAttribute("username") != null &&
 							UserDAO.getInstance().getAllUsers().containsKey(email) &&
-								balance != null &&
-									Validator.isValidNumber(balance);
+								amount != null;
 		if(valid){
-			String name = request.getParameter("name");
-			double balance1 = Double.parseDouble((String) balance);
-			Budget toAdd = new Budget(name, balance1);
+			Budget toAdd = new Budget(name, amount);
 			String username = (String) session.getAttribute("username");
 			User user = UserDAO.getInstance().getAllUsers().get(username);
 			UserDAO.getInstance().addBudget(toAdd, user);
 		}
-		return "redirect:main";
+		session.removeAttribute("addbudget");
+		return "redirect: login";
 	}
 	
 	// login -> addtransaction controller

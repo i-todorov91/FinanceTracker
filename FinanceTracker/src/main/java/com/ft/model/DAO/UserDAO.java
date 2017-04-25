@@ -357,7 +357,6 @@ public class UserDAO {
 				ResultSet rs = stmt.executeQuery();
 				rs.next();
 				String pass = rs.getString("pass");
-				System.out.println(pass);
 				if(allUsers.get(email).getPassword().equals(pass)){
 					return true;
 				}

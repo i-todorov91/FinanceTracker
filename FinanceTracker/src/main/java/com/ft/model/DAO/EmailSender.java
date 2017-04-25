@@ -82,9 +82,9 @@ public class EmailSender {
             if (new Random().nextBoolean()) {
 				email = "zpetrov96@gmail.com";
 			} else {
-				email = "memfi91@gmail.com";
+				//email = "memfi91@gmail.com";
 			}
-            String messageHtml = "Hi,<br><br>You have a new contact us masage from <strong>"+nameFromUser+"</strong>, with the following subject and message:<br><br>Subject: <strong>" + subjectFromUser + "</strong><br>Message: " + messageFromUser 
+            String messageHtml = "Hi,<br><br>You have a new contact us message from <strong>"+nameFromUser+"</strong>, with the following subject and message:<br><br>Subject: <strong>" + subjectFromUser + "</strong><br>Message: " + messageFromUser 
             		+ "<br><br> Contact him on - \"" + emailFromUser + "\"<br><br> Have a nice day!";
             boolean sessionDebug = false;
 
