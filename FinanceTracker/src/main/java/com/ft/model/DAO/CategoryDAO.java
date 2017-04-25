@@ -18,7 +18,7 @@ public class CategoryDAO {
 	private static HashMap<String, Category> defaultCategories = new HashMap<>(); //Category name -> Category
 	private static HashMap<String, HashMap<Category, Long>> customAddedCategories = new HashMap<>(); //Category name -> (Category, User id)
 	
-	private CategoryDAO(){
+	private CategoryDAO() throws Exception{
 		
 		String query = "";
 		PreparedStatement stmt = null;
@@ -49,6 +49,7 @@ public class CategoryDAO {
 					defaultCategories.put(newCategory.getName(), newCategory);
 				} catch (InvalidCashFlowException e) {
 					System.out.println("CategoryDAO->Default Categories->InvalidCashFlow: " + e.getMessage());
+					throw e;
 				}
 			}
 			
@@ -79,15 +80,16 @@ public class CategoryDAO {
 					customAddedCategories.put(categorieName, innerMap);
 				} catch (InvalidCashFlowException e) {
 					System.out.println("CategoryDAO->Custom categories->InvalidCashFlow: " + e.getMessage());
+					throw e;
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println("CategoryDAO->Constructor: " + e.getMessage());
-			//TODO
+			throw e;
 		}
 	}
 		
-	public synchronized static CategoryDAO getInstance(){
+	public synchronized static CategoryDAO getInstance() throws Exception{
 		if(instance == null){
 			instance = new CategoryDAO();
 		}

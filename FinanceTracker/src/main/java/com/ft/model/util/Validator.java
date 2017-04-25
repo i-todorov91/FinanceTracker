@@ -30,7 +30,14 @@ public class Validator {
 	}
 	
 	public static boolean validCategory(Category category){
-		if (category != null && (CategoryDAO.getInstance().getAllDefaultCategories().containsKey(category.getName()) || CategoryDAO.getInstance().getAllCustomAddedCategories().containsKey(category.getName()))) {
+		CategoryDAO catDAO = null;
+		try {
+			catDAO = CategoryDAO.getInstance();
+		} catch (Exception e) {
+			System.out.println("Validator -> validCategory: " + e.getMessage());
+			return false;
+		}
+		if (category != null && (catDAO.getAllDefaultCategories().containsKey(category.getName()) || catDAO.getAllCustomAddedCategories().containsKey(category.getName()))) {
 			return true;
 		}
 		return false;

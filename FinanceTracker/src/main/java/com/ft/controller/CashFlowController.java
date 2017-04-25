@@ -1,5 +1,6 @@
 package com.ft.controller;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -19,6 +20,7 @@ import com.ft.model.budget.Budget;
 import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
+import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class CashFlowController {
@@ -37,7 +39,13 @@ public class CashFlowController {
 		
 		HashMap<String, TreeSet<CashFlow>> cashFlows = new HashMap();
 		String username = (String) session.getAttribute("username");
-		User user = UserDAO.getInstance().getAllUsers().get(username);
+		User user = null;
+		try {
+			user = UserDAO.getInstance().getAllUsers().get(username);
+		} catch (Exception e) {
+			System.out.println("CashFlowController -> getAllUsers: " + e.getMessage());
+			return null;
+		}
 		Budget budget = user.getBudgets().get(session.getAttribute("budget"));
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){

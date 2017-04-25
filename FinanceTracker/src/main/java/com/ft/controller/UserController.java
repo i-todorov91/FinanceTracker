@@ -1,5 +1,7 @@
 package com.ft.controller;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -17,6 +19,7 @@ import com.ft.model.budget.Budget;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
+import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class UserController {
@@ -51,20 +54,27 @@ public class UserController {
 		
 		String email = holder.getEmail();
 		String password = holder.getPassword();
-		if(UserDAO.getInstance().validLogin(email, password)){
-			session.setAttribute("logged", true);
-			session.setAttribute("username", email);
-			session.setMaxInactiveInterval(60);
-			String userEmail = (String) session.getAttribute("username");
-			User user = UserDAO.getInstance().getAllUsers().get(userEmail);
-			session.setAttribute("budgets", user.getBudgets());
-			return "main";
-		}
-		else
-		{
-			session.setAttribute("logged", false);
-			session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
-			return "login";
+		
+		try {
+			UserDAO userDAO = UserDAO.getInstance();
+			if(userDAO.validLogin(email, password)){
+				session.setAttribute("logged", true);
+				session.setAttribute("username", email);
+				session.setMaxInactiveInterval(60);
+				String userEmail = (String) session.getAttribute("username");
+				User user = userDAO.getAllUsers().get(userEmail);
+				session.setAttribute("budgets", user.getBudgets());
+				return "main";
+			}
+			else
+			{
+				session.setAttribute("logged", false);
+				session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
+				return "login";
+			}
+		} catch (Exception e) {
+			System.out.println("UserController -> getInstance for UserDAO :" + e.getMessage());
+			return "error500";
 		}
 	}
 	
@@ -80,24 +90,29 @@ public class UserController {
 	//addbudget controller
 	@RequestMapping(value="/addbudget", method=RequestMethod.POST)
 	public String addBudgetPost(HttpSession session, @RequestParam("name") String name, @RequestParam("amount") Double amount){
-		
-		if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
-			return "redirect: logout";
+		try {
+			UserDAO userDAO = UserDAO.getInstance();
+			if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
+				return "redirect: logout";
+			}
+			String email = (String) session.getAttribute("username");
+			boolean valid = (Boolean) session.getAttribute("logged") != null &&
+						(Boolean) session.getAttribute("logged") &&
+							session.getAttribute("username") != null &&
+								UserDAO.getInstance().getAllUsers().containsKey(email) &&
+									amount != null;
+			if(valid){
+				Budget toAdd = new Budget(name, amount);
+				String username = (String) session.getAttribute("username");
+				User user = UserDAO.getInstance().getAllUsers().get(username);
+				UserDAO.getInstance().addBudget(toAdd, user);
+			}
+			session.removeAttribute("addbudget");
+			return "redirect: login";
+		} catch (Exception e) {
+			System.out.println("UseController -> addBudgetPost: " + e.getMessage());
+			return "error500";
 		}
-		String email = (String) session.getAttribute("username");
-		boolean valid = (Boolean) session.getAttribute("logged") != null &&
-					(Boolean) session.getAttribute("logged") &&
-						session.getAttribute("username") != null &&
-							UserDAO.getInstance().getAllUsers().containsKey(email) &&
-								amount != null;
-		if(valid){
-			Budget toAdd = new Budget(name, amount);
-			String username = (String) session.getAttribute("username");
-			User user = UserDAO.getInstance().getAllUsers().get(username);
-			UserDAO.getInstance().addBudget(toAdd, user);
-		}
-		session.removeAttribute("addbudget");
-		return "redirect: login";
 	}
 	
 	// login -> addtransaction controller
@@ -144,13 +159,17 @@ public class UserController {
 			session.setAttribute("color", "alert-danger-register");
 		}
 		else{
-			if(UserDAO.getInstance().addUser(user)){
-				session.setAttribute("register", "Successfully registered. You can <a href=\"login\">login</a> now.");
-				session.setAttribute("color", "alert-success-register");
-			}
-			else{
-				session.setAttribute("register", "The user already exists!");
-				session.setAttribute("color", "alert-danger-register");
+			try {
+				if(UserDAO.getInstance().addUser(user)){
+					session.setAttribute("register", "Successfully registered. You can <a href=\"login\">login</a> now.");
+					session.setAttribute("color", "alert-success-register");
+				}
+				else{
+					session.setAttribute("register", "The user already exists!");
+					session.setAttribute("color", "alert-danger-register");
+				}
+			} catch (Exception e) {
+				System.out.println("UseController -> register: " + e.getMessage());
 			}
 		}
         return "register";
