@@ -1,6 +1,7 @@
 *.class
 /RemoteSystemsTempFiles/
 
+pom.properties
 */target
 /.metadata
 /.recommenders
