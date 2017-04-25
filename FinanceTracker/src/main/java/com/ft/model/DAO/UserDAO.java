@@ -125,7 +125,6 @@ public class UserDAO {
 			System.out.println("UserDAO->getPass: " + e1.getMessage());
 			return false;
 		}
-		
 		query = "INSERT INTO user(first_name, second_name, password, email) VALUES(?, ?, ?, ?)";
 		try {
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -142,6 +141,7 @@ public class UserDAO {
 			return false;
 		}
 		toAdd.setId(id);
+		toAdd.setPassword(pass);
 		allUsers.put(toAdd.getEmail(), toAdd);
 		return true;
 	}

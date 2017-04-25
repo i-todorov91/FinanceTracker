@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.ft.model.budget.flows.Category;
 import com.ft.model.util.Validator;
@@ -16,7 +18,7 @@ public class CategoryDAO {
 	
 	private static CategoryDAO instance = null;
 	private static HashMap<String, Category> defaultCategories = new HashMap<>(); //Category name -> Category
-	private static HashMap<String, HashMap<Category, Long>> customAddedCategories = new HashMap<>(); //Category name -> (Category, User id)
+	private static HashMap<Long, Category> customAddedCategories = new HashMap<>(); //User id -> Category
 	
 	private CategoryDAO(){
 		
@@ -74,9 +76,7 @@ public class CategoryDAO {
 						newCategory = new Category(categorieName, categorieIcon, Category.TYPE.EXPENSE);
 						newCategory.setId(categorieId);
 					}
-					HashMap<Category, Long> innerMap = new HashMap<>();
-					innerMap.put(newCategory, userId);
-					customAddedCategories.put(categorieName, innerMap);
+					customAddedCategories.put(userId, newCategory);
 				} catch (InvalidCashFlowException e) {
 					System.out.println("CategoryDAO->Custom categories->InvalidCashFlow: " + e.getMessage());
 				}
@@ -96,9 +96,7 @@ public class CategoryDAO {
 	
 	public synchronized void addCustomCategory(long id, Category toAdd){
 		if(Validator.validCategory(toAdd)){
-			HashMap<Category, Long> innerMap = new HashMap<>();
-			innerMap.put(toAdd, id);
-			customAddedCategories.put(toAdd.getName(), innerMap);
+			customAddedCategories.put(id, toAdd);
 			
 			// TODO for database
 		}
@@ -108,7 +106,20 @@ public class CategoryDAO {
 		return Collections.unmodifiableMap(defaultCategories);
 	}
 	
-	public Map<String, HashMap<Category, Long>> getAllCustomAddedCategories(){
+	public Map<Long, Category> getAllCustomAddedCategories(){
 		return Collections.unmodifiableMap(customAddedCategories);
+	}
+	
+	public ArrayList<Category> getAllUserCategories(long userId){
+		ArrayList<Category> result = new ArrayList<>();
+		for(Entry<String, Category> i : defaultCategories.entrySet()){
+			result.add(i.getValue());
+		}
+		for(Entry<Long, Category> i : customAddedCategories.entrySet()){
+			if(i.getKey() == userId){
+				result.add(i.getValue());
+			}
+		}
+		return result;
 	}
 }

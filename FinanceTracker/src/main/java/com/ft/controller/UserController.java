@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ft.model.DAO.CategoryDAO;
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
+import com.ft.model.budget.flows.Category;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
@@ -102,6 +104,18 @@ public class UserController {
 	// login -> addtransaction controller
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.GET)
 	public String addTransactionGet(HttpSession session) {
+		String username = (String) session.getAttribute("username");
+		long userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+		session.setAttribute("addtransaction", true);
+		session.removeAttribute("contact");
+		session.removeAttribute("addbudget");
+		session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
+		session.setAttribute("types", Category.TYPE.values());
+		return "redirect: ../login";
+	}
+	
+	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
+	public String addTransactionPost(HttpSession session) {
 		session.setAttribute("addtransaction", true);
 		session.removeAttribute("contact");
 		session.removeAttribute("addbudget");
