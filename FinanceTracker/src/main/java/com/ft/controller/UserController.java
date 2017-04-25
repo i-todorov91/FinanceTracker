@@ -67,6 +67,9 @@ public class UserController {
 				String userEmail = (String) session.getAttribute("username");
 				User user = userDAO.getAllUsers().get(userEmail);
 				session.setAttribute("budgets", user.getBudgets());
+				if(!user.getBudgets().isEmpty()){
+					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
+				}
 				return "main";
 			}
 			else
@@ -112,7 +115,7 @@ public class UserController {
 				UserDAO.getInstance().addBudget(toAdd, user);
 			}
 			session.removeAttribute("addbudget");
-			return "redirect: login";
+			return "redirect: ../login";
 		} catch (Exception e) {
 			System.out.println("UseController -> addBudgetPost: " + e.getMessage());
 			return "error500";
