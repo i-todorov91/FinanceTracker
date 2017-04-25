@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.util.exceptions.InvalidBudgetException;
 
 public class Budget {
-
+	
+	@NotNull
+	@Size(min=2, max=15)
 	private String name;
 	private ArrayList<Expense> expenses;
 	private ArrayList<Income> incomes;
