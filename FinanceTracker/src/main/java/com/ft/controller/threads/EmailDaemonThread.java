@@ -84,7 +84,7 @@ public class EmailDaemonThread extends Thread {
 				}
 			}
 			try {
-				Thread.sleep(5*24*60*60*1000);//5 days
+				Thread.sleep(24*60*60*1000);//1 days
 			} catch (InterruptedException e) {
 				System.out.println("EmailDaemondThread -> interupted !");
 				break;

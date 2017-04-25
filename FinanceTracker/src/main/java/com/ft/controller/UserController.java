@@ -170,6 +170,7 @@ public class UserController {
 				}
 			} catch (Exception e) {
 				System.out.println("UseController -> register: " + e.getMessage());
+				return "error500";
 			}
 		}
         return "register";
