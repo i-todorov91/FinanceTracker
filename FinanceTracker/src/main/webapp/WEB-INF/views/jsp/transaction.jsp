@@ -44,7 +44,7 @@
 	    <div class="form-group">
 	      <label for="inputPassword" class="col-lg-2 control-label">Date</label>
 	      <div class="col-lg-10">
-                <input id="datepicker" />
+                <input id="datepicker" name="date"/>
 	      </div>
 	    </div>
 	    <div class="form-group">
