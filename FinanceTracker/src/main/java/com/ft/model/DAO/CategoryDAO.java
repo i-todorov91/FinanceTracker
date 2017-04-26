@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -104,9 +105,35 @@ public class CategoryDAO {
 				}
 			}
 		}
+
+		PreparedStatement stmt = null;
+		long categoryId = 0;
+		Connection con = DBManager.getInstance().getConnection();
+		
+		String query = "SELECT id FROM default_icon WHERE name = ?";
+		stmt = con.prepareStatement(query);
+		stmt.setString(1, toAdd.getIcon());
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+		long iconId = rs.getLong("id");
+		
+		query = "INSERT IGNORE INTO category(name, icon_id, type_id, role_id) VALUES(?, ?, ?, ?)";
+		stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+		stmt.setString(1, toAdd.getName());
+		stmt.setLong(2, iconId);
+		if (toAdd.getType().equals(Category.TYPE.EXPENSE)) {
+			stmt.setLong(3, 2);
+		} else {
+			stmt.setLong(3, 1);
+		}
+		stmt.setLong(4, 2);
+		stmt.executeUpdate();
+		rs = stmt.getGeneratedKeys();
+		rs.next();
+		categoryId = rs.getLong(1);
+		toAdd.setId(categoryId);
+		
 		customAddedCategories.put(id, toAdd);
-			
-		// TODO for database
 	}
 	
 	public Map<String, Category> getAllDefaultCategories(){
