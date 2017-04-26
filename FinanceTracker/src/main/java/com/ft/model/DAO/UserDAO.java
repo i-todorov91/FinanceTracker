@@ -52,6 +52,7 @@ public class UserDAO {
 					double budgetBalance = rs1.getDouble("balance");
 					long budgetId = rs1.getLong("id");
 					Budget budget = new Budget(budgetName, budgetBalance);
+					budget.setId(budgetId);
 					// for each budget select the incomes and expenses
 					
 					// find all incomes
@@ -174,6 +175,7 @@ public class UserDAO {
 				stmt.executeUpdate();
 				
 				// add the budget to the user in the HashMap<String, User>
+				toAdd.setId(id);
 				allUsers.get(user.getEmail()).addBudget(toAdd);
 				con.commit();
 				return true;
@@ -221,12 +223,12 @@ public class UserDAO {
 			}
 			
 			con.setAutoCommit(false);
-			
+		
 			//insert into cash_flow & get id
 			query = "INSERT IGNORE INTO cash_flow(quantity, date) VALUES(?, ?)";
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setDouble(1, toAdd.getQuantity());
-			stmt.setDate(2, (Date) toAdd.getDate());
+			stmt.setDate(2, new java.sql.Date(toAdd.getDate().getTime()));
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -254,7 +256,8 @@ public class UserDAO {
 			stmt = con.prepareStatement(query);
 			stmt.setDouble(1, newBalance);
 			stmt.setLong(2, budgetId);
-
+			stmt.executeUpdate();
+			
 			return true;
 		} catch (SQLException e) {
 			System.out.println("UserDAO->addIncome: " + e.getMessage());
@@ -282,7 +285,6 @@ public class UserDAO {
 		Budget budget = null;
 		PreparedStatement stmt = null;
 		long cashFlowId = 0;
-		
 		try {
 			stmt = con.prepareStatement(query);
 			stmt.setLong(1, budgetId);
@@ -303,7 +305,7 @@ public class UserDAO {
 			query = "INSERT IGNORE INTO cash_flow(quantity, date) VALUES(?, ?)";
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setDouble(1, toAdd.getQuantity());
-			stmt.setDate(2, (Date) toAdd.getDate());
+			stmt.setDate(2, new java.sql.Date(toAdd.getDate().getTime()));
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -331,6 +333,7 @@ public class UserDAO {
 			stmt = con.prepareStatement(query);
 			stmt.setDouble(1, newBalance);
 			stmt.setLong(2, budgetId);
+			stmt.executeUpdate();
 
 			return true;
 		} catch (SQLException e) {

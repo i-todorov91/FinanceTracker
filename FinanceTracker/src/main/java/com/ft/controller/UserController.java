@@ -1,8 +1,11 @@
 package com.ft.controller;
 
-import java.sql.SQLException;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -23,7 +26,6 @@ import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
-import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class UserController {
@@ -147,7 +149,10 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
-	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") Date date, @RequestParam("category") String categoryName) {
+	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName) {
+		
+		// TODO Validate
+		
 		Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
 		Category category = null;
 		ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
@@ -157,18 +162,20 @@ public class UserController {
 				break;
 			}
 		}
-		if(type.equals(Category.TYPE.INCOME)){
+		
+		if(type.equals(Category.TYPE.INCOME.toString())){
 			try {
-				Income flow = new Income(quantity, date, category);
+				Income flow = new Income(quantity, new Date(), category);
 				UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+				e.getStackTrace();
 				return "redirect: error500";
 			}
 		}
-		else{
+		else if(type.equals(Category.TYPE.EXPENSE.toString())){
 			try {
-				Expense flow = new Expense(quantity, date, category);
+				Expense flow = new Expense(quantity, new Date(), category);
 				UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
@@ -177,6 +184,18 @@ public class UserController {
 		}
 		return "redirect: ../login";
 	}
+	
+	//changebudget controller
+		@RequestMapping(value="/login/changebudget", method=RequestMethod.GET)
+		public String changebudget(HttpSession session, @RequestParam("clicked") String clicked) {
+			HashMap<String, Budget> budgets = (HashMap<String, Budget>) session.getAttribute("budgets");
+			for(Entry<String, Budget> i : budgets.entrySet()){
+				if(i.getValue().getName().equals(clicked)){
+					session.setAttribute("selectedBudget", i.getValue());
+				}
+			}
+			return "redirect: ../login";
+		}
 	
 	//logout controller
 	@RequestMapping(value="/logout", method=RequestMethod.GET)

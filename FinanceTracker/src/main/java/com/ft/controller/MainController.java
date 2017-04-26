@@ -42,4 +42,10 @@ public class MainController {
 		return "index";
 	}
 	
+	@RequestMapping(value="*/error500", method=RequestMethod.GET)
+	public String errorPage(HttpSession session){
+		
+		return "error500";
+	}
+	
 }

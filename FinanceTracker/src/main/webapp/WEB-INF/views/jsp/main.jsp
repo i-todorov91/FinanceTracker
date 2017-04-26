@@ -28,7 +28,6 @@
   <script type="text/javascript" src="js/lib/jquery.1.8.3.min.js"></script>
   <script type="text/javascript" src="js/lib/bootstrap.js"></script>
   <script src="js/sidebar/modernizr.js"></script> <!-- Modernizr -->
-    
   <title>Finance Tracker</title>
 </head>
 <body>
@@ -63,7 +62,12 @@
 			<ul>
 				<c:forEach items="${sessionScope.budgets.entrySet()}" var="item">
 					<c:if test="${!selected.equals(item.key)}">
-				    	<li><a href="#">${item.key}</a></li>
+				    	<li>
+				    		<form id="${item.key}" action="login/changebudget" method="get">
+				    			<input name="clicked" type="hidden" value="${item.key}"/>
+				    			<a href="#" onclick="document.getElementById('${item.key}').submit()">${item.key}</a>
+				    		</form>
+				    	</li>
 					</c:if>
 				</c:forEach>
 			</ul>

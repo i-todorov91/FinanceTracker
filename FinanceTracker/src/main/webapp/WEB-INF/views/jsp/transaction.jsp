@@ -7,6 +7,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    
+  <script>
+  $(document).ready(function() {
+    $("#datepicker").datepicker();
+  });
+  </script>
 <body>
 	<form class="form-horizontal" method="post" action="login/addtransaction">
 	  <fieldset>
@@ -29,7 +38,7 @@
 	    <div class="form-group">
 	      <label for="inputPassword" class="col-lg-2 control-label">Date</label>
 	      <div class="col-lg-10">
-	        <input type="date" name="date" max="2017-12-31"><br>
+                <input id="datepicker" />
 	      </div>
 	    </div>
 	    <div class="form-group">
