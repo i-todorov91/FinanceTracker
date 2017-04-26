@@ -43,6 +43,7 @@ public class MailController {
 		session.setAttribute("contact", true);
 		session.removeAttribute("addbudget");
 		session.removeAttribute("addtransaction");
+		session.removeAttribute("diagrams");
 		return "redirect: ../login";
 	}
 	

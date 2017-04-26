@@ -34,8 +34,8 @@
   <header class="cd-main-header" id="header_outer"> 
     <div class="container">
       <div class="header_section">
-        <a href="javascript:void(0)" class="logo"><img src="img/logob.jpg" alt="Logo"></a>
-        <a href="javascript:void(0)" class="cd-nav-trigger">Menu<span></span></a>
+        <a href="login/viewdiagrams" class="logo"><img src="img/logob.jpg" alt="Logo"></a>
+        <a href="javascript:void(0)" class="cd-nav-trigger"><span></span></a>
 
         <nav class="cd-nav">
           <ul class="cd-top-nav">
@@ -88,16 +88,20 @@
         <div class="top_content">
           <div class="row">
           
+          <c:if test="${sessionScope.diagrams == true}">
+          		<c:import url="diagrams.jsp"></c:import>
+          </c:if>
+          
           <c:if test="${sessionScope.addtransaction == true}">
-          		<%@ include file="transaction.jsp" %>
+          		<c:import url="transaction.jsp"></c:import>
           </c:if>
           
           <c:if test="${sessionScope.addbudget == true}">
-          		<%@ include file="budget.jsp" %>
+          		<c:import url="budget.jsp"></c:import>
           </c:if>
           
           <c:if test="${sessionScope.contact == true}">
-			    <%@ include file="contact.jsp" %>
+			    <c:import url="contact.jsp"></c:import>
           </c:if>
       </div>
     </div>

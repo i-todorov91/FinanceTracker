@@ -86,6 +86,7 @@ public class UserController {
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
 				}
+				session.setAttribute("diagrams", true);
 				return "main";
 			}
 			else
@@ -106,6 +107,7 @@ public class UserController {
 		session.removeAttribute("contact");
 		session.removeAttribute("addtransaction");
 		session.setAttribute("addbudget", true);
+		session.removeAttribute("diagrams");
 		return "redirect: ../login";
 	}
 	
@@ -133,7 +135,6 @@ public class UserController {
 					UserDAO.getInstance().addBudget(toAdd, user);
 				}
 			}
-			session.removeAttribute("addbudget");
 			return "redirect: ../login";
 		} catch (Exception e) {
 			System.out.println("UseController -> addBudgetPost: " + e.getMessage());
@@ -157,6 +158,7 @@ public class UserController {
 			session.setAttribute("addtransaction", true);
 			session.removeAttribute("contact");
 			session.removeAttribute("addbudget");
+			session.removeAttribute("diagrams");
 			try {
 				session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
 			} catch (Exception e) {
@@ -182,7 +184,6 @@ public class UserController {
 					break;
 				}
 			}
-		
 		
 			if(type.equals(Category.TYPE.INCOME.toString())){
 				try {
@@ -226,7 +227,11 @@ public class UserController {
 	//viewdiagrams controller
 	@RequestMapping(value="/login/viewdiagrams", method=RequestMethod.GET)
 	public String viewDiagrams(HttpSession session) {
-			
+		
+		session.removeAttribute("contact");
+		session.removeAttribute("addbudget");
+		session.removeAttribute("addtransaction");
+		session.setAttribute("diagrams", true);
 		return "redirect: ../login";
 	}
 	

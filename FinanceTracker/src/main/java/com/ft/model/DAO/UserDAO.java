@@ -56,7 +56,7 @@ public class UserDAO {
 					// for each budget select the incomes and expenses
 					
 					// find all incomes
-					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash JOIN income inc ON cash.id = inc.cash_flow_id JOIN budget_income bi ON bi.income_id = inc.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = inc.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
+					query = "SELECT quantity, date, description, c.name, i.name AS icon FROM cash_flow cash JOIN income inc ON cash.id = inc.cash_flow_id JOIN budget_income bi ON bi.income_id = inc.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = inc.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
 					stmt = con.prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs2 = stmt.executeQuery();
@@ -75,7 +75,7 @@ public class UserDAO {
 					}
 					
 					// find all expenses
-					query = "SELECT quantity, date, c.name, i.name AS icon FROM cash_flow cash JOIN expense exp ON cash.id = exp.cash_flow_id JOIN budget_income bi ON bi.income_id = exp.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = exp.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
+					query = "SELECT quantity, date, description, c.name, i.name AS icon FROM cash_flow cash JOIN expense exp ON cash.id = exp.cash_flow_id JOIN budget_income bi ON bi.income_id = exp.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = exp.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
 					stmt = con.prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs3 = stmt.executeQuery();
