@@ -63,7 +63,7 @@
 				<c:forEach items="${sessionScope.budgets.entrySet()}" var="item">
 					<c:if test="${!selected.equals(item.key)}">
 				    	<li>
-				    		<form id="${item.key}" action="login/changebudget" method="get">
+				    		<form id="${item.key}" action="login/changebudget" method="post">
 				    			<input name="clicked" type="hidden" value="${item.key}"/>
 				    			<a href="#" onclick="document.getElementById('${item.key}').submit()">${item.key}</a>
 				    		</form>
@@ -77,6 +77,9 @@
        	</li>
         <li class="sidebar">
           	<a href="login/addtransaction">Add transaction</a>
+        </li>
+        <li class="sidebar">
+          	<a href="login/viewdiagrams">View diagrams</a>
         </li>
     </nav>
 
