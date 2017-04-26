@@ -90,7 +90,7 @@ window.onload = function () {
 			<% 
 					for(int i = 1; i <= 12; i++){
 				%>
-					{ x: <%= i %>, y: "<%= budget.getIncomeForMonth(i) %>"},
+					{ x: <%= i %>, y: <%= budget.getIncomeForMonth(i) %>},
 				<%
 					}
 			%>
@@ -101,7 +101,7 @@ window.onload = function () {
 			<% 
 					for(int i = 1; i <= 12; i++){
 				%>
-					{ x: <%= i %>, y: "<%= budget.getExpenseForMonth(i) %>"},
+					{ x: <%= i %>, y: <%= budget.getExpenseForMonth(i) %>},
 				<%
 					}
 			%>

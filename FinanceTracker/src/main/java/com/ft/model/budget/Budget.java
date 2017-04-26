@@ -78,7 +78,6 @@ public class Budget {
 	public double getTotalExpense(){
 		double totalExpense = 0;
 		for (Expense expense : this.expenses) {
-			System.out.println(expense);
 			totalExpense += Math.abs(expense.getQuantity());
 		}
 		return totalExpense;	
@@ -87,7 +86,7 @@ public class Budget {
 	public double getIncomeForMonth(int month){
 		double result = 0;
 		for(CashFlow i : incomes){
-			if(i.getDate().getMonth() == month){
+			if(i.getDate().getMonth() + 1 == month){
 				result += i.getQuantity();
 			}
 		}
@@ -97,7 +96,7 @@ public class Budget {
 	public double getExpenseForMonth(int month){
 		double result = 0;
 		for(CashFlow i : expenses){
-			if(i.getDate().getMonth() == month){
+			if(i.getDate().getMonth() + 1== month){
 				result += i.getQuantity();
 			}
 		}

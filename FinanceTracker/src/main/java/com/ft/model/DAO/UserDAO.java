@@ -94,8 +94,6 @@ public class UserDAO {
 					}
 					
 					// add the budget to the user
-					System.out.println(budget.getExpenses());
-					System.out.println(budget.getIncomes());
 					user.addBudget(budget);
 				}
 				allUsers.put(user.getEmail(), user);
