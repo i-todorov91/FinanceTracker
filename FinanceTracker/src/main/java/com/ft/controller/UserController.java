@@ -2,6 +2,7 @@ package com.ft.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
+import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class UserController {
@@ -35,6 +37,18 @@ public class UserController {
 	public ModelAndView loginPage(HttpSession session) {
 		session.removeAttribute("message");
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			if(session.getAttribute("selectedBudget") == null){
+				User user = null;
+				try {
+					user = UserDAO.getInstance().getAllUsers().get((String) session.getAttribute("username"));
+				} catch (Exception e){
+					System.out.println("UserController->/login GET-> load user budgets: " + e.getMessage());
+				}
+				session.setAttribute("budgets", user.getBudgets());
+				if(!user.getBudgets().isEmpty()){
+					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
+				}
+			}
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
 		session.setAttribute("logged", false);
@@ -67,7 +81,7 @@ public class UserController {
 				session.setAttribute("username", email);
 				session.setMaxInactiveInterval(60);
 				String userEmail = (String) session.getAttribute("username");
-				User user = userDAO.getAllUsers().get(userEmail);
+				User user = UserDAO.getInstance().getAllUsers().get(userEmail);
 				session.setAttribute("budgets", user.getBudgets());
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
@@ -100,21 +114,24 @@ public class UserController {
 	public String addBudgetPost(HttpSession session, @RequestParam("name") String name, @RequestParam("amount") Double amount){
 
 		try {
-			UserDAO userDAO = UserDAO.getInstance();
-			if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
-				return "redirect: logout";
-			}
-			String email = (String) session.getAttribute("username");
-			boolean valid = (Boolean) session.getAttribute("logged") != null &&
-						(Boolean) session.getAttribute("logged") &&
-							session.getAttribute("username") != null &&
-								UserDAO.getInstance().getAllUsers().containsKey(email) &&
-									amount != null;
-			if(valid){
-				Budget toAdd = new Budget(name, amount);
-				String username = (String) session.getAttribute("username");
-				User user = UserDAO.getInstance().getAllUsers().get(username);
-				UserDAO.getInstance().addBudget(toAdd, user);
+			if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+	
+				UserDAO userDAO = UserDAO.getInstance();
+				if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
+					return "redirect: logout";
+				}
+				String email = (String) session.getAttribute("username");
+				boolean valid = (Boolean) session.getAttribute("logged") != null &&
+							(Boolean) session.getAttribute("logged") &&
+								session.getAttribute("username") != null &&
+									UserDAO.getInstance().getAllUsers().containsKey(email) &&
+										amount != null;
+				if(valid){
+					Budget toAdd = new Budget(name, amount);
+					String username = (String) session.getAttribute("username");
+					User user = UserDAO.getInstance().getAllUsers().get(username);
+					UserDAO.getInstance().addBudget(toAdd, user);
+				}
 			}
 			session.removeAttribute("addbudget");
 			return "redirect: ../login";
@@ -127,24 +144,27 @@ public class UserController {
 	// login -> addtransaction controller
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.GET)
 	public String addTransactionGet(HttpSession session) {
-		String username = (String) session.getAttribute("username");
-		long userId = 0;
-		try {
-			userId = UserDAO.getInstance().getAllUsers().get(username).getId();
-		} catch (Exception e){
-			System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
-			return "redirect: error500";
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			String username = (String) session.getAttribute("username");
+			long userId = 0;
+			try {
+				userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+			} catch (Exception e){
+				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
+				return "redirect: error500";
+			}
+			session.setAttribute("addtransaction", true);
+			session.removeAttribute("contact");
+			session.removeAttribute("addbudget");
+			try {
+				session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
+			} catch (Exception e) {
+				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
+				return "redirect: error500";
+			}
+			session.setAttribute("types", Category.TYPE.values());
 		}
-		session.setAttribute("addtransaction", true);
-		session.removeAttribute("contact");
-		session.removeAttribute("addbudget");
-		try {
-			session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
-		} catch (Exception e) {
-			System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
-			return "redirect: error500";
-		}
-		session.setAttribute("types", Category.TYPE.values());
 		return "redirect: ../login";
 	}
 	
@@ -152,54 +172,68 @@ public class UserController {
 	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
 		
 		// TODO Validate
-		
-		Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
-		Category category = null;
-		ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
-		for(Category i : categories){
-			if(i.getName().equals(categoryName)){
-				category = i;
-				break;
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
+			Category category = null;
+			ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
+			for(Category i : categories){
+				if(i.getName().equals(categoryName)){
+					category = i;
+					break;
+				}
 			}
-		}
 		
-		if(type.equals(Category.TYPE.INCOME.toString())){
-			try {
-				Income flow = new Income(quantity, new Date(), category, description);
-				UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
-			} catch (Exception e) {
-				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
-				e.getStackTrace();
-				return "redirect: error500";
+		
+			if(type.equals(Category.TYPE.INCOME.toString())){
+				try {
+					Income flow = new Income(quantity, new Date(), category, description);
+					UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
+				} catch (Exception e) {
+					System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+					e.getStackTrace();
+					return "redirect: error500";
+				}
 			}
-		}
-		else if(type.equals(Category.TYPE.EXPENSE.toString())){
-			try {
-				Expense flow = new Expense(quantity, new Date(), category, description);
-				UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
-			} catch (Exception e) {
-				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
-				return "redirect: error500";
+			else if(type.equals(Category.TYPE.EXPENSE.toString())){
+				try {
+					Expense flow = new Expense(quantity, new Date(), category, description);
+					UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
+				} catch (Exception e) {
+					System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+					return "redirect: error500";
+				}
 			}
 		}
 		return "redirect: ../login";
 	}
 	
 	//changebudget controller
-		@RequestMapping(value="/login/changebudget", method=RequestMethod.GET)
-		public String changebudget(HttpSession session, @RequestParam("clicked") String clicked) {
+	@RequestMapping(value="/login/changebudget", method=RequestMethod.POST)
+	public String changebudget(HttpSession session, @RequestParam("clicked") String clicked) {
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			HashMap<String, Budget> budgets = (HashMap<String, Budget>) session.getAttribute("budgets");
 			for(Entry<String, Budget> i : budgets.entrySet()){
 				if(i.getValue().getName().equals(clicked)){
 					session.setAttribute("selectedBudget", i.getValue());
 				}
 			}
-			return "redirect: ../login";
 		}
+		return "redirect: ../login";		
+	}
+	
+	
+	//viewdiagrams controller
+	@RequestMapping(value="/login/viewdiagrams", method=RequestMethod.GET)
+	public String viewDiagrams(HttpSession session) {
+			
+		return "redirect: ../login";
+	}
 	
 	//logout controller
 	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public String logout(HttpSession session) {
+		
 		session.setAttribute("logged", false);
 		session.invalidate();
 		return "redirect:index.html";
