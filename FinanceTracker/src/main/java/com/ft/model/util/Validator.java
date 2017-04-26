@@ -29,20 +29,6 @@ public class Validator {
 		return quantity == 0 ? false : true;
 	}
 	
-	public static boolean validCategory(Category category){
-		CategoryDAO catDAO = null;
-		try {
-			catDAO = CategoryDAO.getInstance();
-		} catch (Exception e) {
-			System.out.println("Validator -> validCategory: " + e.getMessage());
-			return false;
-		}
-		if (category != null && (catDAO.getAllDefaultCategories().containsKey(category.getName()) || catDAO.getAllCustomAddedCategories().containsKey(category.getName()))) {
-			return true;
-		}
-		return false;
-	}
-	
 	public static boolean validPassword(String password){
 		if(!validateString(password)){
 			return false;

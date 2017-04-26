@@ -5,6 +5,11 @@ import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 public class Category {
 
+	@Override
+	public String toString() {
+		return "Category [name=" + name + ", icon=" + icon + ", type=" + type + ", id=" + id + "]";
+	}
+
 	public static enum TYPE { INCOME, EXPENSE };
 	private String name;
 	private String icon;

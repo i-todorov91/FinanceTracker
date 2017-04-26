@@ -96,12 +96,17 @@ public class CategoryDAO {
 		return instance;
 	}
 	
-	public synchronized void addCustomCategory(long id, Category toAdd){
-		if(Validator.validCategory(toAdd)){
-			customAddedCategories.put(id, toAdd);
-			
-			// TODO for database
+	public synchronized void addCustomCategory(long id, Category toAdd) throws Exception{
+		for(Entry<Long, Category> cat : CategoryDAO.getInstance().getAllCustomAddedCategories().entrySet()){
+			if(cat.getKey().equals(id)){
+				if(cat.getValue().equals(toAdd)){
+					return;
+				}
+			}
 		}
+		customAddedCategories.put(id, toAdd);
+			
+		// TODO for database
 	}
 	
 	public Map<String, Category> getAllDefaultCategories(){

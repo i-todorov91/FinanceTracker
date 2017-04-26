@@ -48,6 +48,19 @@ public class UserController {
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
 				}
+				try {
+					if(session.getAttribute("categories") == null){
+						String username = (String) session.getAttribute("username");
+						long userId = 0;
+						userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+						session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
+					}
+					if(session.getAttribute("types") == null){
+						session.setAttribute("types", Category.TYPE.values());
+					}
+				} catch(Exception e){
+					
+				}
 			}
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
@@ -184,24 +197,26 @@ public class UserController {
 					break;
 				}
 			}
-		
-			if(type.equals(Category.TYPE.INCOME.toString())){
-				try {
-					Income flow = new Income(quantity, new Date(), category, description);
-					UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
-				} catch (Exception e) {
-					System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
-					e.getStackTrace();
-					return "redirect: error500";
+			
+			if(category != null){
+				if(type.equals(Category.TYPE.INCOME.toString())){
+					try {
+						Income flow = new Income(quantity, new Date(), category, description);
+						UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
+					} catch (Exception e) {
+						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+						e.getStackTrace();
+						return "redirect: error500";
+					}
 				}
-			}
-			else if(type.equals(Category.TYPE.EXPENSE.toString())){
-				try {
-					Expense flow = new Expense(quantity, new Date(), category, description);
-					UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
-				} catch (Exception e) {
-					System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
-					return "redirect: error500";
+				else if(type.equals(Category.TYPE.EXPENSE.toString())){
+					try {
+						Expense flow = new Expense(quantity, new Date(), category, description);
+						UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
+					} catch (Exception e) {
+						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
+						return "redirect: error500";
+					}
 				}
 			}
 		}

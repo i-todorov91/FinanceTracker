@@ -16,7 +16,8 @@ public abstract class CashFlow implements Comparable<CashFlow>{
 	public static enum TYPES { INCOME, EXPENSE };
 	
 	public CashFlow(double quantity, Date date, Category category, TYPES type, String description) throws InvalidCashFlowException {
-		if (!(Validator.validCategory(category)) || !(Validator.validateQuantity(quantity))) {
+
+		if (!(Validator.validateQuantity(quantity))) {
 			throw new InvalidCashFlowException();
 		}
 		this.quantity = quantity;
