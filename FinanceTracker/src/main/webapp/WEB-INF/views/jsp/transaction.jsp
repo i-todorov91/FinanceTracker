@@ -55,6 +55,7 @@
 		      		<option>${item.getName()}</option>
 		      	</c:forEach>
 		    </select>
+			<a href="login/addcategory" class="btn btn-primary">New category</a>
 	      </div>
 	    </div>
 	    <div class="form-group">
