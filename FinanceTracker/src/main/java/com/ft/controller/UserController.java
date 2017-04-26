@@ -121,6 +121,7 @@ public class UserController {
 		session.removeAttribute("addtransaction");
 		session.setAttribute("addbudget", true);
 		session.removeAttribute("diagrams");
+		session.removeAttribute("addcategory");
 		return "redirect: ../login";
 	}
 	
@@ -172,6 +173,7 @@ public class UserController {
 			session.removeAttribute("contact");
 			session.removeAttribute("addbudget");
 			session.removeAttribute("diagrams");
+			session.removeAttribute("addcategory");
 			try {
 				session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
 			} catch (Exception e) {
@@ -247,6 +249,7 @@ public class UserController {
 		session.removeAttribute("addbudget");
 		session.removeAttribute("addtransaction");
 		session.setAttribute("diagrams", true);
+		session.removeAttribute("addcategory");
 		return "redirect: ../login";
 	}
 	

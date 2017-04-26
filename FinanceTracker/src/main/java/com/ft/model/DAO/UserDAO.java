@@ -75,11 +75,11 @@ public class UserDAO {
 					}
 					
 					// find all expenses
-					query = "SELECT quantity, date, description, c.name, i.name AS icon FROM cash_flow cash JOIN expense exp ON cash.id = exp.cash_flow_id JOIN budget_income bi ON bi.income_id = exp.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = exp.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
+					query = "SELECT quantity, date, description, c.name, i.name AS icon FROM cash_flow cash JOIN expense exp ON cash.id = exp.cash_flow_id JOIN budget_expense bi ON bi.expense_id = exp.id JOIN budget bt ON bi.budget_id = bt.id JOIN category c ON c.id = exp.category JOIN default_icon i ON c.icon_id = i.id WHERE bt.id = ?";
 					stmt = con.prepareStatement(query);
 					stmt.setLong(1, budgetId);
 					ResultSet rs3 = stmt.executeQuery();
-					while(rs2.next()){
+					while(rs3.next()){
 						double quantity = rs3.getDouble("quantity");
 						Date date = rs3.getDate(2);
 						String categoryName = rs3.getString("name");
@@ -94,6 +94,8 @@ public class UserDAO {
 					}
 					
 					// add the budget to the user
+					System.out.println(budget.getExpenses());
+					System.out.println(budget.getIncomes());
 					user.addBudget(budget);
 				}
 				allUsers.put(user.getEmail(), user);

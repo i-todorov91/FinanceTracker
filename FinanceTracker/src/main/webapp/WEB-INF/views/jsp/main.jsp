@@ -103,6 +103,10 @@
           <c:if test="${sessionScope.contact == true}">
 			    <c:import url="contact.jsp"></c:import>
           </c:if>
+          
+          <c:if test="${sessionScope.addcategory == true}">
+			    <c:import url="category.jsp"></c:import>
+          </c:if>
       </div>
     </div>
   </section>

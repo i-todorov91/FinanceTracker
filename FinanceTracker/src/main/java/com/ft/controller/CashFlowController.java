@@ -1,5 +1,6 @@
 package com.ft.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -77,7 +78,8 @@ public class CashFlowController {
 	@RequestMapping(value="/login/addcategory", method=RequestMethod.GET)
 	public String addcategoryGet(HttpSession session) {
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			return "category";
+			session.setAttribute("addcategory", true);
+			session.removeAttribute("addtransaction");
 		}
 		return "redirect: ../login";
 	}
@@ -100,8 +102,12 @@ public class CashFlowController {
 				System.out.println("CashFlowController-> addCategoryPost: " + e.getMessage());
 				return "error500";
 			}
-			return "addtransaction";
+			session.setAttribute("addtransaction", true);
+			ArrayList<Category> newCats = (ArrayList<Category>) session.getAttribute("categories");
+			newCats.add(toAdd);
+			System.out.println(newCats);
 		}
+		session.removeAttribute("addcategory");
 		return "redirect: ../login";
 	}
 

@@ -44,6 +44,7 @@ public class MailController {
 		session.removeAttribute("addbudget");
 		session.removeAttribute("addtransaction");
 		session.removeAttribute("diagrams");
+		session.removeAttribute("addcategory");
 		return "redirect: ../login";
 	}
 	

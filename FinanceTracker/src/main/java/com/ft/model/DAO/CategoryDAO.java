@@ -114,11 +114,11 @@ public class CategoryDAO {
 		stmt = con.prepareStatement(query);
 		stmt.setString(1, toAdd.getIcon());
 		ResultSet rs = stmt.executeQuery();
-		long iconId = 0;
+		long iconId = 1;
 		if (rs.next()) {
 			iconId = rs.getLong("id");
 		}
-		
+
 		query = "INSERT IGNORE INTO category(name, icon_id, type_id, role_id) VALUES(?, ?, ?, ?)";
 		stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		stmt.setString(1, toAdd.getName());
@@ -134,6 +134,12 @@ public class CategoryDAO {
 		rs.next();
 		categoryId = rs.getLong(1);
 		toAdd.setId(categoryId);
+		
+		query="INSERT IGNORE INTO user_category(user_id, category_id) VALUES(?, ?)";
+		stmt = con.prepareStatement(query);
+		stmt.setLong(1, id);
+		stmt.setLong(2, categoryId);
+		stmt.executeUpdate();
 		
 		customAddedCategories.put(id, toAdd);
 	}
