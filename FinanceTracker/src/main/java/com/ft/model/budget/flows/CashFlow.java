@@ -10,11 +10,12 @@ public abstract class CashFlow implements Comparable<CashFlow>{
 	private long id;
 	private double quantity;
 	private Date date;
+	private String description;
 	private Category category;
 	private TYPES type;
 	public static enum TYPES { INCOME, EXPENSE };
 	
-	public CashFlow(double quantity, Date date, Category category, TYPES type) throws InvalidCashFlowException {
+	public CashFlow(double quantity, Date date, Category category, TYPES type, String description) throws InvalidCashFlowException {
 		if (!(Validator.validCategory(category)) || !(Validator.validateQuantity(quantity))) {
 			throw new InvalidCashFlowException();
 		}
@@ -22,11 +23,16 @@ public abstract class CashFlow implements Comparable<CashFlow>{
 		this.date = date;
 		this.category = category;
 		this.type = type;
+		this.description = description;
 	}
 	
 	// no need for validation because we use the result from the database
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	public TYPES getType(){

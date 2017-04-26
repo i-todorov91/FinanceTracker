@@ -149,7 +149,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
-	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName) {
+	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
 		
 		// TODO Validate
 		
@@ -165,7 +165,7 @@ public class UserController {
 		
 		if(type.equals(Category.TYPE.INCOME.toString())){
 			try {
-				Income flow = new Income(quantity, new Date(), category);
+				Income flow = new Income(quantity, new Date(), category, description);
 				UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
@@ -175,7 +175,7 @@ public class UserController {
 		}
 		else if(type.equals(Category.TYPE.EXPENSE.toString())){
 			try {
-				Expense flow = new Expense(quantity, new Date(), category);
+				Expense flow = new Expense(quantity, new Date(), category, description);
 				UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());

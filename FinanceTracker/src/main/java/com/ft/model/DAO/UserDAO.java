@@ -65,8 +65,9 @@ public class UserDAO {
 						Date date = rs2.getDate(2);
 						String categoryName = rs2.getString("name");
 						String categoryIcon = rs2.getString("icon");
+						String description = rs2.getString("description");
 						try {
-							budget.addCashFlow(new Income(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.INCOME)));
+							budget.addCashFlow(new Income(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.INCOME), description));
 						} catch (InvalidCashFlowException e) {
 							System.out.println("UserDAO->Budget->Income->	Category: " + e.getMessage());
 							throw e;
@@ -83,8 +84,9 @@ public class UserDAO {
 						Date date = rs3.getDate(2);
 						String categoryName = rs3.getString("name");
 						String categoryIcon = rs3.getString("icon");
+						String description = rs3.getString("description");
 						try {
-							budget.addCashFlow(new Expense(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.EXPENSE)));
+							budget.addCashFlow(new Expense(quantity, date, new Category(categoryName, categoryIcon, Category.TYPE.EXPENSE), description));
 						} catch (InvalidCashFlowException e) {
 							System.out.println("UserDAO->Budget->Income->Category: " + e.getMessage());
 							throw e;
@@ -225,10 +227,11 @@ public class UserDAO {
 			con.setAutoCommit(false);
 		
 			//insert into cash_flow & get id
-			query = "INSERT IGNORE INTO cash_flow(quantity, date) VALUES(?, ?)";
+			query = "INSERT IGNORE INTO cash_flow(quantity, date, description) VALUES(?, ?, ?)";
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setDouble(1, toAdd.getQuantity());
 			stmt.setDate(2, new java.sql.Date(toAdd.getDate().getTime()));
+			stmt.setString(3, toAdd.getDescription());
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -302,10 +305,11 @@ public class UserDAO {
 			con.setAutoCommit(false);
 			
 			//insert into cash_flow & get id
-			query = "INSERT IGNORE INTO cash_flow(quantity, date) VALUES(?, ?)";
+			query = "INSERT IGNORE INTO cash_flow(quantity, date, description) VALUES(?, ?, ?)";
 			stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setDouble(1, toAdd.getQuantity());
 			stmt.setDate(2, new java.sql.Date(toAdd.getDate().getTime()));
+			stmt.setString(3, toAdd.getDescription());
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 			rs.next();

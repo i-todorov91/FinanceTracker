@@ -36,6 +36,12 @@
 	      </div>
 	    </div>
 	    <div class="form-group">
+	      <label for="inputPassword" class="col-lg-2 control-label">Description</label>
+	      <div class="col-lg-10">
+	        <input class="form-control" id="inputText" placeholder="Description" name="description" type="text">
+	      </div>
+	    </div>
+	    <div class="form-group">
 	      <label for="inputPassword" class="col-lg-2 control-label">Date</label>
 	      <div class="col-lg-10">
                 <input id="datepicker" />
