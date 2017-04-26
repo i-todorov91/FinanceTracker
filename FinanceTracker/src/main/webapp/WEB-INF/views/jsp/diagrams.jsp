@@ -18,8 +18,8 @@
 	    <h3 class="panel-title">${sessionScope.selectedBudget.getName()}</h3>
 	  </div>
 	  <div class="panel-body">
-	    <h3>Total income: </h3>
-	    <h3>Total expense: </h3>
+	    <h3>Total income: ${sessionScope.selectedBudget.getBalance().getTotalIncome()}</h3>
+	    <h3>Total expense: ${sessionScope.selectedBudget.getBalance().getTotalExpense()}</h3>
 	    <h3>Current balance: ${sessionScope.selectedBudget.getBalance()}</h3>
 	  </div>
 	</div>

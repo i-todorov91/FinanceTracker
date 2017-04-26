@@ -67,4 +67,20 @@ public class Budget {
 		return Collections.unmodifiableList(incomes);
 	}
 	
+	public double getTotalIncome() {
+		double totalIncome = 0;
+		for (Income income : this.incomes) {
+			totalIncome =+ Math.abs(income.getQuantity());
+		}
+		return totalIncome;		
+	}
+	
+	public double getTotalExpense(){
+		double totalExpense = 0;
+		for (Expense expense : this.expenses) {
+			totalExpense =+ Math.abs(expense.getQuantity());
+		}
+		return totalExpense;	
+	}
+	
 }
