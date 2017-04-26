@@ -1,6 +1,5 @@
 package com.ft.controller;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -13,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
+import com.ft.model.DAO.CategoryDAO;
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
 import com.ft.model.budget.flows.CashFlow;
-import com.ft.model.user.Holder;
+import com.ft.model.budget.flows.Category;
 import com.ft.model.user.User;
 import com.ft.model.util.exceptions.InvalidCashFlowException;
 
@@ -75,4 +74,35 @@ public class CashFlowController {
 		return cashFlows;
 	}
 	
+	@RequestMapping(value="/login/addcategory", method=RequestMethod.GET)
+	public String addcategoryGet(HttpSession session) {
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			return "category";
+		}
+		return "redirect: ../login";
+	}
+	
+	@RequestMapping(value="/login/addcategory", method=RequestMethod.POST)
+	public String addcategoryPost(HttpSession session, @RequestParam("type") String type,@RequestParam("name") String name) {
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			Category.TYPE typ = null;
+			if(type.equals(Category.TYPE.INCOME.toString())){
+				typ = Category.TYPE.INCOME;
+			} else if(type.equals(Category.TYPE.INCOME.toString())){
+				typ = Category.TYPE.EXPENSE;
+			}
+			Category toAdd = null;
+			try {
+				toAdd = new Category(name, "aaa", typ);
+				long userID = UserDAO.getInstance().getAllUsers().get(session.getAttribute("username")).getId();
+				CategoryDAO.getInstance().addCustomCategory(userID, toAdd);
+			} catch (Exception e) {
+				System.out.println("CashFlowController-> addCategoryPost: " + e.getMessage());
+				return "error500";
+			}
+			return "addtransaction";
+		}
+		return "redirect: ../login";
+	}
+
 }

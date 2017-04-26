@@ -114,8 +114,10 @@ public class CategoryDAO {
 		stmt = con.prepareStatement(query);
 		stmt.setString(1, toAdd.getIcon());
 		ResultSet rs = stmt.executeQuery();
-		rs.next();
-		long iconId = rs.getLong("id");
+		long iconId = 0;
+		if (rs.next()) {
+			iconId = rs.getLong("id");
+		}
 		
 		query = "INSERT IGNORE INTO category(name, icon_id, type_id, role_id) VALUES(?, ?, ?, ?)";
 		stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
