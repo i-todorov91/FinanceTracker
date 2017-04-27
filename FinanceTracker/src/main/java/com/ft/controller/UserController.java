@@ -32,27 +32,32 @@ import com.ft.model.util.exceptions.InvalidCashFlowException;
 @Controller
 public class UserController {
 	
-	// login coogin", method=RequestMethod.GET)
+	// login controller
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
 		session.removeAttribute("message");
-		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			if(session.getAttribute("selectedBudget") == null){
-				User user = null;
-				try {
-					user = UserDAO.getInstance().getAllUsers().get((String) session.getAttribute("username"));
-				} catch (Exception e){
-					System.out.println("UserController->/login GET-> load user budgets: " + e.getMessage());
+		try{
+			if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+				String username = (String) session.getAttribute("username");
+				if(session.getAttribute("selectedBudget") == null){
+					User user = null;
+					try {
+						user = UserDAO.getInstance().getAllUsers().get(username);
+					} catch (Exception e){
+						System.out.println("UserController->/login GET-> load user budgets: " + e.getMessage());
+					}
+					session.setAttribute("budgets", user.getBudgets());
+					if(!user.getBudgets().isEmpty()){
+						session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
+					}
 				}
-				session.setAttribute("budgets", user.getBudgets());
-				if(!user.getBudgets().isEmpty()){
-					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
-				}
+				return new ModelAndView("main", "userLogin", new Holder());
 			}
-			return new ModelAndView("main", "userLogin", new Holder());
+			session.setAttribute("logged", false);
+			return new ModelAndView("login", "userLogin", new Holder());
+		} catch(Exception e){
+			return new ModelAndView("error500");
 		}
-		session.setAttribute("logged", false);
-		return new ModelAndView("login", "userLogin", new Holder());
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
@@ -85,7 +90,7 @@ public class UserController {
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
 				}
-				session.setAttribute("diagrams", true);
+				session.setAttribute("url", "diagrams.jsp");
 				return "main";
 			}
 			else
@@ -103,11 +108,7 @@ public class UserController {
 	// login -> addbudget controller
 	@RequestMapping(value="/login/addbudget", method=RequestMethod.GET)
 	public String addbudgetGet(HttpSession session) {
-		session.removeAttribute("contact");
-		session.removeAttribute("addtransaction");
-		session.setAttribute("addbudget", true);
-		session.removeAttribute("diagrams");
-		session.removeAttribute("addcategory");
+		session.setAttribute("url", "budget.jsp");
 		return "redirect: ../login";
 	}
 	
@@ -155,11 +156,7 @@ public class UserController {
 				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
 				return "redirect: error500";
 			}
-			session.setAttribute("addtransaction", true);
-			session.removeAttribute("contact");
-			session.removeAttribute("addbudget");
-			session.removeAttribute("diagrams");
-			session.removeAttribute("addcategory");
+			session.setAttribute("url", "transaction.jsp");
 			try {
 				session.setAttribute("categories", CategoryDAO.getInstance().getAllDefaultList());
 				session.setAttribute("incomeCategories", CategoryDAO.getInstance().getAllUserIncomeCategories(userId));
@@ -245,11 +242,7 @@ public class UserController {
 	public String viewDiagrams(HttpSession session) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			session.removeAttribute("contact");
-			session.removeAttribute("addbudget");
-			session.removeAttribute("addtransaction");
-			session.setAttribute("diagrams", true);
-			session.removeAttribute("addcategory");
+			session.setAttribute("url", "diagrams.jsp");
 		}
 		return "redirect: ../login";
 	}

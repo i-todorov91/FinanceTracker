@@ -39,11 +39,7 @@ public class MailController {
 	
 	@RequestMapping(value="/login/contact", method=RequestMethod.GET)
 	public String sendEmailLogged(HttpSession session) {
-		session.setAttribute("contact", true);
-		session.removeAttribute("addbudget");
-		session.removeAttribute("addtransaction");
-		session.removeAttribute("diagrams");
-		session.removeAttribute("addcategory");
+		session.setAttribute("url", "contact.jsp");
 		return "redirect: ../login";
 	}
 	

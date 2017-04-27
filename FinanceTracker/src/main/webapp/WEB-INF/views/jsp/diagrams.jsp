@@ -205,7 +205,6 @@ window.onload = function () {
 		<div id="chartExpenses" style="height: 450px; width: 450px;"></div>
 		<div id="chartIncomeVsExpense" style="height: 450px; width: 450px;"></div>
 		<div id="monthlyCashflow" style="height: 500px; width: 1000px;"></div>
-		<div id="chartContainer" style="height: 500px; width: 1000px;"></div>
 		</c:if>
 </body>
 </html>

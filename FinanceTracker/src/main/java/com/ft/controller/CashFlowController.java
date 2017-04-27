@@ -78,8 +78,7 @@ public class CashFlowController {
 	@RequestMapping(value="/login/addcategory", method=RequestMethod.GET)
 	public String addcategoryGet(HttpSession session) {
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			session.setAttribute("addcategory", true);
-			session.removeAttribute("addtransaction");
+			session.setAttribute("url", "category.jsp");
 		}
 		return "redirect: ../login";
 	}
@@ -104,7 +103,7 @@ public class CashFlowController {
 				System.out.println("CashFlowController-> addCategoryPost: " + e.getMessage());
 				return "error500";
 			}
-			session.setAttribute("addtransaction", true);
+			session.setAttribute("url", "transaction.jsp");
 			if(type.equals(Category.TYPE.INCOME.toString())){
 				ArrayList<Category> newCats = (ArrayList<Category>) session.getAttribute("incomeCategories");
 				newCats.add(toAdd);
@@ -115,7 +114,6 @@ public class CashFlowController {
 				session.setAttribute("expenseCategories", newCats);
 			}
 		}
-		session.removeAttribute("addcategory");
 		return "redirect: ../login";
 	}
 

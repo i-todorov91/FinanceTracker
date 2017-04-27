@@ -588,6 +588,7 @@ Sidebar
     text-align: left;
     border: none;
     padding: 1em;
+    font-size: 1.5rem; 
   }
   .no-touch .has-children ul a:hover {
     color: #1784c7;
@@ -659,6 +660,7 @@ Sidebar
 	transition:all 0.2s ease-in-out;
 	-moz-transition:all 0.2s ease-in-out;
 	-webkit-transition:all 0.2s ease-in-out;	
+	font-size: 1.5rem;
 	}
 	
 .cd-nav ul li a:hover{

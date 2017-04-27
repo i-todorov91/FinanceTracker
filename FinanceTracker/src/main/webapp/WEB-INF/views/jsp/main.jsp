@@ -46,7 +46,6 @@
       </div>
     </div>
   </header> <!-- .cd-main-header -->
-
   <main class="cd-main-content">
     <nav class="cd-side-nav">
       <ul>
@@ -87,26 +86,7 @@
       <div class="container">
         <div class="top_content">
           <div class="row">
-          
-          <c:if test="${sessionScope.diagrams == true}">
-          		<c:import url="diagrams.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.addtransaction == true}">
-          		<c:import url="transaction.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.addbudget == true}">
-          		<c:import url="budget.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.contact == true}">
-			    <c:import url="contact.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.addcategory == true}">
-			    <c:import url="category.jsp"></c:import>
-          </c:if>
+          	<c:import url="${sessionScope.url}"></c:import>
       </div>
     </div>
   </section>
