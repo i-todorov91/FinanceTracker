@@ -292,12 +292,10 @@ public class UserController {
 		else{
 			try {
 				if(UserDAO.getInstance().addUser(user)){
-					session.setAttribute("register", "Successfully registered. You can <a href=\"login\">login</a> now.");
-					session.setAttribute("color", "alert-success-register");
+					session.setAttribute("register", true);
 				}
 				else{
-					session.setAttribute("register", "The user already exists!");
-					session.setAttribute("color", "alert-danger-register");
+					session.setAttribute("register", false);
 				}
 			} catch (Exception e) {
 				System.out.println("UseController -> register: " + e.getMessage());
