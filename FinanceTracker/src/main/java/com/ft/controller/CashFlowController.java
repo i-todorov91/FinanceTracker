@@ -85,12 +85,13 @@ public class CashFlowController {
 	}
 	
 	@RequestMapping(value="/login/addcategory", method=RequestMethod.POST)
-	public String addcategoryPost(HttpSession session, @RequestParam("type") String type,@RequestParam("name") String name) {
+	public String addcategoryPost(HttpSession session, @RequestParam("type") String type, @RequestParam("name") String name) {
+		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			Category.TYPE typ = null;
 			if(type.equals(Category.TYPE.INCOME.toString())){
 				typ = Category.TYPE.INCOME;
-			} else if(type.equals(Category.TYPE.INCOME.toString())){
+			} else if(type.equals(Category.TYPE.EXPENSE.toString())){
 				typ = Category.TYPE.EXPENSE;
 			}
 			Category toAdd = null;
@@ -98,14 +99,21 @@ public class CashFlowController {
 				toAdd = new Category(name, "aaa", typ);
 				long userID = UserDAO.getInstance().getAllUsers().get(session.getAttribute("username")).getId();
 				CategoryDAO.getInstance().addCustomCategory(userID, toAdd);
+				System.out.println("OK");
 			} catch (Exception e) {
 				System.out.println("CashFlowController-> addCategoryPost: " + e.getMessage());
 				return "error500";
 			}
 			session.setAttribute("addtransaction", true);
-			ArrayList<Category> newCats = (ArrayList<Category>) session.getAttribute("categories");
-			newCats.add(toAdd);
-			System.out.println(newCats);
+			if(type.equals(Category.TYPE.INCOME.toString())){
+				ArrayList<Category> newCats = (ArrayList<Category>) session.getAttribute("incomeCategories");
+				newCats.add(toAdd);
+				session.setAttribute("incomeCategories", newCats);
+			} else if(type.equals(Category.TYPE.EXPENSE.toString())){
+				ArrayList<Category> newCats = (ArrayList<Category>) session.getAttribute("expenseCategories");
+				newCats.add(toAdd);
+				session.setAttribute("expenseCategories", newCats);
+			}
 		}
 		session.removeAttribute("addcategory");
 		return "redirect: ../login";

@@ -24,91 +24,94 @@
 </style>
 <script type="text/javascript">	
 window.onload = function () {
-	var incomes = new CanvasJS.Chart("chartIncomes",
-	{
-		theme: "theme2",
-		title:{
-			text: "Incomes"
-		},
-		data: [
+	<% 
+		if(session.getAttribute("selecteBudget") != null){
+			Budget budget = (Budget) session.getAttribute("selectedBudget");
+	%>
+		var incomes = new CanvasJS.Chart("chartIncomes",
 		{
-			type: "pie",
-			showInLegend: true,
-			toolTipContent: "{y} - #percent %",
-			legendText: "{indexLabel}",
-			dataPoints: [
-				<% 
-					Budget budget = (Budget) session.getAttribute("selectedBudget");
-					for(CashFlow i : budget.getIncomes()){
-				%>
-					{ y: <%= i.getQuantity() %>, indexLabel: "<%= i.getDescription() %>"},
-				<%
-					}
-					
-				%>
-			]
-		}
-		]
-	});
-
-	incomes.render();
-	
-	var expenses = new CanvasJS.Chart("chartExpenses",
+			theme: "theme2",
+			title:{
+				text: "Incomes"
+			},
+			data: [
 			{
-				theme: "theme2",
-				title:{
-					text: "Expenses"
-				},
-				data: [
-				{
-					type: "pie",
-					showInLegend: true,
-					toolTipContent: "{y} - #percent %",
-					legendText: "{indexLabel}",
-					dataPoints: [
-						<% 
-							for(CashFlow i : budget.getExpenses()){
-						%>
-							{ y: <%= i.getQuantity() %>, indexLabel: "<%= i.getDescription() %>"},
-						<%
-							}
-							
-						%>
-					]
-				}
+				type: "pie",
+				showInLegend: true,
+				toolTipContent: "{y} - #percent %",
+				legendText: "{indexLabel}",
+				dataPoints: [
+					<% 
+						for(CashFlow i : budget.getIncomes()){
+					%>
+						{ y: <%= i.getQuantity() %>, indexLabel: "<%= i.getDescription() %>"},
+					<%
+						}
+					%>
 				]
-			});
-			expenses.render();
-			
-	var cashflow = new CanvasJS.Chart("monthlyCashflow", {
-		title: {
-			text: "Monthly Cashflow"
-		},
-		data: [{
-			type: "column",
-			dataPoints: [
-			<% 
-					for(int i = 1; i <= 12; i++){
-				%>
-					{ x: <%= i %>, y: <%= budget.getIncomeForMonth(i) %>},
-				<%
-					}
-			%>
+			}
 			]
-		}, {
-			type: "column",
-			dataPoints: [
-			<% 
-					for(int i = 1; i <= 12; i++){
+		});
+	
+		incomes.render();
+		
+		var expenses = new CanvasJS.Chart("chartExpenses",
+				{
+					theme: "theme2",
+					title:{
+						text: "Expenses"
+					},
+					data: [
+					{
+						type: "pie",
+						showInLegend: true,
+						toolTipContent: "{y} - #percent %",
+						legendText: "{indexLabel}",
+						dataPoints: [
+							<% 
+								for(CashFlow i : budget.getExpenses()){
+							%>
+								{ y: <%= i.getQuantity() %>, indexLabel: "<%= i.getDescription() %>"},
+							<%
+								}
+							%>
+						]
+					]
+				});
+				expenses.render();
+				
+		var cashflow = new CanvasJS.Chart("monthlyCashflow", {
+			title: {
+				text: "Monthly Cashflow"
+			},
+			data: [{
+				type: "column",
+				dataPoints: [
+				<% 
+				if(session.getAttribute("selecteBudget") != null){
+						for(int i = 1; i <= 12; i++){
+					%>
+						{ x: <%= i %>, y: <%= budget.getIncomeForMonth(i) %>},
+					<%
+						}
+				}
 				%>
-					{ x: <%= i %>, y: <%= budget.getExpenseForMonth(i) %>},
-				<%
-					}
-			%>
-			]
-		}]
-	});
-	cashflow.render();
+				]
+			}, {
+				type: "column",
+				dataPoints: [
+				<% 	
+						for(int i = 1; i <= 12; i++){
+					%>
+						{ x: <%= i %>, y: <%= budget.getExpenseForMonth(i) %>},
+					<%
+						}
+				%>
+				]
+			}]
+		});
+		cashflow.render();
+		<% }%>
 }
 	</script>
 	<script src="js/chart/canvasjs.min.js"></script>

@@ -34,7 +34,6 @@ public class MailController {
 		if (session.getAttribute("logged") == null || !(Boolean)session.getAttribute("logged")) {
 			return "redirect: index.html";
 		}
-		session.removeAttribute("contact");
 		return "redirect: login";
 	}
 	

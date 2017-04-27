@@ -48,19 +48,6 @@ public class UserController {
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
 				}
-				try {
-					if(session.getAttribute("categories") == null){
-						String username = (String) session.getAttribute("username");
-						long userId = 0;
-						userId = UserDAO.getInstance().getAllUsers().get(username).getId();
-						session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
-					}
-					if(session.getAttribute("types") == null){
-						session.setAttribute("types", Category.TYPE.values());
-					}
-				} catch(Exception e){
-					
-				}
 			}
 			return new ModelAndView("main", "userLogin", new Holder());
 		}
@@ -72,7 +59,6 @@ public class UserController {
 	public String login(@ModelAttribute("userLogin") Holder holder, HttpSession session, BindingResult result) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			
 			return "main";
 		}
 		
@@ -175,18 +161,21 @@ public class UserController {
 			session.removeAttribute("diagrams");
 			session.removeAttribute("addcategory");
 			try {
-				session.setAttribute("categories", CategoryDAO.getInstance().getAllUserCategories(userId));
+				session.setAttribute("categories", CategoryDAO.getInstance().getAllDefaultList());
+				session.setAttribute("incomeCategories", CategoryDAO.getInstance().getAllUserIncomeCategories(userId));
+				session.setAttribute("expenseCategories", CategoryDAO.getInstance().getAllUserExpenseCategories(userId));
 			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
 				return "redirect: error500";
 			}
+			session.setAttribute("selectedType", Category.TYPE.INCOME.toString());
 			session.setAttribute("types", Category.TYPE.values());
 		}
 		return "redirect: ../login";
 	}
 	
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
-	public String addTransactionPost(HttpSession session, @RequestParam("type") String type, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
+	public String addTransactionPost(HttpSession session, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
 		
 		// TODO Validate
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
@@ -199,6 +188,8 @@ public class UserController {
 					break;
 				}
 			}
+			
+			String type = (String) session.getAttribute("selectedType");
 			
 			if(category != null){
 				if(type.equals(Category.TYPE.INCOME.toString())){
@@ -240,16 +231,26 @@ public class UserController {
 		return "redirect: ../login";		
 	}
 	
+	//change type controller
+		@RequestMapping(value="/login/changetype", method=RequestMethod.POST)
+		public String changetype(HttpSession session, @RequestParam("type") String clicked) {
+			
+			session.setAttribute("selectedType", clicked);
+			return "redirect: ../login";		
+		}
+	
 	
 	//viewdiagrams controller
 	@RequestMapping(value="/login/viewdiagrams", method=RequestMethod.GET)
 	public String viewDiagrams(HttpSession session) {
 		
-		session.removeAttribute("contact");
-		session.removeAttribute("addbudget");
-		session.removeAttribute("addtransaction");
-		session.setAttribute("diagrams", true);
-		session.removeAttribute("addcategory");
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.removeAttribute("contact");
+			session.removeAttribute("addbudget");
+			session.removeAttribute("addtransaction");
+			session.setAttribute("diagrams", true);
+			session.removeAttribute("addcategory");
+		}
 		return "redirect: ../login";
 	}
 	
