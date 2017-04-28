@@ -78,6 +78,9 @@
           	<a href="login/removebudget">Remove budget</a>
         </li>
         <li class="sidebar">
+          	<a href="login/filterdate">Date filter</a>
+        </li>
+        <li class="sidebar">
           	<a href="login/viewdiagrams">View diagrams</a>
         </li>
     </nav>

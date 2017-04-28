@@ -8,10 +8,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.elasticsearch.common.netty.handler.codec.http.HttpResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +26,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ft.model.DAO.CategoryDAO;
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
+import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Category;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 @Controller
 public class UserController {
@@ -170,7 +179,7 @@ public class UserController {
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
 	public String addTransactionPost(HttpSession session, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
 		
-		boolean valid = session.getAttribute("selectedBudget") != null && Validator.validBalance(quantity);
+		boolean valid = session.getAttribute("selectedBudget") != null && quantity != null && Validator.validBalance(quantity); 
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && valid){
 			Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
@@ -297,6 +306,76 @@ public class UserController {
 		}
 		return "redirect: ../login";
 	} 
+	
+	//filterdate controller
+	@RequestMapping(value="/login/filterdate", method=RequestMethod.GET)
+	public String filterDateGet(HttpSession session) {
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.setAttribute("url", "filterdate.jsp");
+		}
+		return "redirect: ../login";
+	}
+	
+	@RequestMapping(value="/login/filterdate", method=RequestMethod.POST)
+	public String filterDatePost(HttpSession session, @RequestParam("from") String from, @RequestParam("to") String to) {
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			
+			session.removeAttribute("filteredData");
+			// validate from and to data
+			DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+			Date fromDate = new Date();
+			Date toDate = new Date();
+			boolean sameDate = false;
+			try{
+				fromDate = formatter.parse(from);
+				toDate = formatter.parse(to);
+				sameDate = (fromDate.getDay() == toDate.getDay()) && (fromDate.getMonth() == toDate.getMonth()) && (fromDate.getYear() == toDate.getYear());
+				if(fromDate.after(toDate) && !sameDate){ 
+					throw new ParseException(to, 0);
+				}
+			} catch(ParseException e){
+				System.out.println("UserController -> login/filterdate -> data parse: " + e.getMessage());
+				return "redirect: ../login";
+			}
+			
+			// get the selected budget and check if it is valid
+			Budget budget = (Budget) session.getAttribute("selectedBudget");
+			String username = (String) session.getAttribute("username");
+			try{
+				if(budget != null && UserDAO.getInstance().getAllUsers().get(username).getBudgets().containsKey(budget.getName())){
+					ArrayList<CashFlow> result = new ArrayList<>();
+					
+					// check all incomes
+					for(CashFlow i : budget.getIncomes()){
+						if(sameDate && i.getDate().getDay() == fromDate.getDay() && i.getDate().getMonth() == fromDate.getMonth() && i.getDate().getYear() == fromDate.getYear()){
+							result.add(i);
+							continue;
+						}
+						if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
+							result.add(i);
+						}
+					}
+					
+					// check all expenses
+					for(CashFlow i : budget.getExpenses()){
+						if(sameDate && i.getDate().getDay() == fromDate.getDay() && i.getDate().getMonth() == fromDate.getMonth() && i.getDate().getYear() == fromDate.getYear()){
+							result.add(i);
+							continue;
+						}
+						if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
+							result.add(i);;
+						}
+					}
+					session.setAttribute("filteredData",result);
+				}
+			} catch(Exception e){
+				return "redirect: ../login";
+			}
+		}
+		return "redirect: ../login";
+	}
 	
 	//viewdiagrams controller
 	@RequestMapping(value="/login/viewdiagrams", method=RequestMethod.GET)

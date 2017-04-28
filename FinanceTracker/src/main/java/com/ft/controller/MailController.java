@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ft.model.DAO.EmailSender;
+import com.ft.model.util.Validator;
 
 @Controller
 public class MailController {
@@ -21,20 +22,24 @@ public class MailController {
 					@RequestParam("subject") String subjectFromUser, 
 						@RequestParam("message") String messageFromUser) {
 		
-		try {
-			EmailSender.getInstance().contactUs(nameFromUser, emailFromUser, subjectFromUser, messageFromUser);
-		} catch (MessagingException e) {
-			System.out.println("MailController: " + e.getMessage());
-			e.printStackTrace();
-			return "error";
-		} catch (Exception e) {
-			System.out.println("MailController -> unexpected error: " + e.getMessage());
-			return "error";
+		boolean validate = Validator.validateString(nameFromUser) && Validator.isValidEmailAddress(emailFromUser) && Validator.validateString(subjectFromUser) && Validator.validateString(messageFromUser);
+		
+		if(validate){
+			try {
+				EmailSender.getInstance().contactUs(nameFromUser, emailFromUser, subjectFromUser, messageFromUser);
+			} catch (MessagingException e) {
+				System.out.println("MailController: " + e.getMessage());
+				e.printStackTrace();
+				return "error";
+			} catch (Exception e) {
+				System.out.println("MailController -> unexpected error: " + e.getMessage());
+				return "error";
+			}
+			if (session.getAttribute("logged") == null || !(Boolean)session.getAttribute("logged")) {
+				return "redirect: index.html";
+			}
 		}
-		if (session.getAttribute("logged") == null || !(Boolean)session.getAttribute("logged")) {
-			return "redirect: index.html";
-		}
-		return "redirect: login";
+		return "redirect: index.html";
 	}
 	
 	@RequestMapping(value="/login/contact", method=RequestMethod.GET)
