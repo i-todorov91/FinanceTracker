@@ -4,7 +4,7 @@
 
 1) pdf with information for the account(budgets, etc)
 2) pdf with the selected budget(incomes, expenses)
-3) remove budget 
+3) remove budget - DONE
 4) filters by date(from - to)
 5) input date
 6) category images
