@@ -1,5 +1,8 @@
 package com.ft.controller;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -118,13 +121,13 @@ public class UserController {
 
 		try {
 			if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-	
+
 				UserDAO userDAO = UserDAO.getInstance();
 				String username = (String) session.getAttribute("username");
 				boolean valid = userDAO.getAllUsers().containsKey(username) &&
-										amount != null && Validator.isValidBalance(amount) && name.length() >= 2 && name.length() <= 15;
+										amount != null && Validator.validBalance(amount) && name.trim().length() >= 2 && name.trim().length() <= 15;
 				if(valid){
-					Budget toAdd = new Budget(name, amount); 
+					Budget toAdd = new Budget(name.trim(), amount); 
 					User user = UserDAO.getInstance().getAllUsers().get(username);
 					UserDAO.getInstance().addBudget(toAdd, user);
 				}
@@ -167,7 +170,7 @@ public class UserController {
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
 	public String addTransactionPost(HttpSession session, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
 		
-		boolean valid = session.getAttribute("selectedBudget") != null && Validator.isValidBalance(quantity);
+		boolean valid = session.getAttribute("selectedBudget") != null && Validator.validBalance(quantity);
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && valid){
 			Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
@@ -203,19 +206,27 @@ public class UserController {
 			}
 			
 			if(category != null){
+				DateFormat formatter = new SimpleDateFormat("MM/dd/YYYY");
+				Date date1 = new Date();
+				try {
+					date1 = formatter.parse(date);
+				} catch (ParseException e1) {
+					System.out.println("UserController-> addTransaction -> parseDate: " + e1.getMessage());
+					return "redirect: ../error500";
+				}
 				if(type.equals(Category.TYPE.INCOME.toString())){
 					try {
-						Income flow = new Income(quantity, new Date(), category, description);
+						Income flow = new Income(quantity, date1, category, description);
 						UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 					} catch (Exception e) {
 						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
 						e.getStackTrace();
 						return "redirect: error500";
-					}
+					} 
 				}
 				else if(type.equals(Category.TYPE.EXPENSE.toString())){
 					try {
-						Expense flow = new Expense(quantity, new Date(), category, description);
+						Expense flow = new Expense(quantity, date1, category, description);
 						UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 					} catch (Exception e) {
 						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
