@@ -147,9 +147,8 @@ window.onload = function () {
 			text: "Monthly Cashflow"
 		},
 		exportEnabled: true,
-		axisY: {
+		axisY: { 
 			includeZero: true,
-			interval: 10,
 			title: "Money (Leva)"
 		},
 		axisX: {
@@ -207,6 +206,6 @@ window.onload = function () {
 		<div id="chartExpenses" style="height: 450px; width: 450px;"></div>
 		<div id="chartIncomeVsExpense" style="height: 450px; width: 450px;"></div>
 		<div id="monthlyCashflow" style="height: 500px; width: 1000px;"></div>
-		</c:if>
+	  </c:if>
 </body>
 </html>

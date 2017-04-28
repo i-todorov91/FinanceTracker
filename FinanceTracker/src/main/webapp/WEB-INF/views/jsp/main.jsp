@@ -84,7 +84,7 @@
           	<a href="login/viewdiagrams">View diagrams</a>
         </li>
     </nav>
-
+	
     <section id="top_content" class="top_cont_outer">
       <div class="container">
         <div class="top_content">

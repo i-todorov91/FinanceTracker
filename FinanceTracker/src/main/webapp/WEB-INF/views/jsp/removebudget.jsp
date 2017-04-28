@@ -8,11 +8,26 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+	h3, select{
+		display: inline-block;
+	}
+</style>
 </head>
 <body>
-	<form action="login/removebudget" method="post">
-		<input name="budgetName"/>
-		<input type="submit"/>
+	<c:if test="${sessionScope.budgets.isEmpty()}">
+		<h1>You have no budgets!</h1>
+	</c:if> 
+	<c:if test="${!sessionScope.budgets.isEmpty()}"> 
+		<form action="login/removebudget" method="post">
+		<h3>Select budget: </h3>
+		<select name="budgetName">
+			<c:forEach var="budget" items="${sessionScope.budgets}">
+				<option>${budget.key}</option>
+			</c:forEach>
+		</select> 
+		<input type="submit" value="Remove budget"/>
 	</form>
+	</c:if>
 </body>
 </html>

@@ -46,7 +46,11 @@ public class Validator {
 		return balance >= 0;
 	}
 	
+	public static boolean isValidBalance(Object balance){
+		return balance.toString().toCharArray()[0] <= '2' && validBalance((Double) balance);
+	}
+	
 	public static boolean isValidBudget(String name, Object balance){
-		return balance.toString().length() <= 10 && balance.toString().toCharArray()[0] <= '2' && validBalance((Double) balance) && validateString(name) && name.length() >= 2 && name.length() <= 20;
+		return balance.toString().length() <= 10 && isValidBalance(balance) && validateString(name) && name.length() >= 2 && name.length() <= 20;
 	}
 }

@@ -1,8 +1,5 @@
 package com.ft.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +24,7 @@ import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
-import com.ft.model.util.exceptions.InvalidCashFlowException;
+import com.ft.model.util.Validator;
 
 @Controller
 public class UserController {
@@ -81,11 +78,11 @@ public class UserController {
 		try {
 			UserDAO userDAO = UserDAO.getInstance();
 			if(userDAO.validLogin(email, password)){
+
+				User user = UserDAO.getInstance().getAllUsers().get(email);
+				session.setMaxInactiveInterval(60*30); // 30 minutes session
 				session.setAttribute("logged", true);
 				session.setAttribute("username", email);
-				session.setMaxInactiveInterval(60*30); // 30 minutes session
-				String userEmail = (String) session.getAttribute("username");
-				User user = UserDAO.getInstance().getAllUsers().get(userEmail);
 				session.setAttribute("budgets", user.getBudgets());
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
@@ -108,7 +105,10 @@ public class UserController {
 	// login -> addbudget controller
 	@RequestMapping(value="/login/addbudget", method=RequestMethod.GET)
 	public String addbudgetGet(HttpSession session) {
-		session.setAttribute("url", "budget.jsp");
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.setAttribute("url", "budget.jsp");
+		}
 		return "redirect: ../login";
 	}
 	
@@ -120,15 +120,11 @@ public class UserController {
 			if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 	
 				UserDAO userDAO = UserDAO.getInstance();
-				if(session.isNew() || (session.getAttribute("logged") != null && !(Boolean) session.getAttribute("logged"))){
-					return "redirect: logout";
-				}
-				String email = (String) session.getAttribute("username");
-				boolean valid = UserDAO.getInstance().getAllUsers().containsKey(email) &&
-										amount != null && name.length() >= 2 && name.length() <= 15;
+				String username = (String) session.getAttribute("username");
+				boolean valid = userDAO.getAllUsers().containsKey(username) &&
+										amount != null && Validator.isValidBalance(amount) && name.length() >= 2 && name.length() <= 15;
 				if(valid){
 					Budget toAdd = new Budget(name, amount); 
-					String username = (String) session.getAttribute("username");
 					User user = UserDAO.getInstance().getAllUsers().get(username);
 					UserDAO.getInstance().addBudget(toAdd, user);
 				}
@@ -153,7 +149,6 @@ public class UserController {
 				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
 				return "redirect: error500";
 			}
-			session.setAttribute("url", "transaction.jsp");
 			try {
 				session.setAttribute("categories", CategoryDAO.getInstance().getAllDefaultList());
 				session.setAttribute("incomeCategories", CategoryDAO.getInstance().getAllUserIncomeCategories(userId));
@@ -162,6 +157,7 @@ public class UserController {
 				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
 				return "redirect: error500";
 			}
+			session.setAttribute("url", "transaction.jsp");
 			session.setAttribute("selectedType", Category.TYPE.INCOME.toString());
 			session.setAttribute("types", Category.TYPE.values());
 		}
@@ -171,8 +167,9 @@ public class UserController {
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
 	public String addTransactionPost(HttpSession session, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
 		
-		// TODO Validate
-		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+		boolean valid = session.getAttribute("selectedBudget") != null && Validator.isValidBalance(quantity);
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && valid){
 			Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
 			Category category = null;
 			ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
@@ -182,8 +179,28 @@ public class UserController {
 					break;
 				}
 			}
-			
+
 			String type = (String) session.getAttribute("selectedType");
+			if(category == null){
+				if(type.equals(Category.TYPE.INCOME.toString())){
+					ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
+					for(Category i : cats){
+						if(i.getName().equals(categoryName)){
+							category = i;
+							break;
+						}
+					}
+				}
+				else if(type.equals(Category.TYPE.EXPENSE.toString())){
+					ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
+					for(Category i : cats){
+						if(i.getName().equals(categoryName)){
+							category = i;
+							break;
+						}
+					}
+				}
+			}
 			
 			if(category != null){
 				if(type.equals(Category.TYPE.INCOME.toString())){
@@ -255,9 +272,11 @@ public class UserController {
 				UserDAO.getInstance().removeBudget(username, budgetName); 
 				session.setAttribute("budgets", user.getBudgets()); 
 				Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
-				if(!user.getBudgets().containsKey(selectedBudget.getName())){
+				if(!user.getBudgets().isEmpty() && !user.getBudgets().containsKey(selectedBudget.getName())){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
-					System.out.println(user.getBudgets());
+				}
+				if(user.getBudgets().isEmpty()){
+					session.setAttribute("selectedBudget", null);
 				}
 			} catch (Exception e){
 				System.out.println("login/removebudget POST: " + e.getMessage());
