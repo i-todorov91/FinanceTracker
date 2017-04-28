@@ -83,7 +83,7 @@ public class UserController {
 			if(userDAO.validLogin(email, password)){
 				session.setAttribute("logged", true);
 				session.setAttribute("username", email);
-				session.setMaxInactiveInterval(60);
+				session.setMaxInactiveInterval(60*30); // 30 minutes session
 				String userEmail = (String) session.getAttribute("username");
 				User user = UserDAO.getInstance().getAllUsers().get(userEmail);
 				session.setAttribute("budgets", user.getBudgets());
@@ -124,13 +124,10 @@ public class UserController {
 					return "redirect: logout";
 				}
 				String email = (String) session.getAttribute("username");
-				boolean valid = (Boolean) session.getAttribute("logged") != null &&
-							(Boolean) session.getAttribute("logged") &&
-								session.getAttribute("username") != null &&
-									UserDAO.getInstance().getAllUsers().containsKey(email) &&
-										amount != null;
+				boolean valid = UserDAO.getInstance().getAllUsers().containsKey(email) &&
+										amount != null && name.length() >= 2 && name.length() <= 15;
 				if(valid){
-					Budget toAdd = new Budget(name, amount);
+					Budget toAdd = new Budget(name, amount); 
 					String username = (String) session.getAttribute("username");
 					User user = UserDAO.getInstance().getAllUsers().get(username);
 					UserDAO.getInstance().addBudget(toAdd, user);
@@ -229,13 +226,47 @@ public class UserController {
 	}
 	
 	//change type controller
-		@RequestMapping(value="/login/changetype", method=RequestMethod.POST)
-		public String changetype(HttpSession session, @RequestParam("type") String clicked) {
-			
-			session.setAttribute("selectedType", clicked);
-			return "redirect: ../login";		
-		}
+	@RequestMapping(value="/login/changetype", method=RequestMethod.POST)
+	public String changetype(HttpSession session, @RequestParam("type") String clicked) {
+		
+		session.setAttribute("selectedType", clicked);
+		return "redirect: ../login";		
+	}
 	
+	//removebudget controller
+	@RequestMapping(value="/login/removebudget", method=RequestMethod.GET)
+	public String removeBudgetGet(HttpSession session) {
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.setAttribute("url", "removebudget.jsp");
+		}
+		return "redirect: ../login";
+	}
+	
+	@RequestMapping(value="/login/removebudget", method=RequestMethod.POST)
+	public String removeBudgetPost(HttpSession session, @RequestParam("budgetName") String budgetName) {
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			try {
+				String username = (String) session.getAttribute("username");
+				User user = UserDAO.getInstance().getAllUsers().get(username);
+				
+				// validation for valid budgetName is in this method
+				UserDAO.getInstance().removeBudget(username, budgetName); 
+				session.setAttribute("budgets", user.getBudgets()); 
+				Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
+				if(!user.getBudgets().containsKey(selectedBudget.getName())){
+					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
+					System.out.println(user.getBudgets());
+				}
+			} catch (Exception e){
+				System.out.println("login/removebudget POST: " + e.getMessage());
+				return "redirect: ../error500";
+			}
+			
+		}
+		return "redirect: ../login";
+	} 
 	
 	//viewdiagrams controller
 	@RequestMapping(value="/login/viewdiagrams", method=RequestMethod.GET)

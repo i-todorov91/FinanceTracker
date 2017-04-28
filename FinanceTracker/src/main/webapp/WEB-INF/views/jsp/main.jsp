@@ -78,6 +78,9 @@
           	<a href="login/addtransaction">Add transaction</a>
         </li>
         <li class="sidebar">
+          	<a href="login/removebudget">Remove budget</a>
+        </li>
+        <li class="sidebar">
           	<a href="login/viewdiagrams">View diagrams</a>
         </li>
     </nav>

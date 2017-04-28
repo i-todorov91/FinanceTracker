@@ -130,9 +130,11 @@ window.onload = function () {
 							double totalIncome = budget.getTotalIncome();
 							double totalExpense = budget.getTotalExpense();
 							double all = totalIncome + totalExpense;
+							double incomeResult = (all == 0) ? 0 : (totalIncome / all) * 100;
+							double expenseResult = (all == 0) ? 0 : (totalExpense / all) * 100;
 						%>
-							{ y: <%= formatter.format((totalIncome / all) * 100) %>, legendText: "Incomes", indexLabel: "Incomes"},
-							{ y: <%= formatter.format((totalExpense / all) * 100) %>, legendText: "Expenses", indexLabel: "Expenses"},
+							{ y: <%= formatter.format(incomeResult) %>, legendText: "Incomes", indexLabel: "Incomes"},
+							{ y: <%= formatter.format(expenseResult) %>, legendText: "Expenses", indexLabel: "Expenses"},
 					]
 				}
 				]

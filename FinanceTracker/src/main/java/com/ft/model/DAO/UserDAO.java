@@ -261,6 +261,8 @@ public class UserDAO {
 			stmt.setLong(2, budgetId);
 			stmt.executeUpdate();
 			
+			con.commit();
+			
 			return true;
 		} catch (SQLException e) {
 			System.out.println("UserDAO->addIncome: " + e.getMessage());
@@ -338,7 +340,9 @@ public class UserDAO {
 			stmt.setDouble(1, newBalance);
 			stmt.setLong(2, budgetId);
 			stmt.executeUpdate();
-
+			
+			con.commit();
+			
 			return true;
 		} catch (SQLException e) {
 			System.out.println("UserDAO->addExpense: " + e.getMessage());
@@ -358,7 +362,114 @@ public class UserDAO {
 			}
 		}
 	}
+	
+	public synchronized void removeBudget(String username, String budgetName) throws SQLException{
+		
+		// check if the budgetName is valid
+		User user = allUsers.get(username);
+		if(user.getBudgets().containsKey(budgetName)){
+				Budget budget = user.getBudgets().get(budgetName);
+				
+				try{
+					// remove from database
+					String query = "";
+					String subquery = "";
+					PreparedStatement stmt = null;
+					PreparedStatement stmt1 = null;
+					ResultSet rs = null;
+					ResultSet rs1 = null;
+					con.setAutoCommit(false);
+					
+					// get the expenses id's for the budget
+					query = "SELECT expense_id FROM budget_expense WHERE budget_id=?";
+					stmt = con.prepareStatement(query);
+					stmt.setLong(1, budget.getId());
+					rs = stmt.executeQuery();
+					while(rs.next()){
+						long expenseId = rs.getLong("expense_id");
+						
+						// for each expense id delete it from the budget_expense
+						subquery = "DELETE FROM budget_expense WHERE expense_id=?";
+						stmt1 = con.prepareStatement(subquery);
+						stmt1.setLong(1, expenseId);
+						stmt1.executeUpdate();
+						
+						// delete the expense
+						subquery = "DELETE FROM expense WHERE id=?";
+						stmt1 = con.prepareStatement(subquery);
+						stmt1.setLong(1, expenseId);
+						stmt1.executeUpdate();
+						
+						// delete the cashflow
+						subquery = "DELETE FROM cash_flow WHERE id=?";
+						stmt1 = con.prepareStatement(subquery);
+						stmt1.setLong(1, expenseId);
+						stmt1.executeUpdate();
+					}
 
+					// remove from budget_income
+					query = "SELECT income_id FROM budget_income WHERE budget_id=?";
+					stmt = con.prepareStatement(query);
+					stmt.setLong(1, budget.getId());
+					rs = stmt.executeQuery();
+					while(rs.next()){
+						long incomeId = rs.getLong("income_id");
+						
+						// for each income id delete it from the budget_income
+						subquery = "DELETE FROM budget_income WHERE income_id=?";
+						stmt1 = con.prepareStatement(subquery);
+						stmt1.setLong(1, incomeId);
+						stmt1.executeUpdate();
+						
+						// delete the income
+						subquery = "DELETE FROM income WHERE id=?";
+						stmt1 = con.prepareStatement(subquery);
+						stmt1.setLong(1, incomeId);
+						stmt1.executeUpdate();
+						
+						// delete the cashflow
+						subquery = "DELETE FROM cash_flow WHERE id=?";
+						stmt1 = con.prepareStatement(subquery);
+						stmt1.setLong(1, incomeId);
+						stmt1.executeUpdate();
+					}
+					
+					// remove from user_budget
+					query = "DELETE FROM user_budget WHERE budget_id=?";
+					stmt = con.prepareStatement(query);
+					stmt.setLong(1, budget.getId());
+					stmt.executeUpdate();
+					
+					// remove from budget
+					query = "DELETE FROM budget WHERE id=?";
+					stmt = con.prepareStatement(query);
+					stmt.setLong(1, budget.getId());
+					stmt.executeUpdate();
+					
+					// remove from the user's ArrayList of budgets
+					user.getBudgets().remove(budget.getName());
+					
+					con.commit();
+					
+				} catch(SQLException e){
+					System.out.println("UserDAO->removeBudget: " + e.getMessage());
+					try {
+						con.rollback();
+					} catch (SQLException e1) {
+						System.out.println("UserDAO->removeBudget->rollBack: " + e1.getMessage());
+						throw e1;
+					}
+					throw e;
+				} finally {
+					try {
+						con.setAutoCommit(true);
+					} catch (SQLException e) {
+						System.out.println("UserDAO->removeBudget->setAutoCommit(true): " + e.getMessage());
+						throw e;
+					}
+				}
+		}
+	}
 	
 	public boolean validLogin(String email, String password) throws SQLException{
 		if(!allUsers.containsKey(email)){
