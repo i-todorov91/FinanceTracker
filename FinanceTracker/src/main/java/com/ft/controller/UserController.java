@@ -205,14 +205,14 @@ public class UserController {
 				}
 			}
 			
-			if(category != null){
-				DateFormat formatter = new SimpleDateFormat("MM/dd/YYYY");
+			if(category != null && true){
+				DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 				Date date1 = new Date();
 				try {
 					date1 = formatter.parse(date);
 				} catch (ParseException e1) {
 					System.out.println("UserController-> addTransaction -> parseDate: " + e1.getMessage());
-					return "redirect: ../error500";
+					return "redirect: ../login";
 				}
 				if(type.equals(Category.TYPE.INCOME.toString())){
 					try {
