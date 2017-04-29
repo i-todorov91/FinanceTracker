@@ -1,4 +1,4 @@
-package com.ft.model.DAO;
+package com.ft.model.util;
 
 import java.util.Date;
 import java.util.Properties;

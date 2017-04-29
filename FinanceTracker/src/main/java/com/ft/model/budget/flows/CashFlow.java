@@ -59,11 +59,30 @@ public abstract class CashFlow implements Comparable<CashFlow>{
 	@Override
 	public int compareTo(CashFlow o) {
 		if (this.getDate().before(o.getDate())) {
-			return -1;
-		} else if (this.getDate().after(o.getDate())) {
 			return 1;
+		} else if (this.getDate().after(o.getDate())) {
+			return -1;
+		} else {
+			if ((this.getQuantity() - o.getQuantity()) > 0) {
+				return 1;
+			} else if ((this.getQuantity() - o.getQuantity()) < 0) {
+				return -1;
+			} else {
+				if ((this.getDescription().compareTo(o.getDescription()) > 0)) {
+					return 1;
+				} else if ((this.getDescription().compareTo(o.getDescription()) < 0)) {
+					return -1;
+				} else {
+					if ((this.getCategory().getName().compareTo(o.getCategory().getName()) > 0)) {
+						return 1;
+					} else if ((this.getCategory().getName().compareTo(o.getCategory().getName()) > 0)) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			}
 		}
-		return 0;
 	}
 	
 }

@@ -11,12 +11,12 @@ import javax.mail.MessagingException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.ft.model.DAO.EmailSender;
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.User;
+import com.ft.model.util.EmailSender;
 import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Component
