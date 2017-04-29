@@ -8,6 +8,6 @@
 4) filters by date(from - to)
 5) input date - DONE
 6) category images
-7) spring form validation
+7) spring form validation - DONE
 8) validation - DONE
 

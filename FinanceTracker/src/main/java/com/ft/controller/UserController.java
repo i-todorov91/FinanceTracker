@@ -98,7 +98,7 @@ public class UserController {
 			else
 			{
 				session.setAttribute("logged", false);
-				session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
+				session.setAttribute("message", true);
 				return "login";
 			}
 		} catch (Exception e) {

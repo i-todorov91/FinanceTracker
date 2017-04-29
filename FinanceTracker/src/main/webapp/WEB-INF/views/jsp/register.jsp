@@ -65,12 +65,4 @@
 		</form:form>
 	</div>
 </body>
-
-<script>
-	$(document).ready(function () {
-    	$('#logo').addClass('animated fadeInDown');
-    	$("input:text:visible:first").focus();
-	});
-</script>
-
 </html>
