@@ -185,8 +185,10 @@ window.onload = function () {
 <% } %>
 }
 	</script>
-	<script src="js/chart/canvasjs.min.js"></script>
-<body>
+	<script type="text/javascript" src="js/chart/canvasjs.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0-beta.1/jquery-ui.min.js"></script>
+<body>  
 	  <c:if test="${sessionScope.selectedBudget == null}">
 	  	<h3>No budget's added</h3>
 	  </c:if>
@@ -201,7 +203,7 @@ window.onload = function () {
 		    <h4>Total expense: ${sessionScope.selectedBudget.getTotalExpense()} Leva</h4>
 		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} Leva</h4>
 		  </div>
-		</div>
+		</div>	
 		<div id="chartIncomes" style="height: 450px; width: 450px;"></div>	
 		<div id="chartExpenses" style="height: 450px; width: 450px;"></div>
 		<div id="chartIncomeVsExpense" style="height: 450px; width: 450px;"></div>

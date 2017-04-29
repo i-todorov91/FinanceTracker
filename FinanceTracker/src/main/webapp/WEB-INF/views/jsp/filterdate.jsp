@@ -23,11 +23,8 @@
 		<input type="date" id="datepicker" name="to" placeholder="to"/>
 		<input type="submit" value="Go"/>
 	</form>
-	<c:if test="${sessionScope.filteredData != null}">
-		<br>
-		<c:forEach var="cashflow" items="${sessionScope.filteredData}">
-			<h4>Type: ${cashflow.getType().toString()}, Quantity: ${cashflow.getQuantity()} Leva, Description: ${cashflow.getDescription()}</h4>
-		</c:forEach>
-	</c:if>
+	<c:forEach items="${filteredData}" var="data">
+		${data}
+	</c:forEach>
 </body>
 </html>
