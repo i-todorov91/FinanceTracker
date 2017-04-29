@@ -10,6 +10,10 @@
 	#errorDiv:empty{
 		visibility: hidden;
 	}
+	
+	#hiddenDiv{
+		visibility: hidden;
+	}
 </style>
 <head>
 	<meta charset="utf-8">
@@ -61,7 +65,8 @@
 				<br/>
 				<input id="register-btn1" type="submit" value="Register"/>
 				<br/>
-			</div>	
+			</div>
+			<div id="hiddenDiv" class="alert-register alert-dismissible alert-danger-register"><form:errors path="*"/></div>	
 		</form:form>
 	</div>
 </body>
