@@ -7,16 +7,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+ 
   <link rel="icon" href="img/favicon.png" type="image/png">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="css/style.css" rel="stylesheet" type="text/css">
   <link href="css/responsive.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/sidebar/style.css"> <!-- Resource style -->
 
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,900,700,700italic,400italic,300italic,300,100italic,100,900italic' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Dosis:400,500,700,800,600,300,200' rel='stylesheet' type='text/css'>
 
   <!-- =======================================================
       Theme Name: Butterfly
@@ -25,9 +22,9 @@
       Author URL: https://bootstrapmade.com
   ======================================================= -->
 
-  <script type="text/javascript" src="js/lib/jquery.1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/sidebar/jquery-2.1.4.js"></script>
   <script type="text/javascript" src="js/lib/bootstrap.js"></script>
-  <script src="js/sidebar/modernizr.js"></script> <!-- Modernizr -->
+  <script type="text/javascript" src="js/sidebar/modernizr.js"></script> <!-- Modernizr -->
   <title>Finance Tracker</title>
 </head>
 <body>
@@ -46,7 +43,6 @@
       </div>
     </div>
   </header> <!-- .cd-main-header -->
-
   <main class="cd-main-content">
     <nav class="cd-side-nav">
       <ul>
@@ -79,39 +75,26 @@
           	<a href="login/addtransaction">Add transaction</a>
         </li>
         <li class="sidebar">
+          	<a href="login/removebudget">Remove budget</a>
+        </li>
+        <li class="sidebar">
+          	<a href="login/filterdate">Date filter</a>
+        </li>
+        <li class="sidebar">
           	<a href="login/viewdiagrams">View diagrams</a>
         </li>
     </nav>
-
+	
     <section id="top_content" class="top_cont_outer">
       <div class="container">
         <div class="top_content">
           <div class="row">
-          
-          <c:if test="${sessionScope.diagrams == true}">
-          		<c:import url="diagrams.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.addtransaction == true}">
-          		<c:import url="transaction.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.addbudget == true}">
-          		<c:import url="budget.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.contact == true}">
-			    <c:import url="contact.jsp"></c:import>
-          </c:if>
-          
-          <c:if test="${sessionScope.addcategory == true}">
-			    <c:import url="category.jsp"></c:import>
-          </c:if>
+          	<c:import url="${sessionScope.url}"></c:import>
       </div>
     </div>
   </section>
   </main> <!-- .cd-main-content -->
-<footer class="footer_section">
+<footer class="footer_section"> 
   <div class="container">
     <div class="footer_bottom"> 
         <span>© Finance Tracker 2017</span> 
@@ -127,8 +110,7 @@
     </div>
   </div>
 </footer>
-<script src="js/sidebar/jquery-2.1.4.js"></script>
-<script src="js/sidebar/jquery.menu-aim.js"></script>
-<script src="js/sidebar/main.js"></script> <!-- Resource jQuery -->
+<script type="text/javascript" src="js/sidebar/jquery.menu-aim.js"></script>
+<script type="text/javascript" src="js/sidebar/main.js"></script> <!-- Resource jQuery -->
 </body>
 </html>

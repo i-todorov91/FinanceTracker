@@ -19,7 +19,7 @@ public class CategoryDAO {
 	
 	private static CategoryDAO instance = null;
 	private static HashMap<String, Category> defaultCategories = new HashMap<>(); //Category name -> Category
-	private static HashMap<Long, Category> customAddedCategories = new HashMap<>(); //User id -> Category
+	private static HashMap<String, HashMap<Long, Category>> customAddedCategories = new HashMap<>(); //User id -> Category
 	
 	private CategoryDAO() throws Exception{
 		
@@ -78,7 +78,9 @@ public class CategoryDAO {
 						newCategory = new Category(categorieName, categorieIcon, Category.TYPE.EXPENSE);
 						newCategory.setId(categorieId);
 					}
-					customAddedCategories.put(userId, newCategory);
+					HashMap<Long, Category> cat = new HashMap<>();
+					cat.put(userId, newCategory);
+					customAddedCategories.put(newCategory.getName(), cat);
 				} catch (InvalidCashFlowException e) {
 					System.out.println("CategoryDAO->Custom categories->InvalidCashFlow: " + e.getMessage());
 					throw e;
@@ -98,10 +100,12 @@ public class CategoryDAO {
 	}
 	
 	public synchronized void addCustomCategory(long id, Category toAdd) throws Exception{
-		for(Entry<Long, Category> cat : CategoryDAO.getInstance().getAllCustomAddedCategories().entrySet()){
-			if(cat.getKey().equals(id)){
-				if(cat.getValue().equals(toAdd)){
-					return;
+		for(Entry<String,HashMap<Long, Category>> cat : customAddedCategories.entrySet()){
+			for(Entry<Long, Category> i : cat.getValue().entrySet()){
+				if(i.getKey().equals(id)){
+					if(i.getValue().equals(toAdd)){
+						return;
+					}
 				}
 			}
 		}
@@ -141,26 +145,49 @@ public class CategoryDAO {
 		stmt.setLong(2, categoryId);
 		stmt.executeUpdate();
 		
-		customAddedCategories.put(id, toAdd);
+		HashMap<Long, Category> cat = new HashMap<>();
+		cat.put(id, toAdd);
+		customAddedCategories.put(toAdd.getName(), cat);
 	}
 	
 	public Map<String, Category> getAllDefaultCategories(){
 		return Collections.unmodifiableMap(defaultCategories);
 	}
 	
-	public Map<Long, Category> getAllCustomAddedCategories(){
+	public Map<String,Map<Long, Category>> getAllCustomAddedCategories(){
 		return Collections.unmodifiableMap(customAddedCategories);
 	}
 	
-	public ArrayList<Category> getAllUserCategories(long userId){
+	public ArrayList<Category> getAllDefaultList(){
 		ArrayList<Category> result = new ArrayList<>();
 		for(Entry<String, Category> i : defaultCategories.entrySet()){
 			result.add(i.getValue());
 		}
-		for(Entry<Long, Category> i : customAddedCategories.entrySet()){
-			if(i.getKey() == userId){
-				result.add(i.getValue());
+		return result;
+	}
+	
+	public ArrayList<Category> getAllUserIncomeCategories(long userId){
+		ArrayList<Category> result = new ArrayList<>();
+		for(Entry<String, HashMap<Long, Category>> i : customAddedCategories.entrySet()){
+			for(Entry<Long, Category> j : i.getValue().entrySet()){
+				if(j.getKey() == userId && j.getValue().getType() == Category.TYPE.INCOME){
+					result.add(j.getValue());
+				}
 			}
+			
+		}
+		return result;
+	}
+	
+	public ArrayList<Category> getAllUserExpenseCategories(long userId){
+		ArrayList<Category> result = new ArrayList<>();
+		for(Entry<String, HashMap<Long, Category>> i : customAddedCategories.entrySet()){
+			for(Entry<Long, Category> j : i.getValue().entrySet()){
+				if(j.getKey() == userId && j.getValue().getType() == Category.TYPE.EXPENSE){
+					result.add(j.getValue());
+				}
+			}
+			
 		}
 		return result;
 	}

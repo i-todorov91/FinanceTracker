@@ -27,9 +27,16 @@
 			<h1 id="title" class="hidden"><a href="index.html"><span id="logo">Finance Tracker</span></a></h1>
 		</div>
 		<c:if test="${sessionScope.register != null}">
-			<div class="alert-register alert-dismissible <c:out value="${sessionScope.color}"></c:out>">
-					<h1> ${sessionScope.register} </h1>
-			</div>
+			<c:if test="${sessionScope.register == true}">
+				<div class="alert-register alert-dismissible alert-success-register">
+					<h1> User successfully registered, you can login <a href="login"><strong>here</strong></a></h1>
+				</div>
+			</c:if>
+			<c:if test="${sessionScope.register == false}">
+				<div class="alert-register alert-dismissible alert-danger-register">
+					<h1> Could, not register user! </h1>
+				</div>
+			</c:if>
 		</c:if>
 		<div class="login-box animated fadeInUp register-box">
 			<div class="box-header">

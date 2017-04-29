@@ -1,3 +1,7 @@
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.text.NumberFormat"%>
+<%@page import="com.ft.model.budget.flows.Category"%>
+<%@page import="java.util.Map.Entry"%>
 <%@page import="com.ft.model.budget.flows.CashFlow"%>
 <%@page import="com.ft.model.budget.flows.Income"%>
 <%@page import="com.ft.model.budget.Budget"%>
@@ -18,34 +22,48 @@
 		width: 400px;
 		height: 200px;
 	}
-	#chartIncomes, #chartExpenses{
+	#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
 		display: inline-block;
+	}
+	.row{
+		width: 1500px;
 	}
 </style>
 <script type="text/javascript">	
 window.onload = function () {
+	<% if(session.getAttribute("selectedBudget") != null){
+		Budget budget = (Budget) session.getAttribute("selectedBudget");
+		NumberFormat formatter = new DecimalFormat("#.00");
+	%>
 	var incomes = new CanvasJS.Chart("chartIncomes",
 	{
 		theme: "theme2",
-		title:{
-			text: "Incomes"
+		title: {
+			text: "Income Categories"
+		},
+		exportFileName: "income-categories",
+		exportEnabled: true,
+		animationEnabled: true,
+		legend: {
+			verticalAlign: "bottom",
+			horizontalAlign: "center"
 		},
 		data: [
 		{
 			type: "pie",
 			showInLegend: true,
-			toolTipContent: "{y} - #percent %",
-			legendText: "{indexLabel}",
+			toolTipContent: "{legendText}: <strong>{y}%</strong>",
+			indexLabel: "{label} {y}%",
 			dataPoints: [
-				<% 
-					Budget budget = (Budget) session.getAttribute("selectedBudget");
-					for(CashFlow i : budget.getIncomes()){
-				%>
-					{ y: <%= i.getQuantity() %>, indexLabel: "<%= i.getDescription() %>"},
-				<%
-					}
-					
-				%>
+			<% 
+				double allIncomes = budget.getTotalIncome();
+				for(Entry<Category, Double> i : budget.getIncomesCategory().entrySet()){
+			%>
+				{ y: <%= formatter.format((i.getValue() / allIncomes) * 100) %>, legendText: '<%= i.getKey().getName() %>', indexLabel: "<%= i.getKey().getName() %>"},
+			<%
+				}
+				
+			%>
 			]
 		}
 		]
@@ -54,43 +72,97 @@ window.onload = function () {
 	incomes.render();
 	
 	var expenses = new CanvasJS.Chart("chartExpenses",
+		{
+			theme: "theme2",
+			title: {
+				text: "Expense Categories"
+			},
+			exportFileName: "expense-categories",
+			exportEnabled: true,
+			animationEnabled: true,
+			legend: {
+				verticalAlign: "bottom",
+				horizontalAlign: "center"
+			},
+			data: [
+			{
+				type: "pie",
+				showInLegend: true,
+				toolTipContent: "{legendText}: <strong>{y}%</strong>",
+				indexLabel: "{label} {y}%",
+				dataPoints: [
+				<% 
+					double allExpenses = budget.getTotalExpense();
+					for(Entry<Category, Double> i : budget.getExpenseCategory().entrySet()){
+				%>
+				{ y: <%= formatter.format((i.getValue() / allExpenses) * 100) %>, legendText: '<%= i.getKey().getName() %>', indexLabel: "<%= i.getKey().getName() %>"},
+				<%
+					}
+					
+				%>
+				]
+			}
+			]
+		});
+		expenses.render();
+	
+	var incomeVsExpense = new CanvasJS.Chart("chartIncomeVsExpense",
 			{
 				theme: "theme2",
-				title:{
-					text: "Expenses"
+				title: {
+					text: "Income/Expense"
+				},
+				exportFileName: "income-expense",
+				exportEnabled: true,
+				animationEnabled: true,
+				legend: {
+					verticalAlign: "bottom",
+					horizontalAlign: "center"
 				},
 				data: [
 				{
 					type: "pie",
 					showInLegend: true,
-					toolTipContent: "{y} - #percent %",
-					legendText: "{indexLabel}",
+					toolTipContent: "{legendText}: <strong>{y}%</strong>",
+					indexLabel: "{label} {y}%",
 					dataPoints: [
 						<% 
-							for(CashFlow i : budget.getExpenses()){
+							double totalIncome = budget.getTotalIncome();
+							double totalExpense = budget.getTotalExpense();
+							double all = totalIncome + totalExpense;
+							double incomeResult = (all == 0) ? 0 : (totalIncome / all) * 100;
+							double expenseResult = (all == 0) ? 0 : (totalExpense / all) * 100;
 						%>
-							{ y: <%= i.getQuantity() %>, indexLabel: "<%= i.getDescription() %>"},
-						<%
-							}
-							
-						%>
+							{ y: <%= formatter.format(incomeResult) %>, legendText: "Incomes", indexLabel: "Incomes"},
+							{ y: <%= formatter.format(expenseResult) %>, legendText: "Expenses", indexLabel: "Expenses"},
 					]
 				}
 				]
 			});
-			expenses.render();
+
+	incomeVsExpense.render();
 			
 	var cashflow = new CanvasJS.Chart("monthlyCashflow", {
 		title: {
 			text: "Monthly Cashflow"
 		},
+		exportEnabled: true,
+		axisY: { 
+			includeZero: true,
+			title: "Money (Leva)"
+		},
+		axisX: {
+			includeZero: false,
+			interval: 1,
+			title: "Months"
+			},
 		data: [{
 			type: "column",
 			dataPoints: [
 			<% 
 					for(int i = 1; i <= 12; i++){
 				%>
-					{ x: <%= i %>, y: <%= budget.getIncomeForMonth(i) %>},
+					{ x: <%= i %> , y: <%= budget.getIncomeForMonth(i) %>},
 				<%
 					}
 			%>
@@ -109,6 +181,8 @@ window.onload = function () {
 		}]
 	});
 	cashflow.render();
+	
+<% } %>
 }
 	</script>
 	<script src="js/chart/canvasjs.min.js"></script>
@@ -128,9 +202,10 @@ window.onload = function () {
 		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} Leva</h4>
 		  </div>
 		</div>
-		<div id="chartIncomes" style="height: 500px; width: 500px;"></div>	
-		<div id="chartExpenses" style="height: 500px; width: 500px;"></div>
+		<div id="chartIncomes" style="height: 450px; width: 450px;"></div>	
+		<div id="chartExpenses" style="height: 450px; width: 450px;"></div>
+		<div id="chartIncomeVsExpense" style="height: 450px; width: 450px;"></div>
 		<div id="monthlyCashflow" style="height: 500px; width: 1000px;"></div>
-		</c:if>
+	  </c:if>
 </body>
 </html>

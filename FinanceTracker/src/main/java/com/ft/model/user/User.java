@@ -79,7 +79,7 @@ public class User {
 		this.password = password;
 	}
 
-	public synchronized Map<String, Budget> getBudgets() {
+	public HashMap<String, Budget> getBudgets() {
 		return budgets;
 	}
 

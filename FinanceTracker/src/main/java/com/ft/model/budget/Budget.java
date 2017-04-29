@@ -2,12 +2,14 @@ package com.ft.model.budget;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.ft.model.budget.flows.CashFlow;
+import com.ft.model.budget.flows.Category;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.util.exceptions.InvalidBudgetException;
@@ -65,6 +67,32 @@ public class Budget {
 	
 	public List<CashFlow> getIncomes(){
 		return Collections.unmodifiableList(incomes);
+	}
+	
+	public HashMap<Category, Double> getIncomesCategory(){
+		HashMap<Category, Double> res = new HashMap<>();
+		for(Income i : incomes){
+			if(res.containsKey(i.getCategory())){
+				res.put(i.getCategory(), res.get(i.getCategory()) + i.getQuantity());
+			}
+			else{
+				res.put(i.getCategory(), i.getQuantity());
+			}
+		}
+		return res;
+	}
+	
+	public HashMap<Category, Double> getExpenseCategory(){
+		HashMap<Category, Double> res = new HashMap<>();
+		for(Expense i : expenses){
+			if(res.containsKey(i.getCategory())){
+				res.put(i.getCategory(), res.get(i.getCategory()) + i.getQuantity());
+			}
+			else{
+				res.put(i.getCategory(), i.getQuantity());
+			}
+		}
+		return res;
 	}
 	
 	public double getTotalIncome() {

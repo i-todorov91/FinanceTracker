@@ -1,2 +1,13 @@
 1/ Dont need transaction when we are selecting
 2/ DAO's cant catch exceptions it has to send them to the controller
+
+
+1) pdf with information for the account(budgets, etc)
+2) pdf with the selected budget(incomes, expenses)
+3) remove budget - DONE
+4) filters by date(from - to)
+5) input date
+6) category images
+7) spring form validation
+8) validation
+
