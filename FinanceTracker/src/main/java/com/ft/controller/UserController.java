@@ -8,12 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.elasticsearch.common.netty.handler.codec.http.HttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,10 +30,6 @@ import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 @Controller
 public class UserController {
@@ -105,7 +98,7 @@ public class UserController {
 			else
 			{
 				session.setAttribute("logged", false);
-				session.setAttribute("message", "There was an error with your E-Mail/Password combination. Please try again.");
+				session.setAttribute("message", true);
 				return "login";
 			}
 		} catch (Exception e) {
@@ -318,7 +311,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login/filterdate", method=RequestMethod.POST)
-	public String filterDatePost(HttpSession session, @RequestParam("from") String from, @RequestParam("to") String to) {
+	public String filterDatePost(HttpSession session, @RequestParam("from") String from, @RequestParam("to") String to, Model model) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			
@@ -368,7 +361,10 @@ public class UserController {
 							result.add(i);;
 						}
 					}
-					session.setAttribute("filteredData",result);
+					model.addAttribute("filteredData", result);
+					System.out.println(model);
+					System.out.println(result);
+					//session.setAttribute("filteredData",result);
 				}
 			} catch(Exception e){
 				return "redirect: ../login";
@@ -412,17 +408,13 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public String register(@Valid @ModelAttribute("userRegister") User user, BindingResult result, HttpSession session){
+	public String register(@ModelAttribute("userRegister") @Valid  User user, BindingResult result, HttpSession session){
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			session.invalidate();
 		}
 		
-		if(result.hasErrors()){
-			session.setAttribute("register", "Could not register. Please, enter a valid data!");
-			session.setAttribute("color", "alert-danger-register");
-		}
-		else{
+		if(!result.hasErrors()){
 			try {
 				if(UserDAO.getInstance().addUser(user)){
 					session.setAttribute("register", true);

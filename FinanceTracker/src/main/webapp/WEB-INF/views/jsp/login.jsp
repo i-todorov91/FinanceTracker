@@ -30,9 +30,9 @@
 				<a href="index.html"><span id="logo">Finance Tracker</span></a>
 			</h1>
 		</div>
-		<c:if test="${sessionScope.logged != null && sessionScope.logged == false && sessionScope.message != null}">
+		<c:if test="${sessionScope.logged != null && sessionScope.logged == false && sessionScope.message == true}">
 			<div class="alert-register alert-dismissible alert-danger-register">
-				<h3><c:out value=" ${sessionScope.message}"></c:out></h3>
+				<h3>There was an error with your E-Mail/Password combination. Please try again.</h3>
 			</div>
 		</c:if>
 
@@ -53,24 +53,4 @@
 		</div>
 	</div>
 </body>
-
-<script>
-	$(document).ready(function () {
-    	$('#logo').addClass('animated fadeInDown');
-    	$("input:text:visible:first").focus();
-	});
-	$('#username').focus(function() {
-		$('label[for="username"]').addClass('selected');
-	});
-	$('#username').blur(function() {
-		$('label[for="username"]').removeClass('selected');
-	});
-	$('#password').focus(function() {
-		$('label[for="password"]').addClass('selected');
-	});
-	$('#password').blur(function() {
-		$('label[for="password"]').removeClass('selected');
-	});
-</script>
-
 </html>

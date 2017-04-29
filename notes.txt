@@ -6,8 +6,8 @@
 2) pdf with the selected budget(incomes, expenses)
 3) remove budget - DONE
 4) filters by date(from - to)
-5) input date
+5) input date - DONE
 6) category images
-7) spring form validation
-8) validation
+7) spring form validation - DONE
+8) validation - DONE
 

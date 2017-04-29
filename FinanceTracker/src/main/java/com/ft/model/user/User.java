@@ -14,23 +14,23 @@ import com.ft.model.util.Validator;
 
 
 public class User {
-	@NotNull
-	@Size(min=2, max=30)
+	
+	@NotNull(message="Please, enter a valid email address!")
+	@Email(message="Please, enter a valid email address!")
+	private String email;
+	
+	@NotNull(message="Your first name must be between 2 and 30 characters long!")
+	@Size(min=2, max=30, message="Your first name must be between 2 and 30 characters long!")
 	private String firstName;
 	
-	@NotNull
-	@Size(min=2, max=30)
+	@NotNull(message="Your last name must be between 2 and 30 characters long!")
+	@Size(min=2, max=30, message="Your last name must be between 2 and 30 characters long!")
 	private String lastName;
 	
 	private long id;
 	
-	@NotNull
-	@Email
-	private String email;
-	
-	@NotNull
-	@Size(min=8, max=20)
-	@Pattern(regexp="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%\\*^&+=]).{8,})")
+	@NotNull(message="Your password must be between 8 and 20 characters long and must contain at least 1 digit, 1 small letter, 1 capital letter, and 1 special symbol from these *^&+=")
+	@Pattern(regexp="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%\\*^&+=]).{8,20})", message="Your password must be between 8 and 20 characters long and must contain at least 1 digit, 1 small letter, 1 capital letter, and 1 special symbol from these *^&+=")
 	private String password;
 	
 	private HashMap<String, Budget> budgets; //BudgetName -> Budget

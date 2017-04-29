@@ -17,7 +17,7 @@ body {
   font-size: 1.6rem;
   font-family: "Open Sans", sans-serif;
   color: #3e454c;
-  background-color: #ffffff;
+  background-color: #ffffff; 
 }
 body::after {
   clear: both;
@@ -292,8 +292,8 @@ Sidebar
   background-color: #2c3136;
   visibility: hidden;
   opacity: 0;
-  max-height: 100vh;
-  overflow: hidden;
+  max-height: 200vh;
+  overflow: hidden; 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-transition: opacity 0.2s 0s, visibility 0s 0.2s;
@@ -708,4 +708,8 @@ Sidebar
 	font-weight: bolder;
 }
 
+#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+	display: block;
+}
+}
 
