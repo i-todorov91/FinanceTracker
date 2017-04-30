@@ -710,9 +710,5 @@ Sidebar
 .sidebar a{
 	font-weight: bolder;
 }
-
-#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
-	display: block;
-}
 }
 

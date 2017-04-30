@@ -28,7 +28,7 @@
   <title>Finance Tracker</title>
 </head>
 <body>
-  <header class="cd-main-header" id="header_outer"> 
+  <header class="cd-main-header"> 
     <div class="container">
       <div class="header_section">
         <a href="login/viewdiagrams" class="logo"><img src="img/logob.jpg" alt="Logo"></a>

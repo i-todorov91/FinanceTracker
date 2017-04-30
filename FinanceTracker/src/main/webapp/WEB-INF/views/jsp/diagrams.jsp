@@ -23,10 +23,42 @@
 		height: 200px;
 	}
 	#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+		width: 450px;
+		height: 450px;
 		display: inline-block;
 	}
 	.row{
 		width: 1500px;
+	}
+	
+	#monthlyCashflow{
+		width: 1000px;
+		height: 500px;
+	}
+	
+	@media only screen and (max-width: 400px) {
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			display: block;
+		}
+		
+		.panel{
+			width: 250px;
+			height: 250px;
+		}
+		
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			width: 250px;
+			height: 250px;
+		}
+		
+		#monthlyCashflow{
+			width: 250px;
+			height: 250px;
+		}
+		
+		.cd-side-nav, .row{
+			width: auto; 
+		}
 	}
 </style>
 <script type="text/javascript">	
@@ -207,10 +239,10 @@ window.onload = function () {
 		<form action="login/pdftester" method="post">
 			<input type="submit" value="Export as pdf">
 		</form>
-		<div id="chartIncomes" style="height: 450px; width: 450px;"></div>	
-		<div id="chartExpenses" style="height: 450px; width: 450px;"></div>
-		<div id="chartIncomeVsExpense" style="height: 450px; width: 450px;"></div>
-		<div id="monthlyCashflow" style="height: 500px; width: 1000px;"></div>
+		<div id="chartIncomes"></div>	
+		<div id="chartExpenses"></div>
+		<div id="chartIncomeVsExpense"></div>
+		<div id="monthlyCashflow"></div>
 	  </c:if>
 </body>
 </html>
