@@ -7,9 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
+ <div class="container">
 	<section class="main-section contact" id="contact">
       <div class="contact_section">
-        <div class="col-lg-5">
+       <div class="col-lg-6 wow fadeInUp delay-06s">
           <div class="form">
                 <div id="sendmessage">Your message has been sent. Thank you!</div>
                 <div id="errormessage"></div>
@@ -35,8 +36,9 @@
                   <button type="submit" class="btn input-btn">SEND MESSAGE</button>
                 </form>
           </div>
-         	<div>
+        </div>
           </div>
          </section>
+         </div>
 </body>
 </html>

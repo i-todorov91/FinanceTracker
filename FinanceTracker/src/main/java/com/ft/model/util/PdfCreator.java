@@ -151,4 +151,11 @@ public class PdfCreator {
 		String name = user.getFirstName() + " " + user.getLastName() + " " + budget.getName() + "_" + date;
 		return name;
 	}
+	
+	public String generateFileName(User user){
+		DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+		String date = formater.format(new Date());
+		String name = user.getFirstName() + " " + user.getLastName() + "_" + date;
+		return name;
+	}
 }

@@ -39,7 +39,7 @@ public class MailController {
 				return "redirect: index.html";
 			}
 		}
-		return "redirect: index.html";
+		return "redirect: login";
 	}
 	
 	@RequestMapping(value="/login/contact", method=RequestMethod.GET)

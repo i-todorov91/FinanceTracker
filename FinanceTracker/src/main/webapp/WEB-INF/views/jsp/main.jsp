@@ -47,7 +47,6 @@
     <nav class="cd-side-nav">
       <ul>
         <li class="has-children">
-        
           <c:if test="${sessionScope.budgets.isEmpty()}">
           	<a href="#">No budgets</a>
           </c:if>
