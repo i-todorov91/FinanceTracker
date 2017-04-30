@@ -2,6 +2,7 @@ package com.ft.model.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.DriverManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class PdfCreator {
 
 	private static PdfCreator instance = null;
 	
-	private PdfCreator() {}
+	private PdfCreator() { }
 	
 	public synchronized static PdfCreator getInstance(){
 		if(instance == null){
@@ -39,7 +40,7 @@ public class PdfCreator {
 	}
 	
 	private static String sep = File.separator;
-	public static final String DESTINATION = "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"pdfs"+sep;	
+	public static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? "/home/streetzaki/Programming/github/FinanceTracker/" : "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"pdfs"+sep;
 	
 	public void createCashFlowPdf(User user, String description, List<CashFlow> cashFlow) throws IOException{
 		
@@ -76,7 +77,7 @@ public class PdfCreator {
 	
 	public void createBudgetPdf(User user, String description, Budget budget) throws IOException{
 		
-		String fileName = getInstance().generateFileName(user);
+		String fileName = getInstance().generateFileName(user, budget);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
 		File file = new File(dest);
 		
@@ -144,10 +145,10 @@ public class PdfCreator {
         return table;
 	}
 	
-	public String generateFileName(User user){
+	public String generateFileName(User user, Budget budget){
 		DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 		String date = formater.format(new Date());
-		String name = user.getFirstName() + "_" + user.getLastName() + "_" + date;
+		String name = user.getFirstName() + " " + user.getLastName() + " " + budget.getName() + "_" + date;
 		return name;
 	}
 }

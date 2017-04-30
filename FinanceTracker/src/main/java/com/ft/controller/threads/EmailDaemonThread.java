@@ -1,6 +1,5 @@
 package com.ft.controller.threads;
 
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -17,7 +16,6 @@ import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.User;
 import com.ft.model.util.EmailSender;
-import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Component
 public class EmailDaemonThread extends Thread {

@@ -203,7 +203,10 @@ window.onload = function () {
 		    <h4>Total expense: ${sessionScope.selectedBudget.getTotalExpense()} Leva</h4>
 		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} Leva</h4>
 		  </div>
-		</div>	
+		</div>
+		<form action="login/pdftester" method="post">
+			<input type="submit" value="Export as pdf">
+		</form>
 		<div id="chartIncomes" style="height: 450px; width: 450px;"></div>	
 		<div id="chartExpenses" style="height: 450px; width: 450px;"></div>
 		<div id="chartIncomeVsExpense" style="height: 450px; width: 450px;"></div>
