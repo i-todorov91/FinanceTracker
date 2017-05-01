@@ -11,9 +11,7 @@
 
 <!-- Google Fonts -->
 
-<link
-	href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900'
-	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet' type='text/css'>
 <link rel="icon" href="img/favicon.png" type="image/png">
 <link rel="stylesheet" href="css/login-animate.css">
 <link rel="stylesheet" href="css/login.css">
@@ -76,17 +74,16 @@
 </head>
 <style>
 	.capbox{
-		background-color: lightgray;
 		font-weight: bolder;
 		text-align: center;
 		vertical-align: middle;
-		color: black;
 	}
 	#CaptchaDiv{
-		background-color: lightgray;
 		border: none;
 		font-size: 1.4rem;
-    	text-align: center; 
+    	text-align: center;
+    	background-color: white;
+    	width: 70%;
 	}
 	#CaptchaInput{
 		font-size: 1rem;
