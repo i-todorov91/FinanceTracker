@@ -56,8 +56,61 @@
 			height: 250px;
 		}
 		
-		.cd-side-nav, .row{
-			width: auto; 
+	}
+	@media only screen and (max-width: 430px) {
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			display: block;
+		}
+		
+		.panel{
+			width: 250px;
+			height: 250px;
+		}
+		
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			width: 250px;
+			height: 250px;
+		}
+		
+		#monthlyCashflow{
+			width: 250px;
+			height: 250px;
+		}
+		
+	}
+	@media only screen and (min-width: 431px) and (max-width: 767px) {
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			display: block;
+		}
+		
+		.panel{
+			width: 450px;
+			height: 200px;  
+		}
+		
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			width: 470px;
+			height: 350px;
+			margin-bottom: 10px;
+		}
+		
+		#monthlyCashflow{
+			width: 470px;
+			height: 350px;
+		}
+		
+	}
+	@media only screen and (min-width: 768px) and (max-width: 1300px) {
+		.panel{
+			margin-left: 50px;   
+		}
+		#chartIncomes, #chartExpenses, #chartIncomeVsExpense{
+			display: block;
+			margin-bottom: 10px;
+		}
+		#monthlyCashflow{
+			width: 700px;
+			height: 350px;
 		}
 	}
 </style>
