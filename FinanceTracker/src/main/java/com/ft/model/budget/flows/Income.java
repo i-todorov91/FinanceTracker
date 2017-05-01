@@ -1,6 +1,6 @@
 package com.ft.model.budget.flows;
 
-import java.util.Date;
+import java.sql.Date;
 
 import com.ft.model.util.exceptions.InvalidCashFlowException;
 

@@ -17,14 +17,68 @@
     $("#datepicker1").datepicker();
   });
   </script>
+  <style>
+  	form{
+  		display: inline-block;
+  	}
+  </style>
 <body>
-	<form action="login/filterdate" method="post">
+	<form id="typeForm" action="login/changetype" method="post">
+		<select id="select" name="type" onchange='submit()'>
+      		<option> ${sessionScope.selectedType}</option> 
+	      	<c:forEach var="item" items="${sessionScope.types}">
+	      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
+	      			<option>${item.toString()}</option>
+	      		</c:if>
+	      	</c:forEach> 
+	    </select> 
+	</form>
+  	<form action="login/filterdate" method="post">
+		<select name="category">
+	      	<c:forEach var="item" items="${sessionScope.categories}">
+	      		<option>${item.getName()}</option>
+	      	</c:forEach>
+	      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[0].toString())}">
+	      		<c:forEach var="item" items="${sessionScope.incomeCategories}">
+	      			<option>${item.getName()}</option>
+	      		</c:forEach>
+	      	</c:if>
+	      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[1].toString())}">
+	      		<c:forEach var="item" items="${sessionScope.expenseCategories}">
+	      			<option>${item.getName()}</option>
+	      		</c:forEach>
+	      	</c:if>
+	    </select>
+		<label for="allCategories">All categories</label>
+		<input type="checkbox" id="allCategories" name="allCategories"/>
 		<input type="date" id="datepicker1" name="from" placeholder="from"/>
 		<input type="date" id="datepicker" name="to" placeholder="to"/>
 		<input type="submit" value="Go"/>
 	</form>
-	<c:forEach items="${filteredData}" var="data">
-		${data}
-	</c:forEach>
+	<br><br>
+	<c:if test="${sessionScope.filteredData != null}">
+		<table class="table table-striped table-hover">
+			<tr>
+				<th>#</th>
+				<th>Type</th>
+				<th>Category</th>
+				<th>Quantity</th>
+				<th>Description</th>
+				<th>Date</th>
+			</tr>
+			<c:set var="number" value="0"></c:set>
+			<c:forEach items="${sessionScope.filteredData}" var="data">
+				<tr>
+					<td>${number}</td>
+					<td>${data.type.toString()}</td>
+					<td>${data.category.name}</td>
+					<td>${data.quantity}</td>
+					<td>${data.description}</td>
+					<td>${data.date}</td>
+					<c:set var="number" value="${number+1}"></c:set>
+				</tr>
+			</c:forEach>
+		</table>
+	</c:if>
 </body>
 </html>

@@ -30,9 +30,68 @@ import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
+import com.itextpdf.text.log.SysoCounter;
 
 @Controller
 public class UserController {
+	
+	private String loadCategories(HttpSession session){
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			String username = (String) session.getAttribute("username");
+			long userId = 0;
+			try {
+				userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+			} catch (Exception e){
+				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
+				return "redirect: error500";
+			}
+			try {
+				session.setAttribute("categories", CategoryDAO.getInstance().getAllDefaultList());
+				session.setAttribute("incomeCategories", CategoryDAO.getInstance().getAllUserIncomeCategories(userId));
+				session.setAttribute("expenseCategories", CategoryDAO.getInstance().getAllUserExpenseCategories(userId));
+			} catch (Exception e) {
+				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
+				return "redirect: error500";
+			}
+			session.setAttribute("selectedType", Category.TYPE.INCOME.toString());
+			session.setAttribute("types", Category.TYPE.values());
+		}
+		return "redirect: ../login";
+	}
+	
+	private Category findCategory(HttpSession session, String type, String categoryName){
+		Category category = null;
+		ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
+		for(Category i : categories){
+			if(i.getName().equals(categoryName)){
+				category = i;
+				break;
+			}
+		}
+
+		if(category == null){
+			if(type.equals(Category.TYPE.INCOME.toString())){
+				ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
+				for(Category i : cats){
+					if(i.getName().equals(categoryName)){
+						category = i;
+						break;
+					}
+				}
+			}
+			else if(type.equals(Category.TYPE.EXPENSE.toString())){
+				ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
+				for(Category i : cats){
+					if(i.getName().equals(categoryName)){
+						category = i;
+						break;
+					}
+				}
+			}
+		}
+		return category;
+	}
 	
 	// login controller
 	@RequestMapping(value="/login", method=RequestMethod.GET)
@@ -146,27 +205,9 @@ public class UserController {
 	public String addTransactionGet(HttpSession session) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			String username = (String) session.getAttribute("username");
-			long userId = 0;
-			try {
-				userId = UserDAO.getInstance().getAllUsers().get(username).getId();
-			} catch (Exception e){
-				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
-				return "redirect: error500";
-			}
-			try {
-				session.setAttribute("categories", CategoryDAO.getInstance().getAllDefaultList());
-				session.setAttribute("incomeCategories", CategoryDAO.getInstance().getAllUserIncomeCategories(userId));
-				session.setAttribute("expenseCategories", CategoryDAO.getInstance().getAllUserExpenseCategories(userId));
-			} catch (Exception e) {
-				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
-				return "redirect: error500";
-			}
 			session.setAttribute("url", "transaction.jsp");
-			session.setAttribute("selectedType", Category.TYPE.INCOME.toString());
-			session.setAttribute("types", Category.TYPE.values());
 		}
-		return "redirect: ../login";
+		return loadCategories(session);
 	}
 	
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
@@ -176,49 +217,26 @@ public class UserController {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged") && valid){
 			Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
-			Category category = null;
-			ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
-			for(Category i : categories){
-				if(i.getName().equals(categoryName)){
-					category = i;
-					break;
-				}
-			}
-
 			String type = (String) session.getAttribute("selectedType");
-			if(category == null){
-				if(type.equals(Category.TYPE.INCOME.toString())){
-					ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
-					for(Category i : cats){
-						if(i.getName().equals(categoryName)){
-							category = i;
-							break;
-						}
-					}
-				}
-				else if(type.equals(Category.TYPE.EXPENSE.toString())){
-					ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
-					for(Category i : cats){
-						if(i.getName().equals(categoryName)){
-							category = i;
-							break;
-						}
-					}
-				}
-			}
+			Category category = findCategory(session, type, categoryName);
 			
-			if(category != null && true){
+			if(category != null){
 				DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 				Date date1 = new Date();
+				java.sql.Date sqlDate = null;
 				try {
 					date1 = formatter.parse(date);
 				} catch (ParseException e1) {
 					System.out.println("UserController-> addTransaction -> parseDate: " + e1.getMessage());
-					return "redirect: ../login";
+					System.out.println("Failed to parse date so take the current date!");
 				}
+				finally{
+				    sqlDate = new java.sql.Date(date1.getTime());
+				}
+				
 				if(type.equals(Category.TYPE.INCOME.toString())){
 					try {
-						Income flow = new Income(quantity, date1, category, description);
+						Income flow = new Income(quantity, sqlDate, category, description);
 						UserDAO.getInstance().addIncome(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 					} catch (Exception e) {
 						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
@@ -228,7 +246,7 @@ public class UserController {
 				}
 				else if(type.equals(Category.TYPE.EXPENSE.toString())){
 					try {
-						Expense flow = new Expense(quantity, date1, category, description);
+						Expense flow = new Expense(quantity, sqlDate, category, description);
 						UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 					} catch (Exception e) {
 						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
@@ -307,15 +325,25 @@ public class UserController {
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			session.setAttribute("url", "filterdate.jsp");
 		}
-		return "redirect: ../login";
+		return loadCategories(session);
 	}
 	
 	@RequestMapping(value="/login/filterdate", method=RequestMethod.POST)
-	public String filterDatePost(HttpSession session, @RequestParam("from") String from, @RequestParam("to") String to, Model model) {
+	public String filterDatePost(HttpSession session, @RequestParam("from") String from, @RequestParam("to") String to, @RequestParam(value = "allCategories", required = false) String isAllCats, @RequestParam("category") String catName, Model model) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			
 			session.removeAttribute("filteredData");
+			// check if the checkbox is checked
+			boolean checked = isAllCats != null && isAllCats.equals("on");
+			Category cat = null;
+			
+			// if it's not checked check other select boxes
+			if(!checked){
+				String type = (String) session.getAttribute("selectedType");
+				cat = findCategory(session, type, catName);
+			}
+			
 			// validate from and to data
 			DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 			Date fromDate = new Date();
@@ -324,12 +352,13 @@ public class UserController {
 			try{
 				fromDate = formatter.parse(from);
 				toDate = formatter.parse(to);
-				sameDate = (fromDate.getDay() == toDate.getDay()) && (fromDate.getMonth() == toDate.getMonth()) && (fromDate.getYear() == toDate.getYear());
+				sameDate = fromDate.compareTo(toDate) == 0;
 				if(fromDate.after(toDate) && !sameDate){ 
 					throw new ParseException(to, 0);
 				}
 			} catch(ParseException e){
 				System.out.println("UserController -> login/filterdate -> data parse: " + e.getMessage());
+				System.out.println("Failed to parse date so take the current date!");
 				return "redirect: ../login";
 			}
 			
@@ -342,29 +371,52 @@ public class UserController {
 					
 					// check all incomes
 					for(CashFlow i : budget.getIncomes()){
-						if(sameDate && i.getDate().getDay() == fromDate.getDay() && i.getDate().getMonth() == fromDate.getMonth() && i.getDate().getYear() == fromDate.getYear()){
-							result.add(i);
-							continue;
+						if(checked){
+							if(sameDate && i.getDate().compareTo(fromDate) == 0){
+								result.add(i);
+								continue;
+							}
+							if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
+								result.add(i);
+							}
 						}
-						if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
-							result.add(i);
+						else{
+							if(i.getCategory().equals(cat) && sameDate && i.getDate().compareTo(fromDate) == 0){
+								result.add(i);
+								continue;
+							}
+							if(i.getCategory().equals(cat) && i.getDate().after(fromDate) && i.getDate().before(toDate)){
+								result.add(i);
+							}
 						}
 					}
 					
 					// check all expenses
 					for(CashFlow i : budget.getExpenses()){
-						if(sameDate && i.getDate().getDay() == fromDate.getDay() && i.getDate().getMonth() == fromDate.getMonth() && i.getDate().getYear() == fromDate.getYear()){
-							result.add(i);
-							continue;
+						if(checked){
+							if(sameDate && i.getDate().compareTo(fromDate) == 0){
+								result.add(i);
+								continue;
+							}
+							if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
+								result.add(i);
+							}
 						}
-						if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
-							result.add(i);;
+						else{
+							if(i.getCategory().equals(cat) && sameDate && i.getDate().compareTo(fromDate) == 0){
+								result.add(i);
+								continue;
+							}
+							if(i.getCategory().equals(cat) && i.getDate().after(fromDate) && i.getDate().before(toDate)){
+								result.add(i);
+							}
 						}
 					}
-					model.addAttribute("filteredData", result);
-					System.out.println(model);
-					System.out.println(result);
-					//session.setAttribute("filteredData",result);
+					
+					// TODO with model
+					if(!result.isEmpty()){
+						session.setAttribute("filteredData", result);
+					}
 				}
 			} catch(Exception e){
 				return "redirect: ../login";
