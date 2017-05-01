@@ -24,7 +24,7 @@
 // Captcha Script
 
 	$(document).ready(function() {
-		 var alpha = new Array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+		 var alpha = new Array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
          var i;
          for (i=0;i<6;i++){
            var a = alpha[Math.floor(Math.random() * alpha.length)];
@@ -35,9 +35,9 @@
            var f = alpha[Math.floor(Math.random() * alpha.length)];
            var g = alpha[Math.floor(Math.random() * alpha.length)];
           }
-        var code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' '+ f + ' ' + g;
+        var code = a + ' ' + b + ' ' + c + ' ' + d + ' ' + e + ' '+ f + ' ' + g;
 		document.getElementById("txtCaptcha").value = code;
-		document.getElementById("CaptchaDiv").innerHTML = code;
+		document.getElementById("CaptchaDiv").value = code;
 	});
 	
 	function checkform(theform){
@@ -78,6 +78,15 @@
 	.capbox{
 		background-color: lightgray;
 		font-weight: bolder;
+		text-align: center;
+		vertical-align: middle;
+		color: black;
+	}
+	#CaptchaDiv{
+		background-color: lightgray;
+		border: none;
+		font-size: 1.4rem;
+    	text-align: center; 
 	}
 </style>
 <body>
@@ -107,9 +116,9 @@
 				<form:password path="password"/>
 				<br/>
 				<div class="capbox">
-					<div id="CaptchaDiv"></div>
+					<input id="CaptchaDiv" disabled/>
 					<div class="capbox-inner">
-					<label for="txtCaptcha">Type the above number:<label><br>
+					<label for="txtCaptcha">Type the above captcha:<label><br>
 					<input type="hidden" id="txtCaptcha" disabled/>
 					<input type="text" name="CaptchaInput" id="CaptchaInput"/>
 					</div>
