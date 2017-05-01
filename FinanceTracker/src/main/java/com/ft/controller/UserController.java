@@ -211,7 +211,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login/addtransaction", method=RequestMethod.POST)
-	public String addTransactionPost(HttpSession session, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam("description") String description) {
+	public String addTransactionPost(HttpSession session, @RequestParam("quantity") Double quantity, @RequestParam("date") String date, @RequestParam("category") String categoryName, @RequestParam(value="description", required=false) String description) {
 		
 		boolean valid = session.getAttribute("selectedBudget") != null && quantity != null && Validator.validBalance(quantity); 
 		
@@ -346,21 +346,26 @@ public class UserController {
 			
 			// validate from and to data
 			DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-			Date fromDate = new Date();
-			Date toDate = new Date();
-			boolean sameDate = false;
+			Date fromDateUtil = new Date();
+			Date toDateUtil = new Date();
+			java.sql.Date fromDate = null;
+			java.sql.Date toDate = null;
 			try{
-				fromDate = formatter.parse(from);
-				toDate = formatter.parse(to);
-				sameDate = fromDate.compareTo(toDate) == 0;
-				if(fromDate.after(toDate) && !sameDate){ 
+				fromDateUtil = formatter.parse(from);
+				toDateUtil = formatter.parse(to);
+				if(fromDateUtil.after(toDateUtil) && toDateUtil.compareTo(fromDateUtil) != 0){ 
 					throw new ParseException(to, 0);
 				}
 			} catch(ParseException e){
 				System.out.println("UserController -> login/filterdate -> data parse: " + e.getMessage());
 				System.out.println("Failed to parse date so take the current date!");
-				return "redirect: ../login";
 			}
+			finally{
+			    fromDate = new java.sql.Date(fromDateUtil.getTime());
+			    toDate = new java.sql.Date(toDateUtil.getTime());
+			}
+			
+			System.out.println(fromDate + " " + toDate);
 			
 			// get the selected budget and check if it is valid
 			Budget budget = (Budget) session.getAttribute("selectedBudget");
@@ -372,7 +377,7 @@ public class UserController {
 					// check all incomes
 					for(CashFlow i : budget.getIncomes()){
 						if(checked){
-							if(sameDate && i.getDate().compareTo(fromDate) == 0){
+							if(i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
 								result.add(i);
 								continue;
 							}
@@ -381,7 +386,7 @@ public class UserController {
 							}
 						}
 						else{
-							if(i.getCategory().equals(cat) && sameDate && i.getDate().compareTo(fromDate) == 0){
+							if(i.getCategory().equals(cat) && i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
 								result.add(i);
 								continue;
 							}
@@ -394,7 +399,7 @@ public class UserController {
 					// check all expenses
 					for(CashFlow i : budget.getExpenses()){
 						if(checked){
-							if(sameDate && i.getDate().compareTo(fromDate) == 0){
+							if(i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
 								result.add(i);
 								continue;
 							}
@@ -403,7 +408,7 @@ public class UserController {
 							}
 						}
 						else{
-							if(i.getCategory().equals(cat) && sameDate && i.getDate().compareTo(fromDate) == 0){
+							if(i.getCategory().equals(cat) && i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
 								result.add(i);
 								continue;
 							}

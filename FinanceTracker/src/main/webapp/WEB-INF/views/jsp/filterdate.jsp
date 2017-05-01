@@ -57,28 +57,30 @@
 	</form>
 	<br><br>
 	<c:if test="${sessionScope.filteredData != null}">
-		<table class="table table-striped table-hover">
-			<tr>
-				<th>#</th>
-				<th>Type</th>
-				<th>Category</th>
-				<th>Quantity</th>
-				<th>Description</th>
-				<th>Date</th>
-			</tr>
-			<c:set var="number" value="0"></c:set>
-			<c:forEach items="${sessionScope.filteredData}" var="data">
+		<div style="height: 1150px; overflow-y: scroll;">
+			<table class="table table-striped table-hover">
 				<tr>
-					<td>${number}</td>
-					<td>${data.type.toString()}</td>
-					<td>${data.category.name}</td>
-					<td>${data.quantity}</td>
-					<td>${data.description}</td>
-					<td>${data.date}</td>
-					<c:set var="number" value="${number+1}"></c:set>
+					<th>#</th>
+					<th>Type</th>
+					<th>Category</th>
+					<th>Quantity</th>
+					<th>Description</th>
+					<th>Date</th>
 				</tr>
-			</c:forEach>
-		</table>
+				<c:set var="number" value="0"></c:set>    	
+				<c:forEach items="${sessionScope.filteredData}" var="data">
+					<tr>
+						<td>${number}</td>
+						<td>${data.type.toString()}</td>
+						<td>${data.category.name}</td>
+						<td>${data.quantity}</td>
+						<td>${data.description}</td>
+						<td>${data.date}</td>
+						<c:set var="number" value="${number+1}"></c:set>
+					</tr>
+				</c:forEach>
+			</table>
+		</div>
 	</c:if>
 </body>
 </html>
