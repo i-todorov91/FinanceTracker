@@ -2,10 +2,12 @@
 /RemoteSystemsTempFiles/
 
 pom.properties
+*/Servers
 */target
 /.metadata
 /.recommenders
 */.metadata
+/*/Servers
 /*/.settings
 /*/bin
 /*/.settings
