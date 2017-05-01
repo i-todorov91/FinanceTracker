@@ -5,7 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
-
 <head>
 <meta charset="utf-8">
 <title>Finance Tracker - Login</title>
@@ -20,8 +19,62 @@
 <link rel="stylesheet" href="css/login.css">
 <script src="js/lib/jquery.1.8.3.min.js"></script>
 <script src="js/lib/bootstrap.js"></script>
-</head>
+<script type="text/javascript">
 
+// Captcha Script
+
+	$(document).ready(function() {
+		var a = Math.ceil(Math.random() * 9)+ '';
+		var b = Math.ceil(Math.random() * 9)+ '';
+		var c = Math.ceil(Math.random() * 9)+ '';
+		var d = Math.ceil(Math.random() * 9)+ '';
+		var e = Math.ceil(Math.random() * 9)+ '';
+		
+		var code = a + b + c + d + e;
+		document.getElementById("txtCaptcha").value = code;
+		document.getElementById("CaptchaDiv").innerHTML = code;
+	});
+	
+	function checkform(theform){
+	var why = "";
+	
+	if(theform.CaptchaInput.value == ""){
+	why += "- Please Enter CAPTCHA Code.\n";
+	}
+	if(theform.CaptchaInput.value != ""){
+	if(ValidCaptcha(theform.CaptchaInput.value) == false){
+	why += "- The CAPTCHA Code Does Not Match.\n";
+	}
+	}
+	if(why != ""){
+	alert(why);
+	return false;
+	}
+	}
+
+	// Validate input against the generated number
+	function ValidCaptcha(){
+	var str1 = removeSpaces(document.getElementById('txtCaptcha').value);
+	var str2 = removeSpaces(document.getElementById('CaptchaInput').value);
+	if (str1 == str2){
+	return true;
+	}else{
+	return false;
+	}
+	}
+	
+	// Remove the spaces from the entered and generated code
+	function removeSpaces(string){
+	return string.split(' ').join('');
+	}
+</script>
+</head>
+<style>
+	.capbox{
+		background-color: lightgray;
+		font-weight: bolder;
+	}
+</style>
 <body>
 	
 	<div class="container">
@@ -40,14 +93,22 @@
 			<div class="box-header">
 				<h2>Log In</h2>
 			</div>
-			<form:form action="login" method="post" id="login-form" commandName="userLogin">
+			<form:form action="login" method="post" id="login-form" commandName="userLogin" onsubmit="return checkform(this);">
 				<form:label path="email">Email</form:label>
 				<br/>
-				<form:input path="email"/> <br />
+				<form:input path="email"/> <br/>
 				<form:label path="password">Password</form:label>
 				<br/> 
 				<form:password path="password"/>
 				<br/>
+				<div class="capbox">
+					<div id="CaptchaDiv"></div>
+					<div class="capbox-inner">
+					<label for="txtCaptcha">Type the above number:<label><br>
+					<input type="hidden" id="txtCaptcha" disabled/>
+					<input type="text" name="CaptchaInput" id="CaptchaInput"/>
+					</div>
+				</div>
 				<input id="login-btn" type="Submit" value="Sign in">
 			</form:form>
 		</div>
