@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
@@ -38,5 +39,35 @@ public class PdfController {
 		}
 		return "redirect: ../login";
 	}
-	
+
+	@RequestMapping(value="/login/viewpdf", method=RequestMethod.GET)
+	public String viewPdfGet(HttpSession session, @RequestParam("type") String type){
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			String username = (String) session.getAttribute("username");
+			User user = null;
+			PdfCreator pc = PdfCreator.getInstance();
+			try{
+				if(type.equals("Budget")){
+					user = UserDAO.getInstance().getAllUsers().get(username);
+					Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
+					pc.createBudgetPdf(user, "Budget name: " + selectedBudget.getName(), user.getBudgets().get(selectedBudget.getName()));
+					
+				}
+				else if(type.equals("Account")){
+					
+				}
+				else if(type.equals("Cashflow")){
+					
+				}
+				else{
+					
+				}
+			} catch(Exception e){
+				System.out.println("PdfView->GET: " + e.getMessage());
+				return "redirect: error500";
+			}
+		}
+		return "viewpdf";
+	}
 }
