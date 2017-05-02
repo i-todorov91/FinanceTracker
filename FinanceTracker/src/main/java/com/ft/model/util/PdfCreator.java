@@ -38,7 +38,9 @@ public class PdfCreator {
 	}
 	
 	private static String sep = File.separator;
-	public static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? "/home/streetzaki/Programming/github/FinanceTracker/" : "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"pdfs"+sep;
+	private static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? 
+			sep + "home"+sep+"streetzaki"+sep+"Programming"+sep+"github"+sep+"FinanceTracker"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf"
+				: "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf";
 	
 	public void createCashFlowPdf(User user, String description, List<CashFlow> cashFlow) throws IOException{
 		
