@@ -54,7 +54,6 @@ public class UserDAO {
 					long budgetId = rs1.getLong("id");
 					Budget budget = new Budget(budgetName, budgetBalance);
 
-					System.out.println(budgetBalance);
 					budget.setId(budgetId);
 					// for each budget select the incomes and expenses
 					
@@ -95,8 +94,6 @@ public class UserDAO {
 							throw e;
 						}
 					}
-					System.out.println(budget.getBalance());
-					System.out.println(budgetBalance);
 					//correcting balance after adding incomes and expenses
 					budget.setBalance(budgetBalance);
 					// add the budget to the user
