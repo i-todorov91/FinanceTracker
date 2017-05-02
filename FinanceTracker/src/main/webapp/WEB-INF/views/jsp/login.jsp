@@ -1,3 +1,4 @@
+<%@ page errorPage="error500.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -20,8 +21,7 @@
 <script type="text/javascript">
 
 // Captcha Script
-
-	$(document).ready(function() {
+	function generateCaptcha(){
 		 var alpha = new Array('1', '2', '3', '4', '5', '6', '7', '8', '9', 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
          var i;
          for (i=0;i<6;i++){
@@ -36,6 +36,10 @@
         var code = a + ' ' + b + ' ' + c + ' ' + d + ' ' + e + ' '+ f + ' ' + g;
 		document.getElementById("txtCaptcha").value = code;
 		document.getElementById("CaptchaDiv").value = code;
+	}
+	
+	$(document).ready(function() {
+		generateCaptcha();
 	});
 	
 	function checkform(theform){
@@ -62,6 +66,7 @@
 	if (str1 == str2){
 	return true;
 	}else{
+		generateCaptcha();
 	return false;
 	}
 	}

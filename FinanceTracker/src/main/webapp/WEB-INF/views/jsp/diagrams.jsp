@@ -1,3 +1,4 @@
+<%@ page errorPage="error500.jsp" %>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="com.ft.model.budget.flows.Category"%>
@@ -289,7 +290,8 @@ window.onload = function () {
 		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} Leva</h4>
 		  </div>
 		</div>
-		<form action="login/pdftester" method="post">
+		<form action="login/viewpdf" method="get">
+			<input type="hidden" name="type" value="Budget"/>
 			<input type="submit" value="Export as pdf">
 		</form>
 		<div id="chartIncomes"></div>	
