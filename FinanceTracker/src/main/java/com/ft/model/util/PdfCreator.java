@@ -28,7 +28,7 @@ public class PdfCreator {
 
 	private static PdfCreator instance = null;
 	
-	private PdfCreator() { }
+	PdfCreator() { }
 	
 	public synchronized static PdfCreator getInstance(){
 		if(instance == null){
@@ -187,6 +187,7 @@ public class PdfCreator {
 		
 		double sum = 0;
 		String type = null;
+		
 		if (cashFlow.get(0).getType().equals(CashFlow.TYPES.INCOME)) {
 			type = "Income";
 		} else {
