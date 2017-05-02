@@ -417,7 +417,6 @@ public class UserController {
 						}
 					}
 					
-					// TODO with model
 					if(!result.isEmpty()){
 						session.setAttribute("filteredData", result);
 					}

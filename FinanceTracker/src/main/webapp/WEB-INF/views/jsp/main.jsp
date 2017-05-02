@@ -30,7 +30,7 @@
   <style>
   	.cd-nav{
   		margin-top: 24px;
-  	}
+	}
   </style>
 </head>
 <body>

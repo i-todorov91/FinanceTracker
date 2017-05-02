@@ -20,21 +20,21 @@
   </script>
 <body>
 	  <fieldset>
-	      	<form class="form-horizontal" id="typeForm" action="login/changetype" method="post">
-			   <div class="form-group">
-			     <label for="inputEmail" class="col-lg-2 control-label">Type</label>
-			     <div class="col-lg-10">
-		      	<select id="select" name="type" onchange='submit()'>
-		      	<option> ${sessionScope.selectedType}</option> 
-			      	<c:forEach var="item" items="${sessionScope.types}">
-			      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
-			      			<option>${item.toString()}</option>
-			      		</c:if>
-			      	</c:forEach>
-			    </select>
-		      </div>
-		    </div>
-			</form>
+      	<form class="form-horizontal" id="typeForm" action="login/changetype" method="post">
+		   <div class="form-group">
+		     <label for="inputEmail" class="col-lg-2 control-label">Type</label>
+		     <div class="col-lg-10">
+	      	<select id="select" name="type" onchange='submit()'>
+	      	<option> ${sessionScope.selectedType}</option> 
+		      	<c:forEach var="item" items="${sessionScope.types}">
+		      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
+		      			<option>${item.toString()}</option>
+		      		</c:if>
+		      	</c:forEach>
+		    </select>
+	      </div>
+	    </div>
+		</form>
 		<form class="form-horizontal" method="post" action="login/addtransaction">
 	    <div class="form-group">
 	      <label for="inputPassword" class="col-lg-2 control-label">Quantity</label>
