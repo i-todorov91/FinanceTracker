@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
  
   <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="css/responsive.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/sidebar/style.css"> <!-- Resource style -->
