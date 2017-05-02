@@ -43,7 +43,7 @@
 		    <div class="form-group">
 		      <label for="inputPassword" class="col-lg-2 control-label">Quantity</label>
 		      <div class="col-lg-10">
-		        <input class="form-control" id="inputNumber" placeholder="Quantity" name="quantity" type="number" min="0">
+		        <input class="form-control" id="inputNumber" placeholder="Quantity" name="quantity" type="number" step="0.01" min="0" max="1000000" required>
 		      </div>
 		    </div>
 		    <div class="form-group">
