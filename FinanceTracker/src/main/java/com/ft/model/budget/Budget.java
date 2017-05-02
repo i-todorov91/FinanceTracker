@@ -130,4 +130,8 @@ public class Budget {
 		}
 		return result;
 	}
+	
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
 }

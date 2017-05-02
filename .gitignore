@@ -12,7 +12,7 @@ pom.properties
 /*/.classpath
 /*/.project
 /*/*/.project
-
+*.pdf
 # Diagram tools for eclipse
 *.ucls
 
