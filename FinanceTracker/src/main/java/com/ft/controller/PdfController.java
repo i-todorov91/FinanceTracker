@@ -49,6 +49,7 @@ public class PdfController {
 					file = pc.createCashFlowPdf(user, "Cashflow filtered data", cashFlow);
 				} 
 				session.setAttribute("filename", file.getName());
+				session.setAttribute("from", "createpdf");
 				return "redirect: viewpdf";
 			} catch(Exception e){
 				System.out.println("PdfView->GET: " + e.getMessage());
@@ -65,13 +66,21 @@ public class PdfController {
 		
 		try {
 			File file = new File(PdfCreator.DESTINATION + (String) session.getAttribute("filename"));
-			if(!file.exists()){
-				file.createNewFile();
+			if(!file.exists() || session.getAttribute("from") == null){
+				res.sendRedirect("../login");
+				return;
 			}
 			Files.copy(file.toPath(), res.getOutputStream());
 		} catch (IOException e) {
 			System.out.println("View pdf: " + e.getMessage());
+			try {
+				session.removeAttribute("from");
+				res.sendRedirect("../login");
+			} catch (IOException e1) {
+				System.out.println("view pdf Get: " + e1.getMessage());
+			}
 		}
+		session.removeAttribute("from");
 	}
 	
 	@RequestMapping(value="/login/accountinformation", method=RequestMethod.GET)
