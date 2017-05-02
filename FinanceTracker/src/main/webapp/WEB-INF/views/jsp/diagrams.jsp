@@ -276,7 +276,7 @@ window.onload = function () {
 	<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0-beta.1/jquery-ui.min.js"></script>
 <body>  
 	  <c:if test="${sessionScope.selectedBudget == null}">
-	  	<h3>No budget's added</h3>
+	  	<h1>You have no budgets!</h1>
 	  </c:if>
 	  
 	  <c:if test="${sessionScope.selectedBudget != null}">

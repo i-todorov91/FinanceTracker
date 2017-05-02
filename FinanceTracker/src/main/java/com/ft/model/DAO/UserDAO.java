@@ -155,12 +155,13 @@ public class UserDAO {
 			if(user.getBudgets().containsKey(toAdd.getName())){
 				return false;
 			}
-			String query = "INSERT IGNORE INTO budget(name, balance) VALUES(?, ?)";
+			String query = "";
 			PreparedStatement stmt = null;
 			long id = 0;
 			try {
 				// insert in budget table and get the budget id
 				con.setAutoCommit(false);
+				query = "INSERT IGNORE INTO budget(name, balance) VALUES(?, ?)";
 				stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 				stmt.setString(1, toAdd.getName());
 				stmt.setDouble(2, toAdd.getBalance());
