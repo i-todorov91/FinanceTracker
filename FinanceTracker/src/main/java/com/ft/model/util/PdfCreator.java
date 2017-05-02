@@ -66,6 +66,12 @@ public class PdfCreator {
         //Create CashFlow table
         document.add(new Paragraph(" "));
         HashMap<String, HashMap<Double, Table>> info = generateCashFlowTable(cashFlow);
+        if (info == null) {
+        	document.close();
+            writer.close();
+            pdf.close();
+            return null;
+		}
         String type = info.keySet().iterator().next();
         double sum = info.get(type).keySet().iterator().next();
         Table table = info.get(type).get(sum);
@@ -78,6 +84,7 @@ public class PdfCreator {
         pdf.close();
         
         return new File(DESTINATION + fileName);
+        
 	}
 	
 	public File createBudgetPdf(User user, String description, Budget budget) throws IOException{
@@ -108,23 +115,38 @@ public class PdfCreator {
         //Income table
         document.add(new Paragraph(" "));
         info = generateCashFlowTable(budget.getIncomes());
-        type = info.keySet().iterator().next();
-        sum = info.get(type).keySet().iterator().next();
-        table = info.get(type).get(sum);
+        if (info != null) {
+        	type = info.keySet().iterator().next();
+            sum = info.get(type).keySet().iterator().next();
+            table = info.get(type).get(sum);
+		} else {
+			type = "Income";
+			sum = 0;
+			table = null;
+		}
         document.add(new Paragraph(type + ": " + sum + " lv."));
-        document.add(table);
-        
-        // add extra line between incomes and expenses
-        document.add(new Paragraph(" "));
+        if (table != null) {
+            document.add(table);
+            document.add(new Paragraph(" "));
+		}
         
         //Expense table
         document.add(new Paragraph(" "));
         info = generateCashFlowTable(budget.getExpenses());
-        type = info.keySet().iterator().next();
-        sum = info.get(type).keySet().iterator().next();
-        table = info.get(type).get(sum);
+        if (info != null) {
+        	type = info.keySet().iterator().next();
+            sum = info.get(type).keySet().iterator().next();
+            table = info.get(type).get(sum);
+		} else {
+			type = "Expense";
+			sum = 0;
+			table = null;
+		}
         document.add(new Paragraph(type + ": " + sum + " lv."));
-        document.add(table);
+        if (table != null) {
+            document.add(table);
+            document.add(new Paragraph(" "));
+		}
  
         //Close document
         document.close();
@@ -188,6 +210,9 @@ public class PdfCreator {
 		double sum = 0;
 		String type = null;
 		
+		if (cashFlow.isEmpty()) {
+			return null;
+		}
 		if (cashFlow.get(0).getType().equals(CashFlow.TYPES.INCOME)) {
 			type = "Income";
 		} else {
