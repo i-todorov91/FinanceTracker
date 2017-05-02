@@ -100,8 +100,8 @@ public class UserController {
 		try{
 			if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 				String username = (String) session.getAttribute("username");
+				User user = null;
 				if(session.getAttribute("selectedBudget") == null){
-					User user = null;
 					try {
 						user = UserDAO.getInstance().getAllUsers().get(username);
 					} catch (Exception e){
@@ -111,6 +111,9 @@ public class UserController {
 					if(!user.getBudgets().isEmpty()){
 						session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
 					}
+				}
+				if(session.getAttribute("totalSum") == null){
+					session.setAttribute("totalSum", user.getBudgetsSum());
 				}
 				return new ModelAndView("main", "userLogin", new Holder());
 			}
@@ -151,6 +154,7 @@ public class UserController {
 				if(!user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", user.getBudgets().entrySet().iterator().next().getValue());
 				}
+				session.setAttribute("totalSum", user.getBudgetsSum());
 				session.setAttribute("url", "diagrams.jsp");
 				return "main";
 			}
@@ -191,6 +195,7 @@ public class UserController {
 					Budget toAdd = new Budget(name.trim(), amount); 
 					User user = UserDAO.getInstance().getAllUsers().get(username);
 					UserDAO.getInstance().addBudget(toAdd, user);
+					session.setAttribute("totalSum", user.getBudgetsSum());
 				}
 			}
 			return "redirect: ../login";
@@ -253,6 +258,14 @@ public class UserController {
 						return "redirect: error500";
 					}
 				}
+				try{
+					String username = (String) session.getAttribute("username");
+					User user = UserDAO.getInstance().getAllUsers().get(username);
+					session.setAttribute("totalSum", user.getBudgetsSum());
+				} catch(Exception ex){
+					System.out.println("Add transaction Set total sum: " + ex.getMessage());
+					return "redirect: error500";
+				}
 			}
 		}
 		return "redirect: ../login";
@@ -309,6 +322,7 @@ public class UserController {
 				if(user.getBudgets().isEmpty()){
 					session.setAttribute("selectedBudget", null);
 				}
+				session.setAttribute("totalSum", user.getBudgetsSum());
 			} catch (Exception e){
 				System.out.println("login/removebudget POST: " + e.getMessage());
 				return "redirect: ../error500";

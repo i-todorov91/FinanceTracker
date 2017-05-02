@@ -35,10 +35,7 @@
   </style>
 </head>
 <body>
-<%
-	double res = UserDAO.getInstance().getAllUsers().get((String) session.getAttribute("username")).getBudgetsSum();
-%>
-  <c:set var="totalSum" value="<%= res %>"></c:set>
+  <c:set var="totalSum" value="${sessionScope.totalSum}"></c:set>
   <header class="cd-main-header"> 
     <div class="container">
       <div class="header_section">
@@ -47,7 +44,7 @@
 
         <nav class="cd-nav">
           <ul class="cd-top-nav">
-          	<span><strong>Total sum:</strong> <c:out value="${totalSum}"></c:out></span>
+          	<span><strong>Total sum:</strong> <c:out value="${totalSum}"></c:out>&nbsplv.</span>
             <li><a href="login/accountinformation">Account information</a></li>
             <li><a href="login/contact">Contact us</a></li>
             <li><a href="logout">Logout</a></li>

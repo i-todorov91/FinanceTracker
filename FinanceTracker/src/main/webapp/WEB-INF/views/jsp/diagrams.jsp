@@ -15,7 +15,6 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="css/bootstrap.css">
 <title>Insert title here</title>
 </head>
 <style>
@@ -139,13 +138,12 @@ window.onload = function () {
 			type: "pie",
 			showInLegend: true,
 			toolTipContent: "{legendText}: <strong>{y}%</strong>",
-			indexLabel: "{label} {y}%",
 			dataPoints: [
 			<% 
 				double allIncomes = budget.getTotalIncome();
 				for(Entry<Category, Double> i : budget.getIncomesCategory().entrySet()){
 			%>
-				{ y: <%= formatter.format((i.getValue() / allIncomes) * 100) %>, legendText: '<%= i.getKey().getName() %>', indexLabel: "<%= i.getKey().getName() %>"},
+				{ y: <%= formatter.format((i.getValue() / allIncomes) * 100) %>, legendText: '<%= i.getKey().getName() %>'},
 			<%
 				}
 				
@@ -175,13 +173,12 @@ window.onload = function () {
 				type: "pie",
 				showInLegend: true,
 				toolTipContent: "{legendText}: <strong>{y}%</strong>",
-				indexLabel: "{label} {y}%",
 				dataPoints: [
 				<% 
 					double allExpenses = budget.getTotalExpense();
 					for(Entry<Category, Double> i : budget.getExpenseCategory().entrySet()){
 				%>
-				{ y: <%= formatter.format((i.getValue() / allExpenses) * 100) %>, legendText: '<%= i.getKey().getName() %>', indexLabel: "<%= i.getKey().getName() %>"},
+				{ y: <%= formatter.format((i.getValue() / allExpenses) * 100) %>, legendText: '<%= i.getKey().getName() %>'},
 				<%
 					}
 					
@@ -210,7 +207,6 @@ window.onload = function () {
 					type: "pie",
 					showInLegend: true,
 					toolTipContent: "{legendText}: <strong>{y}%</strong>",
-					indexLabel: "{label} {y}%",
 					dataPoints: [
 						<% 
 							double totalIncome = budget.getTotalIncome();
@@ -219,8 +215,8 @@ window.onload = function () {
 							double incomeResult = (all == 0) ? 0 : (totalIncome / all) * 100;
 							double expenseResult = (all == 0) ? 0 : (totalExpense / all) * 100;
 						%>
-							{ y: <%= formatter.format(incomeResult) %>, legendText: "Incomes", indexLabel: "Incomes"},
-							{ y: <%= formatter.format(expenseResult) %>, legendText: "Expenses", indexLabel: "Expenses"},
+							{ y: <%= formatter.format(incomeResult) %>, legendText: "Incomes"},
+							{ y: <%= formatter.format(expenseResult) %>, legendText: "Expenses"},
 					]
 				}
 				]
