@@ -8,10 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ThreadStarter {
 	
-	@Autowired
 	private final EmailDaemonThread edt = new EmailDaemonThread();
 
-	@Autowired
 	private final PdfCleanerThread pct = new PdfCleanerThread();
 	
 	@PostConstruct

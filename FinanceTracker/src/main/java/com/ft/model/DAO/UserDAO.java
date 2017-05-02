@@ -49,9 +49,11 @@ public class UserDAO {
 				ResultSet rs1 = stmt.executeQuery();
 				while(rs1.next()){
 					String budgetName = rs1.getString("name");
+					//budget concrect balance before adding additional incomes and expenses !!
 					double budgetBalance = rs1.getDouble("balance");
 					long budgetId = rs1.getLong("id");
 					Budget budget = new Budget(budgetName, budgetBalance);
+
 					budget.setId(budgetId);
 					// for each budget select the incomes and expenses
 					
@@ -92,7 +94,8 @@ public class UserDAO {
 							throw e;
 						}
 					}
-					
+					//correcting balance after adding incomes and expenses
+					budget.setBalance(budgetBalance);
 					// add the budget to the user
 					user.addBudget(budget);
 				}

@@ -32,7 +32,7 @@ public class PdfCleanerThread extends Thread {
 				}
 			}
 			try {
-				Thread.sleep(24*60*60*1000);
+				Thread.sleep(24*60*60*1000);//1 day
 			} catch (InterruptedException e) {
 				System.out.println("PdfCleanerThread: interupted.");
 				break;

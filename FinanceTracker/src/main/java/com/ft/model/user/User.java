@@ -45,7 +45,7 @@ public class User {
 
 	public void setFirstName(String firstName) {
 		if(Validator.validateString(firstName)){
-			this.firstName = firstName;
+			this.firstName = firstName.trim();
 		}
 	}
 
@@ -55,7 +55,7 @@ public class User {
 
 	public void setLastName(String lastName) {
 		if(Validator.validateString(lastName)){
-			this.lastName = lastName;
+			this.lastName = lastName.trim();
 		}
 	}
 
@@ -65,7 +65,7 @@ public class User {
 
 	public void setEmail(String email) {
 		if(Validator.isValidEmailAddress(email)){
-			this.email = email;
+			this.email = email.trim();
 		}
 	}
 
@@ -74,9 +74,7 @@ public class User {
 	}
 
 	public void setPassword(String password) {
-		// todo validate password 
-		// strong password needed
-		this.password = password;
+		this.password = password.trim();
 	}
 
 	public HashMap<String, Budget> getBudgets() {
