@@ -2,15 +2,13 @@ package com.ft.model.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.DriverManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ft.model.budget.Budget;
 import com.ft.model.budget.flows.CashFlow;
@@ -64,8 +62,13 @@ public class PdfCreator {
         PdfFont font = PdfFontFactory.createFont(FontConstants.HELVETICA);
         PdfFont bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
         
-        Table table = generateTable(cashFlow);
-        
+        //Create CashFlow table
+        document.add(new Paragraph(" "));
+        HashMap<String, HashMap<Double, Table>> info = generateCashFlowTable(cashFlow);
+        String type = info.keySet().iterator().next();
+        double sum = info.get(type).keySet().iterator().next();
+        Table table = info.get(type).get(sum);
+        document.add(new Paragraph(type + ": " + sum));
         document.add(table);
  
         //Close document
@@ -77,7 +80,7 @@ public class PdfCreator {
 	
 	public void createBudgetPdf(User user, String description, Budget budget) throws IOException{
 		
-		String fileName = getInstance().generateFileName(user, budget);
+		String fileName = getInstance().generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
 		File file = new File(dest);
 		
@@ -96,15 +99,27 @@ public class PdfCreator {
         document.add(new Paragraph(" "));
         document.add(new Paragraph("Incomes: "));
         
+        HashMap<String, HashMap<Double, Table>> info = new HashMap<>();
+        double sum = 0;
+        String type = null;
         Table table = null;
         
         //Income table
-        table = generateTable(budget.getIncomes());
+        document.add(new Paragraph(" "));
+        info = generateCashFlowTable(budget.getIncomes());
+        type = info.keySet().iterator().next();
+        sum = info.get(type).keySet().iterator().next();
+        table = info.get(type).get(sum);
+        document.add(new Paragraph(type + ": " + sum));
         document.add(table);
         
         //Expense table
-        document.add(new Paragraph("Expenses: "));
-        table = generateTable(budget.getExpenses());
+        document.add(new Paragraph(" "));
+        info = generateCashFlowTable(budget.getExpenses());
+        type = info.keySet().iterator().next();
+        sum = info.get(type).keySet().iterator().next();
+        table = info.get(type).get(sum);
+        document.add(new Paragraph(type + ": " + sum));
         document.add(table);
  
         //Close document
@@ -114,7 +129,42 @@ public class PdfCreator {
 		
 	}
 	
-	public Table generateTable(List<CashFlow> cashFlow) throws IOException{
+	public void CreateAccountInfoPdf(User user) throws IOException{
+
+		String fileName = generateFileName(user);
+		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
+		File file = new File(dest);
+		file.createNewFile();
+		
+		//Initialize PDF writer
+        PdfWriter writer = new PdfWriter(dest);
+ 
+        //Initialize PDF document
+        PdfDocument pdf = new PdfDocument(writer);
+ 
+        // Initialize document
+        Document document = new Document(pdf);
+        document.setMargins(35, 35, 35, 50);
+        String description = user.getFirstName() + " " + user.getLastName() + " account information.";
+        document.add(new Paragraph(description));
+        document.add(new Paragraph(" "));
+ 
+        PdfFont font = PdfFontFactory.createFont(FontConstants.HELVETICA);
+        PdfFont bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
+        
+        //Create CashFlow table
+        document.add(new Paragraph(" "));
+        Table table = generateAccountTable(user);
+        document.add(table);
+ 
+        //Close document
+        document.close();
+        writer.close();
+        pdf.close();
+		
+	}
+	
+	private HashMap<String, HashMap<Double, Table>> generateCashFlowTable(List<CashFlow> cashFlow) throws IOException{ //Type -> Double - table
 		
 		PdfFont font = PdfFontFactory.createFont(FontConstants.HELVETICA);
 	    PdfFont bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
@@ -131,11 +181,52 @@ public class PdfCreator {
 		DateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
 		TreeSet<CashFlow> orderedCF = new TreeSet<>();
 		orderedCF.addAll(cashFlow);
-        for (CashFlow cf : orderedCF) {
+		double sum = 0;
+		String type = null;
+		if (cashFlow.get(0).getType().equals(CashFlow.TYPES.INCOME)) {
+			type = "Income";
+		} else {
+			type = "Expense";
+		}
+        for (CashFlow cf : cashFlow) {
 			data.add(cf.getCategory().getName());
 			data.add(String.valueOf(cf.getQuantity()));
 			data.add(formater.format(cf.getDate()));
 			data.add(cf.getDescription());
+			sum += cf.getQuantity();
+		}
+        
+        for (String string : data) {
+            table.addCell(new Cell().add(new Paragraph(string).setFont(font)));
+		}
+        
+        HashMap<String, HashMap<Double, Table>> hashMap = new HashMap<>();
+        hashMap.put(type, new HashMap<>());
+        hashMap.get(type).put(sum, table);
+        
+        return hashMap;
+	}
+	
+	private Table generateAccountTable(User user) throws IOException{
+		
+		PdfFont font = PdfFontFactory.createFont(FontConstants.HELVETICA);
+	    PdfFont bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
+	    
+		Table table = new Table(new float[]{1,1,1,1});
+        table.setWidthPercent(100);
+        
+        table.addHeaderCell(new Cell().add(new Paragraph("Name").setFont(bold).setBackgroundColor(Color.GRAY)));
+        table.addHeaderCell(new Cell().add(new Paragraph("Incomes").setFont(bold).setBackgroundColor(Color.GRAY)));
+        table.addHeaderCell(new Cell().add(new Paragraph("Expenses").setFont(bold).setBackgroundColor(Color.GRAY)));
+        table.addHeaderCell(new Cell().add(new Paragraph("Balance").setFont(bold).setBackgroundColor(Color.GRAY)));   
+
+        ArrayList<String> data = new ArrayList<>();
+		HashMap<String, Budget> budgets = user.getBudgets();
+        for (Budget budget : budgets.values()) {
+			data.add(budget.getName());
+			data.add(String.valueOf(budget.getTotalIncome()));
+			data.add(String.valueOf(budget.getTotalExpense()));
+			data.add(String.valueOf(budget.getBalance()));
 		}
         
         for (String string : data) {
@@ -145,17 +236,10 @@ public class PdfCreator {
         return table;
 	}
 	
-	public String generateFileName(User user, Budget budget){
+	private String generateFileName(User user){
 		DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 		String date = formater.format(new Date());
-		String name = user.getFirstName() + " " + user.getLastName() + " " + budget.getName() + "_" + date;
-		return name;
-	}
-	
-	public String generateFileName(User user){
-		DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-		String date = formater.format(new Date());
-		String name = user.getFirstName() + " " + user.getLastName() + "_" + date;
+		String name = user.getFirstName() + "_" + user.getLastName() + "_" + date;
 		return name;
 	}
 }
