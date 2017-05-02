@@ -29,17 +29,17 @@ public class PdfController {
 				
 				if(type.equals("Budget")){
 					Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
-					pc.createBudgetPdf(user, type, "Budget name: " + selectedBudget.getName(), user.getBudgets().get(selectedBudget.getName()));
-					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user, type) + ".pdf";
+					pc.createBudgetPdf(user, "Budget name: " + selectedBudget.getName(), user.getBudgets().get(selectedBudget.getName()));
+					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user) + ".pdf";
 				}
 				else if(type.equals("Account")){
-					pc.CreateAccountInfoPdf(user, type);
-					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user, type) + ".pdf";
+					pc.CreateAccountInfoPdf(user);
+					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user) + ".pdf";
 				}
 				else if(type.equals("Cashflow")){
 					ArrayList<CashFlow> cashFlow = (ArrayList<CashFlow>) session.getAttribute("filteredData");
 					pc.createCashFlowPdf(user, "Cashflow filtered data", cashFlow);
-					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user, type) + ".pdf";
+					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user) + ".pdf";
 				} 
 				else{
 					

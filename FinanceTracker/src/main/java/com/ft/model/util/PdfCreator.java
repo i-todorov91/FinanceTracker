@@ -38,11 +38,15 @@ public class PdfCreator {
 	}
 	
 	private static String sep = File.separator;
-	public static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? sep + "home" + sep + "streetzaki" + sep + "Programming" + sep + "github" + sep + "FinanceTracker" + sep + "FinanceTracker" + sep + "src" + sep + "main" + sep + "webapp" + sep + "static" + sep + "pdf" + sep : "D:" + sep + "Programming" + sep + "ITTalents_s7" + sep + "ITtalents_finalProject" + sep + "pdfs" + sep;
+	
+	private static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? 
+			sep + "home"+sep+"streetzaki"+sep+"Programming"+sep+"github"+sep+"FinanceTracker"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf"
+				: "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf";
+
 	
 	public void createCashFlowPdf(User user, String description, List<CashFlow> cashFlow) throws IOException{
 		
-		String fileName = generateFileName(user, "Cashflow");
+		String fileName = generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
 		File file = new File(dest);
 		file.createNewFile();
@@ -75,9 +79,9 @@ public class PdfCreator {
 		
 	}
 	
-	public void createBudgetPdf(User user, String cashflowType, String description, Budget budget) throws IOException{
+	public void createBudgetPdf(User user, String description, Budget budget) throws IOException{
 		
-		String fileName = generateFileName(user, cashflowType);
+		String fileName = generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
 		File file = new File(dest);
 		
@@ -128,9 +132,9 @@ public class PdfCreator {
 		
 	}
 	
-	public void CreateAccountInfoPdf(User user, String type) throws IOException{
+	public void CreateAccountInfoPdf(User user) throws IOException{
 
-		String fileName = generateFileName(user, type);
+		String fileName = generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
 		File file = new File(dest);
 		file.createNewFile();
@@ -177,6 +181,7 @@ public class PdfCreator {
 		DateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
 		TreeSet<CashFlow> orderedCF = new TreeSet<>();
 		orderedCF.addAll(cashFlow);
+		
 		double sum = 0;
 		String type = null;
 		if (cashFlow.get(0).getType().equals(CashFlow.TYPES.INCOME)) {
@@ -232,10 +237,10 @@ public class PdfCreator {
         return table;
 	}
 	
-	public static String generateFileName(User user, String type){
+	public static String generateFileName(User user){
 		DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 		String date = formater.format(new Date());
-		String name = user.getFirstName() + "_" + user.getLastName() + "_" + type + "_" + date;
+		String name = user.getFirstName() + "_" + user.getLastName() + "_" + date;
 		return name;
 	}
 }

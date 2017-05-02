@@ -73,9 +73,9 @@ public abstract class CashFlow implements Comparable<CashFlow>{
 				} else if ((this.getDescription().compareTo(o.getDescription()) < 0)) {
 					return -1;
 				} else {
-					if ((this.getCategory().getName().compareTo(o.getCategory().getName()) > 0)) {
+					if ((this.getId() > this.getId())) {
 						return 1;
-					} else if ((this.getCategory().getName().compareTo(o.getCategory().getName()) > 0)) {
+					} else if ((this.getId() < this.getId())) {
 						return -1;
 					} else {
 						return 0;
