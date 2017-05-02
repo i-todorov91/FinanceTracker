@@ -12,11 +12,9 @@
  
   <link rel="icon" href="img/favicon.png" type="image/png">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
-  <link href="css/style.css" rel="stylesheet" type="text/css">
   <link href="css/responsive.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/sidebar/style.css"> <!-- Resource style -->
-
-
+ 
   <!-- =======================================================
       Theme Name: Butterfly
       Theme URL: https://bootstrapmade.com/butterfly-free-bootstrap-theme/

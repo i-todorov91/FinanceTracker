@@ -665,7 +665,7 @@ Sidebar
 	font-size: 1.5rem;
 	}
 	
-.cd-nav ul li a:hover{
+.cd-nav > ul > li:hover > a{
 	color:#428bca;
 }
 

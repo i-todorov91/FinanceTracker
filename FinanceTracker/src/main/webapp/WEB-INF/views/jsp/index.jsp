@@ -12,13 +12,11 @@
 <title>Homepage</title>
 <link rel="icon" href="img/favicon.png" type="image/png">
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
-<link href="css/style.css" rel="stylesheet" type="text/css">
 <link href="css/linecons.css" rel="stylesheet" type="text/css">
 <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
 <link href="css/responsive.css" rel="stylesheet" type="text/css">
 <link href="css/animate.css" rel="stylesheet" type="text/css">
-<link href='https://fonts.googleapis.com/css?family=Lato:400,900,700,700italic,400italic,300italic,300,100italic,100,900italic' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Dosis:400,500,700,800,600,300,200' rel='stylesheet' type='text/css'>
+<link href="css/style.css" rel="stylesheet" type="text/css">
  
 <!-- =======================================================
     Theme Name: Butterfly
@@ -65,7 +63,7 @@ function resizeText() {
 </script>
 </head>
 <style>
-  	.nav .nottoggle{
+  	.nav .notoggle{
   		margin-top: 38px;
   	}
 </style>
@@ -84,7 +82,7 @@ function resizeText() {
           <li><a id="redirect-login" href="login">Login</a></li>
           <li><a id="redirect-register" href="register">Register</a></li>
         </ul>
-        <ul class="nottoggle">
+        <ul class="notoggle">
           <li><a href="#top_content">Home</a></li>
           <li><a href="#service">Services</a></li>
           <li><a href="#team">Team</a></li>
