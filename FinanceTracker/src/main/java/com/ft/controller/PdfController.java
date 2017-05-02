@@ -64,7 +64,7 @@ public class PdfController {
 	public void viewPdfGet(HttpSession session, HttpServletResponse res){
 		
 		try {
-			File file = new File(PdfCreator.DESTINATION + (String) session.getAttribute("filename") + ".pdf");
+			File file = new File(PdfCreator.DESTINATION + (String) session.getAttribute("filename"));
 			if(!file.exists()){
 				file.createNewFile();
 			}

@@ -15,6 +15,8 @@ public class EmailSender {
 	
 	private Transport transport;
 	
+	private EmailSender(){}
+	
 	private static EmailSender instance = null;
 	
 	public synchronized static EmailSender getInstance(){

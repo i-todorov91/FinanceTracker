@@ -7,11 +7,10 @@ import com.ft.model.DAO.CategoryDAO;
 import com.ft.model.budget.flows.Category;
 
 public class Validator {
+	
 	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern VALID_PASSWORD_REGEX = Pattern.compile("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%\\*^&+=]).{8,})", Pattern.CASE_INSENSITIVE);
-	private Validator(){
-		
-	}
+	private Validator(){}
 	
 	public static boolean isValidEmailAddress(String email) {
 		if(!validateString(email)){

@@ -23,6 +23,13 @@ public class UserDAO {
 	private static final HashMap<String, User> allUsers = new HashMap<>(); // email -> User
 	private static Connection con = DBManager.getInstance().getConnection();
 	
+	public synchronized static UserDAO getInstance() throws SQLException, InvalidCashFlowException{
+		if(instance == null){
+			instance = new UserDAO();
+		}
+		return instance;
+	}
+	
 	private UserDAO() throws SQLException, InvalidCashFlowException{
 		String query = "SELECT id, first_name, second_name, password, email FROM user";
 		PreparedStatement stmt = null;
@@ -49,7 +56,7 @@ public class UserDAO {
 				ResultSet rs1 = stmt.executeQuery();
 				while(rs1.next()){
 					String budgetName = rs1.getString("name");
-					//budget concrect balance before adding additional incomes and expenses !!
+					//budget concrete balance before adding additional incomes and expenses !!
 					double budgetBalance = rs1.getDouble("balance");
 					long budgetId = rs1.getLong("id");
 					Budget budget = new Budget(budgetName, budgetBalance);
@@ -105,13 +112,6 @@ public class UserDAO {
 			System.out.println("UserDAO: Constructor -" + e.getMessage());
 			throw e;
 		}
-	}
-	
-	public synchronized static UserDAO getInstance() throws SQLException, InvalidCashFlowException{
-		if(instance == null){
-			instance = new UserDAO();
-		}
-		return instance;
 	}
 	
 	public synchronized boolean addUser(User toAdd) throws SQLException{

@@ -172,8 +172,8 @@ public class CategoryDAO {
 	
 	public ArrayList<Category> getAllDefaultList(){
 		ArrayList<Category> result = new ArrayList<>();
-		for(Entry<String, Category> i : defaultCategories.entrySet()){
-			result.add(i.getValue());
+		for(Category i : defaultCategories.values()){
+			result.add(i);
 		}
 		return result;
 	}
@@ -192,6 +192,7 @@ public class CategoryDAO {
 	}
 	
 	public ArrayList<Category> getAllUserExpenseCategories(long userId){
+
 		ArrayList<Category> result = new ArrayList<>();
 		for(Entry<String, HashMap<Long, Category>> i : customAddedCategories.entrySet()){
 			for(Entry<Long, Category> j : i.getValue().entrySet()){
@@ -203,4 +204,5 @@ public class CategoryDAO {
 		}
 		return result;
 	}
+
 }

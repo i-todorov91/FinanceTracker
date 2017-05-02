@@ -28,7 +28,7 @@ public class PdfCreator {
 
 	private static PdfCreator instance = null;
 	
-	PdfCreator() { }
+	private PdfCreator() {}
 	
 	public synchronized static PdfCreator getInstance(){
 		if(instance == null){
@@ -64,26 +64,14 @@ public class PdfCreator {
         document.add(new Paragraph(" "));
         
         //Create CashFlow table
-        document.add(new Paragraph(" "));
-        HashMap<String, HashMap<Double, Table>> info = generateCashFlowTable(cashFlow);
-        if (info == null) {
-        	document.close();
-            writer.close();
-            pdf.close();
-            return null;
-		}
-        String type = info.keySet().iterator().next();
-        double sum = info.get(type).keySet().iterator().next();
-        Table table = info.get(type).get(sum);
-        document.add(new Paragraph(type + ": " + sum + " lv."));
-        document.add(table);
+        addTableToDocument(document, cashFlow);
  
         //Close document
         document.close();
         writer.close();
         pdf.close();
         
-        return new File(DESTINATION + fileName);
+        return new File(dest);
         
 	}
 	
@@ -106,54 +94,19 @@ public class PdfCreator {
         document.setMargins(35, 35, 35, 50);
         document.add(new Paragraph(description));
         document.add(new Paragraph(" "));
-        
-        HashMap<String, HashMap<Double, Table>> info = new HashMap<>();
-        double sum = 0;
-        String type = null;
-        Table table = null;
-        
+     
         //Income table
-        document.add(new Paragraph(" "));
-        info = generateCashFlowTable(budget.getIncomes());
-        if (info != null) {
-        	type = info.keySet().iterator().next();
-            sum = info.get(type).keySet().iterator().next();
-            table = info.get(type).get(sum);
-		} else {
-			type = "Income";
-			sum = 0;
-			table = null;
-		}
-        document.add(new Paragraph(type + ": " + sum + " lv."));
-        if (table != null) {
-            document.add(table);
-            document.add(new Paragraph(" "));
-		}
+        addTableToDocument(document, budget.getIncomes());
         
         //Expense table
-        document.add(new Paragraph(" "));
-        info = generateCashFlowTable(budget.getExpenses());
-        if (info != null) {
-        	type = info.keySet().iterator().next();
-            sum = info.get(type).keySet().iterator().next();
-            table = info.get(type).get(sum);
-		} else {
-			type = "Expense";
-			sum = 0;
-			table = null;
-		}
-        document.add(new Paragraph(type + ": " + sum + " lv."));
-        if (table != null) {
-            document.add(table);
-            document.add(new Paragraph(" "));
-		}
+        addTableToDocument(document, budget.getExpenses());
  
         //Close document
         document.close();
         writer.close();
         pdf.close();
 		
-        return new File(DESTINATION + fileName);
+        return new File(dest);
 	}
 	
 	public File CreateAccountInfoPdf(User user) throws IOException{
@@ -186,7 +139,7 @@ public class PdfCreator {
         writer.close();
         pdf.close();
 		
-        return new File(DESTINATION + fileName);
+        return new File(dest);
 	}
 	
 	private HashMap<String, HashMap<Double, Table>> generateCashFlowTable(List<CashFlow> cashFlow) throws IOException{ //Type -> Double - table
@@ -235,6 +188,27 @@ public class PdfCreator {
         hashMap.get(type).put(sum, table);
         
         return hashMap;
+	}
+	
+	private void addTableToDocument(Document document, List<CashFlow> cashFlow) throws IOException{
+		
+		HashMap<String, HashMap<Double, Table>> info = new HashMap<>();
+        double sum = 0;
+        String type = null;
+        Table table = null;
+		
+		document.add(new Paragraph(" "));
+        info = generateCashFlowTable(cashFlow);
+        
+        if (info != null) {
+        	type = info.keySet().iterator().next();
+            sum = info.get(type).keySet().iterator().next();
+            table = info.get(type).get(sum);
+            document.add(new Paragraph(type + ": " + sum + " lv."));
+
+            document.add(table);
+            document.add(new Paragraph(" "));
+		}
 	}
 	
 	private Table generateAccountTable(User user) throws IOException{
