@@ -281,9 +281,9 @@ window.onload = function () {
 		    <h3 class="panel-title">${sessionScope.selectedBudget.getName()}</h3>
 		  </div>
 		  <div class="panel-body">
-		    <h4>Total income: ${sessionScope.selectedBudget.getTotalIncome()} Leva</h4>
-		    <h4>Total expense: ${sessionScope.selectedBudget.getTotalExpense()} Leva</h4>
-		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} Leva</h4>
+		    <h4>Total income: ${sessionScope.selectedBudget.getTotalIncome()} lv.</h4>
+		    <h4>Total expense: ${sessionScope.selectedBudget.getTotalExpense()} lv.</h4>
+		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} lv.</h4>
 		  </div>
 		</div>
 		<form action="login/createpdf" method="get">
