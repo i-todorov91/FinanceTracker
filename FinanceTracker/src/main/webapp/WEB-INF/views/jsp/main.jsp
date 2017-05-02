@@ -1,6 +1,7 @@
 <%@ page errorPage="error500.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@page import="com.ft.model.DAO.UserDAO"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
@@ -34,6 +35,10 @@
   </style>
 </head>
 <body>
+<%
+	double res = UserDAO.getInstance().getAllUsers().get((String) session.getAttribute("username")).getBudgetsSum();
+%>
+  <c:set var="totalSum" value="<%= res %>"></c:set>
   <header class="cd-main-header"> 
     <div class="container">
       <div class="header_section">
@@ -42,6 +47,7 @@
 
         <nav class="cd-nav">
           <ul class="cd-top-nav">
+          	<span><strong>Total sum:</strong> <c:out value="${totalSum}"></c:out></span>
             <li><a href="login/accountinformation">Account information</a></li>
             <li><a href="login/contact">Contact us</a></li>
             <li><a href="logout">Logout</a></li>

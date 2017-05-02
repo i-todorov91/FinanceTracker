@@ -19,69 +19,76 @@
   });
   </script>
 <body>
-	  <fieldset>
-      	<form class="form-horizontal" id="typeForm" action="login/changetype" method="post">
-		   <div class="form-group">
-		     <label for="inputEmail" class="col-lg-2 control-label">Type</label>
-		     <div class="col-lg-10">
-	      	<select id="select" name="type" onchange='submit()'>
-	      	<option> ${sessionScope.selectedType}</option> 
-		      	<c:forEach var="item" items="${sessionScope.types}">
-		      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
-		      			<option>${item.toString()}</option>
-		      		</c:if>
-		      	</c:forEach>
-		    </select>
-	      </div>
-	    </div>
-		</form>
-		<form class="form-horizontal" method="post" action="login/addtransaction">
-	    <div class="form-group">
-	      <label for="inputPassword" class="col-lg-2 control-label">Quantity</label>
-	      <div class="col-lg-10">
-	        <input class="form-control" id="inputNumber" placeholder="Quantity" name="quantity" type="number" min="0">
-	      </div>
-	    </div>
-	    <div class="form-group">
-	      <label for="inputPassword" class="col-lg-2 control-label">Description</label>
-	      <div class="col-lg-10">
-	        <input class="form-control" id="inputText" placeholder="Description" name="description" type="text">
-	      </div>
-	    </div>
-	    <div class="form-group">
-	      <label for="inputPassword" class="col-lg-2 control-label">Date</label>
-	      <div class="col-lg-10">
-                <input id="datepicker" name="date"/>
-	      </div>
-	    </div>
-	    <div class="form-group">
-	      <label for="inputEmail" class="col-lg-2 control-label">Category</label>
-	      <div class="col-lg-10">
-	      	<select name="category">
-		      	<c:forEach var="item" items="${sessionScope.categories}">
-		      		<option>${item.getName()}</option>
-		      	</c:forEach>
-		      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[0].toString())}">
-		      		<c:forEach var="item" items="${sessionScope.incomeCategories}">
-		      			<option>${item.getName()}</option>
-		      		</c:forEach>
-		      	</c:if>
-		      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[1].toString())}">
-		      		<c:forEach var="item" items="${sessionScope.expenseCategories}">
-		      			<option>${item.getName()}</option>
-		      		</c:forEach>
-		      	</c:if>
-		    </select>
-			<a href="login/addcategory" class="btn btn-primary">New category</a>
-	      </div>
-	    </div>
-	    <div class="form-group">
-	      <div class="col-lg-10 col-lg-offset-2">
-	        <button type="reset" class="btn btn-default">Cancel</button>
-	        <button type="submit" class="btn btn-primary">Submit</button>
-	      </div>
-	    </div>
-	  </fieldset>
-	</form>
+	<c:if test="${sessionScope.budgets.isEmpty()}">
+		<h1>You have no budgets!</h1>
+	</c:if>
+	<c:if test="${!sessionScope.budgets.isEmpty()}">
+		  <fieldset>
+	      	<form class="form-horizontal" id="typeForm" action="login/changetype" method="post">
+			   <div class="form-group">
+			     <label for="inputEmail" class="col-lg-2 control-label">Type</label>
+			     <div class="col-lg-10">
+		      	<select id="select" name="type" onchange='submit()'>
+		      	<option> ${sessionScope.selectedType}</option> 
+			      	<c:forEach var="item" items="${sessionScope.types}">
+			      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
+			      			<option>${item.toString()}</option>
+			      		</c:if>
+			      	</c:forEach>
+			    </select>
+		      </div>
+		    </div>
+			</form>
+			<form class="form-horizontal" method="post" action="login/addtransaction">
+		    <div class="form-group">
+		      <label for="inputPassword" class="col-lg-2 control-label">Quantity</label>
+		      <div class="col-lg-10">
+		        <input class="form-control" id="inputNumber" placeholder="Quantity" name="quantity" type="number" min="0">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="inputPassword" class="col-lg-2 control-label">Description</label>
+		      <div class="col-lg-10">
+		        <input class="form-control" id="inputText" placeholder="Description" name="description" type="text">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="inputPassword" class="col-lg-2 control-label">Date</label>
+		      <div class="col-lg-10">
+	                <input id="datepicker" name="date"/>
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="inputEmail" class="col-lg-2 control-label">Category</label>
+		      <div class="col-lg-10">
+		      	<select name="category">
+			      	<c:forEach var="item" items="${sessionScope.categories}">
+			      		<c:if test="${item.getType().toString().equals(sessionScope.selectedType)}">
+							<option>${item.getName()}</option>
+			      		</c:if>
+			      	</c:forEach>
+			      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[0].toString())}">
+			      		<c:forEach var="item" items="${sessionScope.incomeCategories}">
+			      			<option>${item.getName()}</option>
+			      		</c:forEach>
+			      	</c:if>
+			      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[1].toString())}">
+			      		<c:forEach var="item" items="${sessionScope.expenseCategories}">
+			      			<option>${item.getName()}</option>
+			      		</c:forEach>
+			      	</c:if>
+			    </select>
+				<a href="login/addcategory" class="btn btn-primary">New category</a>
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <div class="col-lg-10 col-lg-offset-2">
+		        <button type="reset" class="btn btn-default">Cancel</button>
+		        <button type="submit" class="btn btn-primary">Submit</button>
+		      </div>
+		    </div>
+		    </form>
+		  </fieldset>
+	</c:if>
 </body>
 </html>

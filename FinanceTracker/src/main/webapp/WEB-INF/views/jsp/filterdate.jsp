@@ -24,68 +24,75 @@
   	}
   </style>
 <body>
-	<form id="typeForm" action="login/changetype" method="post">
-		<select id="select" name="type" onchange='submit()'>
-      		<option> ${sessionScope.selectedType}</option> 
-	      	<c:forEach var="item" items="${sessionScope.types}">
-	      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
-	      			<option>${item.toString()}</option>
-	      		</c:if>
-	      	</c:forEach> 
-	    </select> 
-	</form>
-  	<form action="login/filterdate" method="post">
-		<select name="category">
-	      	<c:forEach var="item" items="${sessionScope.categories}">
-	      		<option>${item.getName()}</option>
-	      	</c:forEach>
-	      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[0].toString())}">
-	      		<c:forEach var="item" items="${sessionScope.incomeCategories}">
-	      			<option>${item.getName()}</option>
-	      		</c:forEach>
-	      	</c:if>
-	      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[1].toString())}">
-	      		<c:forEach var="item" items="${sessionScope.expenseCategories}">
-	      			<option>${item.getName()}</option>
-	      		</c:forEach>
-	      	</c:if>
-	    </select>
-		<label for="allCategories">All categories</label>
-		<input type="checkbox" id="allCategories" name="allCategories"/>
-		<input type="date" id="datepicker1" name="from" placeholder="from"/>
-		<input type="date" id="datepicker" name="to" placeholder="to"/>
-		<input type="submit" value="Go"/>
-	</form>
-	<br><br>
-	<c:if test="${sessionScope.filteredData != null}">
-		<form action="login/createpdf" method="get">
-			<input type="hidden" name="type" value="Cashflow"/>
-			<input type="submit" value="Export as pdf">
+	<c:if test="${sessionScope.budgets.isEmpty()}">
+		<h1>You have no budgets!</h1>
+	</c:if>
+	<c:if test="${!sessionScope.budgets.isEmpty()}">
+		<form id="typeForm" action="login/changetype" method="post">
+			<select id="select" name="type" onchange='submit()'>
+	      		<option> ${sessionScope.selectedType}</option> 
+		      	<c:forEach var="item" items="${sessionScope.types}">
+		      		<c:if test="${!sessionScope.selectedType.equals(item.toString())}">
+		      			<option>${item.toString()}</option>
+		      		</c:if>
+		      	</c:forEach> 
+		    </select> 
 		</form>
-		<div style="height: 1150px; overflow-y: scroll;">
-			<table class="table table-striped table-hover">
-				<tr>
-					<th>#</th>
-					<th>Type</th>
-					<th>Category</th>
-					<th>Quantity(lv)</th>
-					<th>Description</th>
-					<th>Date</th>
-				</tr>
-				<c:set var="number" value="1"></c:set>    	
-				<c:forEach items="${sessionScope.filteredData}" var="data">
+	  	<form action="login/filterdate" method="post">
+			<select name="category">
+		      	<c:forEach var="item" items="${sessionScope.categories}">
+		      		<c:if test="${item.getType().toString().equals(sessionScope.selectedType)}">
+						<option>${item.getName()}</option>
+		      		</c:if>
+		      	</c:forEach>
+		      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[0].toString())}">
+		      		<c:forEach var="item" items="${sessionScope.incomeCategories}">
+		      			<option>${item.getName()}</option>
+		      		</c:forEach>
+		      	</c:if>
+		      	<c:if test="${sessionScope.selectedType.equals(sessionScope.types[1].toString())}">
+		      		<c:forEach var="item" items="${sessionScope.expenseCategories}">
+		      			<option>${item.getName()}</option>
+		      		</c:forEach>
+		      	</c:if>
+		    </select>
+			<label for="allCategories">All categories</label>
+			<input type="checkbox" id="allCategories" name="allCategories"/>
+			<input type="date" id="datepicker1" name="from" placeholder="from"/>
+			<input type="date" id="datepicker" name="to" placeholder="to"/>
+			<input type="submit" value="Go"/>
+		</form>
+		<br><br>
+		<c:if test="${sessionScope.filteredData != null}">
+			<form action="login/createpdf" method="get">
+				<input type="hidden" name="type" value="Cashflow"/>
+				<input type="submit" value="Export as pdf">
+			</form>
+			<div style="height: 1150px; overflow-y: scroll;">
+				<table class="table table-striped table-hover">
 					<tr>
-						<td>${number}</td>
-						<td>${data.type.toString()}</td>
-						<td>${data.category.name}</td>
-						<td>${data.quantity}</td>
-						<td>${data.description}</td>
-						<td>${data.date}</td>
-						<c:set var="number" value="${number+1}"></c:set>
+						<th>#</th>
+						<th>Type</th>
+						<th>Category</th>
+						<th>Quantity(lv)</th>
+						<th>Description</th>
+						<th>Date</th>
 					</tr>
-				</c:forEach>
-			</table>
-		</div>
+					<c:set var="number" value="1"></c:set>    	
+					<c:forEach items="${sessionScope.filteredData}" var="data">
+						<tr>
+							<td>${number}</td>
+							<td>${data.type.toString()}</td>
+							<td>${data.category.name}</td>
+							<td>${data.quantity}</td>
+							<td>${data.description}</td>
+							<td>${data.date}</td>
+							<c:set var="number" value="${number+1}"></c:set>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>
+		</c:if>
 	</c:if>
 </body>
 </html>

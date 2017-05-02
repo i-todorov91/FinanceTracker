@@ -100,11 +100,18 @@ public class User {
 		return id;
 	}
 	
+	public double getBudgetsSum(){
+		double result = 0;
+		for(Budget i : budgets.values()){
+			result += i.getBalance();
+		}
+		return result;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", password=" + password
 				+ "]";
 	}
-
 	
 }
