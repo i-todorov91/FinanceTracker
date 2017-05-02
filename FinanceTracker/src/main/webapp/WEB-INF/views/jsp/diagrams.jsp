@@ -290,7 +290,7 @@ window.onload = function () {
 		    <h4>Current balance: ${sessionScope.selectedBudget.getBalance()} Leva</h4>
 		  </div>
 		</div>
-		<form action="login/viewpdf" method="get">
+		<form action="login/createpdf" method="get">
 			<input type="hidden" name="type" value="Budget"/>
 			<input type="submit" value="Export as pdf">
 		</form>

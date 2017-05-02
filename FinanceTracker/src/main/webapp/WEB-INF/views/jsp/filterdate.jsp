@@ -58,7 +58,7 @@
 	</form>
 	<br><br>
 	<c:if test="${sessionScope.filteredData != null}">
-		<form action="login/viewpdf" method="get">
+		<form action="login/createpdf" method="get">
 			<input type="hidden" name="type" value="Cashflow"/>
 			<input type="submit" value="Export as pdf">
 		</form>

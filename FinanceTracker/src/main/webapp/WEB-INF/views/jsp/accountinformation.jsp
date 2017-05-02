@@ -14,7 +14,7 @@
 	</c:if>
 	
 	<c:if test="${!sessionScope.budgets.isEmpty()}">
-		<form action="login/viewpdf" method="get">
+		<form action="login/createpdf" method="get">
 			<input type="hidden" name="type" value="Account"/>
 			<input type="submit" value="Export as pdf">
 		</form>

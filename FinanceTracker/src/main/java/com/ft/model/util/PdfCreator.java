@@ -39,12 +39,12 @@ public class PdfCreator {
 	
 	private static String sep = File.separator;
 	
-	private static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? 
-			sep + "home"+sep+"streetzaki"+sep+"Programming"+sep+"github"+sep+"FinanceTracker"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf"
-				: "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf";
+	public static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? 
+			sep + "home"+sep+"streetzaki"+sep+"Programming"+sep+"github"+sep+"FinanceTracker"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf" + sep
+				: "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf" + sep;
 
 	
-	public void createCashFlowPdf(User user, String description, List<CashFlow> cashFlow) throws IOException{
+	public File createCashFlowPdf(User user, String description, List<CashFlow> cashFlow) throws IOException{
 		
 		String fileName = generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
@@ -76,10 +76,11 @@ public class PdfCreator {
         document.close();
         writer.close();
         pdf.close();
-		
+        
+        return new File(DESTINATION + fileName);
 	}
 	
-	public void createBudgetPdf(User user, String description, Budget budget) throws IOException{
+	public File createBudgetPdf(User user, String description, Budget budget) throws IOException{
 		
 		String fileName = generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
@@ -130,9 +131,10 @@ public class PdfCreator {
         writer.close();
         pdf.close();
 		
+        return new File(DESTINATION + fileName);
 	}
 	
-	public void CreateAccountInfoPdf(User user) throws IOException{
+	public File CreateAccountInfoPdf(User user) throws IOException{
 
 		String fileName = generateFileName(user);
 		String dest = PdfCreator.DESTINATION + fileName + ".pdf";
@@ -162,6 +164,7 @@ public class PdfCreator {
         writer.close();
         pdf.close();
 		
+        return new File(DESTINATION + fileName);
 	}
 	
 	private HashMap<String, HashMap<Double, Table>> generateCashFlowTable(List<CashFlow> cashFlow) throws IOException{ //Type -> Double - table
