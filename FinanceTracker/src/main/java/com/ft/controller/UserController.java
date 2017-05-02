@@ -498,11 +498,4 @@ public class UserController {
 		}
         return "register";
 	}
-	
-	@RequestMapping(value="/404NotFound.html")
-    public String handlePageNotFound() {
-		
-		System.out.println("404 Not found!");
-        return "error404";
-    }
 }
