@@ -261,7 +261,6 @@ public class UserDAO {
 			stmt.setLong(2, budgetId);
 			stmt.executeUpdate();
 			
-			budget.addCashFlow(toAdd);
 			con.commit();
 			
 			return true;
@@ -342,7 +341,6 @@ public class UserDAO {
 			stmt.setLong(2, budgetId);
 			stmt.executeUpdate();
 			
-			budget.addCashFlow(toAdd);
 			con.commit();
 			
 			return true;

@@ -323,6 +323,7 @@ public class UserController {
 	public String filterDateGet(HttpSession session) {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.removeAttribute("filteredData");
 			session.setAttribute("url", "filterdate.jsp");
 		}
 		return loadCategories(session);
@@ -364,8 +365,6 @@ public class UserController {
 			    fromDate = new java.sql.Date(fromDateUtil.getTime());
 			    toDate = new java.sql.Date(toDateUtil.getTime());
 			}
-			
-			System.out.println(fromDate + " " + toDate);
 			
 			// get the selected budget and check if it is valid
 			Budget budget = (Budget) session.getAttribute("selectedBudget");

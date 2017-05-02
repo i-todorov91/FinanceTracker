@@ -64,6 +64,11 @@ function resizeText() {
 }
 </script>
 </head>
+<style>
+  	.nav .nottoggle{
+  		margin-top: 38px;
+  	}
+</style>
 <body>
 <!--Header_section-->
 <header id="header_outer">
@@ -79,7 +84,7 @@ function resizeText() {
           <li><a id="redirect-login" href="login">Login</a></li>
           <li><a id="redirect-register" href="register">Register</a></li>
         </ul>
-        <ul class="">
+        <ul class="nottoggle" style="font-weight: 1.4rem;">
           <li><a href="#top_content">Home</a></li>
           <li><a href="#service">Services</a></li>
           <li><a href="#team">Team</a></li>

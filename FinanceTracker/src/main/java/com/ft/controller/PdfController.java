@@ -1,6 +1,6 @@
 package com.ft.controller;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,48 +18,29 @@ import com.ft.model.util.PdfCreator;
 @Controller
 public class PdfController {
 
-	@RequestMapping(value="/login/pdftester", method=RequestMethod.POST)
-	public String postPdf(HttpSession session){
-		
-		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			PdfCreator pc = PdfCreator.getInstance();
-			User user = null;
-			try {
-				String username = (String) session.getAttribute("username");
-				user = UserDAO.getInstance().getAllUsers().get(username);
-				Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
-				List<CashFlow> list = user.getBudgets().get("12").getIncomes();
-	//			pc.createCashFlowPdf(user, "Test Cash Flow PDF", list);
-				pc.createBudgetPdf(user, selectedBudget.getName(), user.getBudgets().get(selectedBudget.getName()));
-	//			pc.createCashFlowPdf(user, "cashflow", list);
-			} catch (Exception e) {
-				System.out.println("PdfController: " + e.getMessage());
-				return "redirect: error500";
-			}
-		}
-		return "redirect: ../login";
-	}
-
 	@RequestMapping(value="/login/viewpdf", method=RequestMethod.GET)
 	public String viewPdfGet(HttpSession session, @RequestParam("type") String type){
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			String username = (String) session.getAttribute("username");
-			User user = null;
-			PdfCreator pc = PdfCreator.getInstance();
 			try{
+				String username = (String) session.getAttribute("username");
+				User user = UserDAO.getInstance().getAllUsers().get(username);;
+				PdfCreator pc = PdfCreator.getInstance();
+				
 				if(type.equals("Budget")){
-					user = UserDAO.getInstance().getAllUsers().get(username);
 					Budget selectedBudget = (Budget) session.getAttribute("selectedBudget");
-					pc.createBudgetPdf(user, "Budget name: " + selectedBudget.getName(), user.getBudgets().get(selectedBudget.getName()));
-					
+					pc.createBudgetPdf(user, type, "Budget name: " + selectedBudget.getName(), user.getBudgets().get(selectedBudget.getName()));
+					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user, type) + ".pdf";
 				}
 				else if(type.equals("Account")){
-					
+					pc.CreateAccountInfoPdf(user, type);
+					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user, type) + ".pdf";
 				}
 				else if(type.equals("Cashflow")){
-					
-				}
+					ArrayList<CashFlow> cashFlow = (ArrayList<CashFlow>) session.getAttribute("filteredData");
+					pc.createCashFlowPdf(user, "Cashflow filtered data", cashFlow);
+					return "redirect: ../pdfs/" + PdfCreator.generateFileName(user, type) + ".pdf";
+				} 
 				else{
 					
 				}
@@ -67,7 +48,17 @@ public class PdfController {
 				System.out.println("PdfView->GET: " + e.getMessage());
 				return "redirect: error500";
 			}
-		}
-		return "viewpdf";
+		} 
+		return "redirect: ../login";
+	}
+	
+	@RequestMapping(value="/login/accountinformation", method=RequestMethod.GET)
+	public String viewAccountInformationGet(HttpSession session){
+		
+		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
+			session.setAttribute("url", "accountinformation.jsp");
+			
+		} 
+		return "redirect: ../login";
 	}
 }

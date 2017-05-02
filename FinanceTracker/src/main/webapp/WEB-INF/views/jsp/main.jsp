@@ -27,6 +27,11 @@
   <script type="text/javascript" src="js/lib/bootstrap.js"></script>
   <script type="text/javascript" src="js/sidebar/modernizr.js"></script> <!-- Modernizr -->
   <title>Finance Tracker</title>
+  <style>
+  	.cd-nav{
+  		margin-top: 24px;
+  	}
+  </style>
 </head>
 <body>
   <header class="cd-main-header"> 
@@ -37,6 +42,7 @@
 
         <nav class="cd-nav">
           <ul class="cd-top-nav">
+            <li><a href="login/accountinformation">Account information</a></li>
             <li><a href="login/contact">Contact us</a></li>
             <li><a href="logout">Logout</a></li>
           </ul>

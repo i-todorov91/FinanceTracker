@@ -58,17 +58,21 @@
 	</form>
 	<br><br>
 	<c:if test="${sessionScope.filteredData != null}">
+		<form action="login/viewpdf" method="get">
+			<input type="hidden" name="type" value="Cashflow"/>
+			<input type="submit" value="Export as pdf">
+		</form>
 		<div style="height: 1150px; overflow-y: scroll;">
 			<table class="table table-striped table-hover">
 				<tr>
 					<th>#</th>
 					<th>Type</th>
 					<th>Category</th>
-					<th>Quantity</th>
+					<th>Quantity(lv)</th>
 					<th>Description</th>
 					<th>Date</th>
 				</tr>
-				<c:set var="number" value="0"></c:set>    	
+				<c:set var="number" value="1"></c:set>    	
 				<c:forEach items="${sessionScope.filteredData}" var="data">
 					<tr>
 						<td>${number}</td>
