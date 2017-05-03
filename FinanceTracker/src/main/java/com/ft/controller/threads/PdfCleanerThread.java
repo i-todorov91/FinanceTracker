@@ -13,26 +13,28 @@ public class PdfCleanerThread extends Thread {
 	private static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? 
 			sep + "home"+sep+"streetzaki"+sep+"Programming"+sep+"github"+sep+"FinanceTracker"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf"
 				: "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf";
+	private static final long SLEEP_TIME = 60*60*1000;//1 hour
+	private static final long DELETE_TIME = 60*60*1000;//1 hour
 	
 	@Async
 	@Override
 	public void run() {
 		while(true){
 			File dir = new File(DESTINATION);
-			Date date = new Date();
-			long now = date.getTime();
+			long now = new Date().getTime();
 			File[] pdfs = dir.listFiles();
 			if (pdfs != null) {
 				for(int i = 0; i < pdfs.length; i++){
 					File file = pdfs[i];
-					if ((now - file.lastModified()) >= 24*60*60*1000) {
+					long lastModified = (now - file.lastModified());
+					if (lastModified >= DELETE_TIME) {
 						file.delete();
 						System.out.println(file.getName() + " deleted!");
 					}
 				}
 			}
 			try {
-				Thread.sleep(24*60*60*1000);//1 day
+				Thread.sleep(SLEEP_TIME); //1 day
 			} catch (InterruptedException e) {
 				System.out.println("PdfCleanerThread: interupted.");
 				break;

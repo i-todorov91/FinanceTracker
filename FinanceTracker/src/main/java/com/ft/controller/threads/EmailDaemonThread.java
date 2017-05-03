@@ -2,8 +2,10 @@ package com.ft.controller.threads;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import javax.mail.MessagingException;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.ft.model.DAO.UserDAO;
 import com.ft.model.budget.Budget;
+import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Expense;
 import com.ft.model.budget.flows.Income;
 import com.ft.model.user.User;
@@ -20,6 +23,9 @@ import com.ft.model.util.EmailSender;
 @Component
 public class EmailDaemonThread extends Thread {
 
+	private static final long SLEEP_TIME = 24*60*60*1000; //1 day
+	private static EmailSender emailSender = EmailSender.getInstance();
+	
 	@Async
 	@Override
 	public void run() {
@@ -39,42 +45,38 @@ public class EmailDaemonThread extends Thread {
 				User user = entryUser.getValue();
 				Map<String, Budget> budgets = user.getBudgets();
 				
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				// substract 4 days
+				// If we give 5 there it will give 6 days back
+				cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - 4);
+				Date checkDate = cal.getTime();
+			
 				for (Budget budget: budgets.values()) {
 					
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(new Date());
-					// substract 4 days
-					// If we give 5 there it will give 6 days back
-					cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)-4);
-					Date checkDate = cal.getTime();
-					
+					//check all incomes
 					Income income = null;
 					if (!budget.getIncomes().isEmpty()) {
-						income = (Income) budget.getIncomes().get(0);
-					}
-					if (income != null) {
+						income = (Income) findNewestCashFlow(budget.getIncomes());
 						if (income.getDate().after(checkDate)) {
 							active = true;
 							break;
 						}
 					}
-							
+					//check all expenses
 					Expense expense = null;
 					if (!budget.getExpenses().isEmpty()) {
-						expense = (Expense) budget.getExpenses().get(0);
-					}
-					if (expense != null) {
+						expense = (Expense) findNewestCashFlow(budget.getExpenses());
 						if (expense.getDate().after(checkDate)) {
 							active = true;
 							break;
-						}
-					}		
-					
+						}	
+					}
 				}
 				
 				if (!active) {
 					try {
-						EmailSender.getInstance().notify(email);
+						emailSender.notify(email);
 						System.out.println("Pratih email na " + email);
 					} catch (MessagingException e) {
 						System.out.println("EmailDaemondThread: " + e.getMessage());
@@ -82,12 +84,25 @@ public class EmailDaemonThread extends Thread {
 				}
 			}
 			try {
-				Thread.sleep(24*60*60*1000);//1 days
+				Thread.sleep(SLEEP_TIME);
 			} catch (InterruptedException e) {
 				System.out.println("EmailDaemondThread -> interupted !");
 				break;
 			}
 		}	
+	}
+	
+	private CashFlow findNewestCashFlow(List<CashFlow> listOfCashFlow){
+		CashFlow newest = null;
+		if (!listOfCashFlow.isEmpty()) {
+			newest = listOfCashFlow.get(0);
+		}
+		for (CashFlow cashFlow : listOfCashFlow) {
+			if (cashFlow.getDate().before(newest.getDate())) {
+				newest = cashFlow;
+			}
+		}
+		return newest;
 	}
 	
 }

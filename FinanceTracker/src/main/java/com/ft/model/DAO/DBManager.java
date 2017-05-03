@@ -28,14 +28,14 @@ public class DBManager {
 		if(db == null){
 			getInstance();
 		}
-		return DBManager.db.con;
+		return con;
 	}
 	
 	public synchronized static DBManager getInstance() {
-		if(DBManager.db == null){
-			DBManager.db = new DBManager();
+		if(db == null){
+			db = new DBManager();
 		}
-		return DBManager.db;
+		return db;
 	}
 
 }

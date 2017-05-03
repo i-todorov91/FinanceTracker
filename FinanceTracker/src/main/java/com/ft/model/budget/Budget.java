@@ -24,7 +24,7 @@ public class Budget {
 	private double balance;
 	private long id;
 	
-	public Budget(String name) throws InvalidBudgetException{
+	public Budget(String name){
 		this(name, 0);
 	}
 	
@@ -38,10 +38,10 @@ public class Budget {
 	public void addCashFlow(CashFlow flow){
 		if (flow.getType() == CashFlow.TYPES.INCOME) {
 			this.incomes.add((Income)flow);
-			this.balance += flow.getQuantity();
+			this.balance += Math.abs(flow.getQuantity());
 		} else {
 			this.expenses.add((Expense)flow);
-			this.balance -= flow.getQuantity();
+			this.balance -= Math.abs(flow.getQuantity());
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class Budget {
 	public double getExpenseForMonth(int month){
 		double result = 0;
 		for(CashFlow i : expenses){
-			if(i.getDate().getMonth() + 1== month){
+			if(i.getDate().getMonth() + 1 == month){
 				result += i.getQuantity();
 			}
 		}

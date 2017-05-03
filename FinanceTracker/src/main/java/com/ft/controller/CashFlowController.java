@@ -21,7 +21,6 @@ import com.ft.model.budget.flows.CashFlow;
 import com.ft.model.budget.flows.Category;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
-import com.ft.model.util.exceptions.InvalidCashFlowException;
 
 @Controller
 public class CashFlowController {
