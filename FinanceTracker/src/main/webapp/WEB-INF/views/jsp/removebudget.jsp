@@ -1,4 +1,3 @@
-<%@ page errorPage="error500.jsp" %>
 <%@page import="com.ft.model.budget.flows.Category"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>

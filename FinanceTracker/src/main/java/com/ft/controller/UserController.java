@@ -43,20 +43,21 @@ public class UserController {
 			long userId = 0;
 			try {
 				userId = UserDAO.getInstance().getAllUsers().get(username).getId();
+
 			} catch (Exception e){
 				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
-				return "redirect: error500";
+				return "../error500";
 			}
+			session.setAttribute("selectedType", Category.TYPE.INCOME.toString());
+			session.setAttribute("types", Category.TYPE.values());
 			try {
 				session.setAttribute("categories", CategoryDAO.getInstance().getAllDefaultList());
 				session.setAttribute("incomeCategories", CategoryDAO.getInstance().getAllUserIncomeCategories(userId));
 				session.setAttribute("expenseCategories", CategoryDAO.getInstance().getAllUserExpenseCategories(userId));
 			} catch (Exception e) {
 				System.out.println("UserController->/login/addtransaction GET: " + e.getMessage());
-				return "redirect: error500";
+				return "../error500";
 			}
-			session.setAttribute("selectedType", Category.TYPE.INCOME.toString());
-			session.setAttribute("types", Category.TYPE.values());
 		}
 		return "redirect: ../login";
 	}
@@ -66,7 +67,6 @@ public class UserController {
 		Category result = null;
 		for(Category i : cats){
 			if(i.getName().equals(name)){
-				System.out.println(i);
 				result = i;
 				break;
 			}
@@ -227,7 +227,7 @@ public class UserController {
 			return "redirect: ../login";
 		} catch (Exception e) {
 			System.out.println("UseController -> addBudgetPost: " + e.getMessage());
-			return "error500";
+			return "../error500";
 		}
 	}
 	
@@ -272,7 +272,7 @@ public class UserController {
 					} catch (Exception e) {
 						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
 						e.getStackTrace();
-						return "redirect: error500";
+						return "redirect: ../error500";
 					} 
 				}
 				else if(type.equals(Category.TYPE.EXPENSE.toString())){
@@ -281,7 +281,7 @@ public class UserController {
 						UserDAO.getInstance().addExpense(flow, selectedBudget.getId(), (String) session.getAttribute("username"));
 					} catch (Exception e) {
 						System.out.println("UserController->/login/addtransaction POST: " + e.getMessage());
-						return "redirect: error500";
+						return "redirect: ../error500";
 					}
 				}
 				try{
@@ -290,7 +290,7 @@ public class UserController {
 					session.setAttribute("totalSum", new DecimalFormat("#.00").format(user.getBudgetsSum()));
 				} catch(Exception ex){
 					System.out.println("Add transaction Set total sum: " + ex.getMessage());
-					return "redirect: error500";
+					return "redirect: ../error500";
 				}
 			}
 		}
@@ -443,7 +443,7 @@ public class UserController {
 		
 		session.setAttribute("logged", false);
 		session.invalidate();
-		return "redirect:index.html";
+		return "redirect: index.html";
 	}
 	
 	//register controllers

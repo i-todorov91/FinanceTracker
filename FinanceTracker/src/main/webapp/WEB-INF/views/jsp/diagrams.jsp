@@ -1,4 +1,3 @@
-<%@ page errorPage="error500.jsp" %>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="com.ft.model.budget.flows.Category"%>
