@@ -2,6 +2,7 @@ package com.ft.controller.threads;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
@@ -50,32 +51,27 @@ public class EmailDaemonThread extends Thread {
 				// If we give 5 there it will give 6 days back
 				cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - 4);
 				Date checkDate = cal.getTime();
-				TreeSet<CashFlow> sordedCF = new TreeSet<>();
 			
 				for (Budget budget: budgets.values()) {
 					
 					//check all incomes
 					Income income = null;
 					if (!budget.getIncomes().isEmpty()) {
-						sordedCF.addAll(budget.getIncomes());
-						income = (Income) sordedCF.first();
+						income = (Income) findNewestCashFlow(budget.getIncomes());
 						if (income.getDate().after(checkDate)) {
 							active = true;
 							break;
 						}
 					}
-					
 					//check all expenses
 					Expense expense = null;
 					if (!budget.getExpenses().isEmpty()) {
-						sordedCF.addAll(budget.getExpenses());
-						expense = (Expense) sordedCF.first();
+						expense = (Expense) findNewestCashFlow(budget.getExpenses());
 						if (expense.getDate().after(checkDate)) {
 							active = true;
 							break;
 						}	
 					}
-					
 				}
 				
 				if (!active) {
@@ -94,6 +90,19 @@ public class EmailDaemonThread extends Thread {
 				break;
 			}
 		}	
+	}
+	
+	private CashFlow findNewestCashFlow(List<CashFlow> listOfCashFlow){
+		CashFlow newest = null;
+		if (!listOfCashFlow.isEmpty()) {
+			newest = listOfCashFlow.get(0);
+		}
+		for (CashFlow cashFlow : listOfCashFlow) {
+			if (cashFlow.getDate().before(newest.getDate())) {
+				newest = cashFlow;
+			}
+		}
+		return newest;
 	}
 	
 }

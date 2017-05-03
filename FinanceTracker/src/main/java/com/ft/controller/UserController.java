@@ -30,7 +30,6 @@ import com.ft.model.budget.flows.Income;
 import com.ft.model.user.Holder;
 import com.ft.model.user.User;
 import com.ft.model.util.Validator;
-import com.itextpdf.text.log.SysoCounter;
 
 @Controller
 public class UserController {

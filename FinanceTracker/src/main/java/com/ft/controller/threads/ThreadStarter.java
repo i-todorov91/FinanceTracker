@@ -15,7 +15,7 @@ public class ThreadStarter {
 	@PostConstruct
 	public void initialize(){
 		edt.setDaemon(true);
-		//edt.start();
+		edt.start();
 		pct.setDaemon(true);
 		pct.start();
 	}

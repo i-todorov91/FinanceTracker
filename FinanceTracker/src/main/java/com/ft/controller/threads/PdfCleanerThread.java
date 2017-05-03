@@ -13,8 +13,8 @@ public class PdfCleanerThread extends Thread {
 	private static final String DESTINATION = System.getProperty("os.name").startsWith("Linux") ? 
 			sep + "home"+sep+"streetzaki"+sep+"Programming"+sep+"github"+sep+"FinanceTracker"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf"
 				: "D:"+sep+"Programming"+sep+"ITTalents_s7"+sep+"ITtalents_finalProject"+sep+"FinanceTracker"+sep+"src"+sep+"main"+sep+"webapp"+sep+"static"+sep+"pdf";
-	private static final long SLEEP_TIME = 24*60*60*1000;//1 day
-	private static final long DELETE_TIME = 24*60*60*1000;//1 day
+	private static final long SLEEP_TIME = 60*60*1000;//1 hour
+	private static final long DELETE_TIME = 60*60*1000;//1 hour
 	
 	@Async
 	@Override
