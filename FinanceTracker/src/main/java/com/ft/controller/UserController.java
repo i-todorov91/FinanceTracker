@@ -59,37 +59,27 @@ public class UserController {
 		return "redirect: ../login";
 	}
 	
+	private Category findCategoryByType(ArrayList<Category> cats, String name){
+		
+		for(Category i : cats){
+			if(i.getName().equals(name)){
+				return i;
+			}
+		}
+		return null;
+	}
+	
 	private Category findCategory(HttpSession session, String type, String categoryName){
-		Category category = null;
-		ArrayList<Category> categories = (ArrayList<Category>) session.getAttribute("categories");
-		for(Category i : categories){
-			if(i.getName().equals(categoryName)){
-				category = i;
-				break;
-			}
-		}
 
-		if(category == null){
-			if(type.equals(Category.TYPE.INCOME.toString())){
-				ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
-				for(Category i : cats){
-					if(i.getName().equals(categoryName)){
-						category = i;
-						break;
-					}
-				}
-			}
-			else if(type.equals(Category.TYPE.EXPENSE.toString())){
-				ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
-				for(Category i : cats){
-					if(i.getName().equals(categoryName)){
-						category = i;
-						break;
-					}
-				}
-			}
+		if(type.equals(Category.TYPE.INCOME.toString())){
+			ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
+			return findCategoryByType(cats, categoryName);
 		}
-		return category;
+		else if(type.equals(Category.TYPE.EXPENSE.toString())){
+			ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
+			return findCategoryByType(cats, categoryName);
+		}
+		return null;
 	}
 	
 	// login controller
