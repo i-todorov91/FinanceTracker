@@ -25,56 +25,6 @@ import com.ft.model.util.Validator;
 @Controller
 public class CashFlowController {
 	
-	@RequestMapping(value="/cashflow", method=RequestMethod.GET)
-	@ResponseBody
-	public HashMap<String, TreeSet<CashFlow>> getCashFlow(HttpSession session,
-			@RequestParam("from") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-					@RequestParam("to") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate) {
-		
-		if (fromDate.after(toDate)) {
-			Date temp = fromDate;
-			fromDate = toDate;
-			toDate = temp;
-		}
-		
-		HashMap<String, TreeSet<CashFlow>> cashFlows = new HashMap();
-		String username = (String) session.getAttribute("username");
-		User user = null;
-		try {
-			user = UserDAO.getInstance().getAllUsers().get(username);
-		} catch (Exception e) {
-			System.out.println("CashFlowController -> getAllUsers: " + e.getMessage());
-			return null;
-		}
-		Budget budget = user.getBudgets().get(session.getAttribute("budget"));
-		
-		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
-			//add expenses
-			for (CashFlow cf : budget.getExpenses()) {
-				String type = cf.getType().toString();
-				if (cf.getDate().before(fromDate) || cf.getDate().after(toDate)) {
-					continue;
-				}
-				if (!cashFlows.containsKey(type)) {
-					cashFlows.put(type, new TreeSet<>());
-				}
-				cashFlows.get(type).add(cf);
-			}
-			//add income
-			for (CashFlow cf : budget.getIncomes()) {
-				String type = cf.getType().toString();
-				if (cf.getDate().before(fromDate) || cf.getDate().after(toDate)) {
-					continue;
-				}
-				if (!cashFlows.containsKey(type)) {
-					cashFlows.put(type, new TreeSet<>());
-				}
-				cashFlows.get(type).add(cf);
-			}
-		}
-		return cashFlows;
-	}
-	
 	@RequestMapping(value="/login/addcategory", method=RequestMethod.GET)
 	public String addcategoryGet(HttpSession session) {
 		
