@@ -1,5 +1,6 @@
 package com.ft.model.budget;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -100,6 +101,7 @@ public class Budget {
 		for (Income income : this.incomes) {
 			totalIncome += Math.abs(income.getQuantity());
 		}
+		totalIncome = Double.parseDouble(new DecimalFormat("#.00").format(totalIncome));
 		return totalIncome;		
 	}
 	
@@ -108,6 +110,7 @@ public class Budget {
 		for (Expense expense : this.expenses) {
 			totalExpense += Math.abs(expense.getQuantity());
 		}
+		totalExpense = Double.parseDouble(new DecimalFormat("#.00").format(totalExpense));
 		return totalExpense;	
 	}
 	
