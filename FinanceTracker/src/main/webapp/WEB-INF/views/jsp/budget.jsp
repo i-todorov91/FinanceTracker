@@ -19,7 +19,7 @@
 	    <div class="form-group">
 	      <label for="inputPassword" class="col-lg-2 control-label">Amount</label>
 	      <div class="col-lg-10">
-	        <input class="form-control" id="inputNumber" placeholder="Amount" name="amount" type="number" min="0">
+	        <input class="form-control" id="inputNumber" placeholder="Amount" name="amount" type="number" min="0" max="1000000" step="0.01">
 	      </div>
 	    </div>
 	    <div class="form-group">
