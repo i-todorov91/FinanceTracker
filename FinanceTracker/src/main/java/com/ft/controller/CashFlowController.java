@@ -52,7 +52,7 @@ public class CashFlowController {
 				CategoryDAO.getInstance().addCustomCategory(userID, toAdd);
 			} catch (Exception e) {
 				System.out.println("CashFlowController-> addCategoryPost: " + e.getMessage());
-				return "redirect: ../error500";
+				return "redirect: ../login";
 			}
 			session.setAttribute("url", "transaction.jsp");
 			if(type.equals(Category.TYPE.INCOME.toString())){

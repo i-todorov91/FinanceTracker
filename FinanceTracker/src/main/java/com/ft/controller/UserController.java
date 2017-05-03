@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
@@ -60,27 +61,62 @@ public class UserController {
 		return "redirect: ../login";
 	}
 	
-	private Category findCategoryByType(ArrayList<Category> cats, String name){
+	private Category findCategoryByType(ArrayList<Category> cats, String name, ArrayList<Category> allCats, String type){
 		
+		Category result = null;
 		for(Category i : cats){
 			if(i.getName().equals(name)){
-				return i;
+				System.out.println(i);
+				result = i;
+				break;
 			}
+		}
+		if(result == null){
+			for(Category i : allCats){
+				if(i.getName().equals(name) && i.getType().toString().equals(type)){
+					return i;
+				}
+			}
+		}
+		return result;
+	}
+	
+	private Category findCategory(HttpSession session, String type, String categoryName){
+		
+		ArrayList<Category> allCats = (ArrayList<Category>) session.getAttribute("categories");
+		if(type.equals(Category.TYPE.INCOME.toString())){
+			ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
+			return findCategoryByType(cats, categoryName, allCats, type);
+		}
+		else if(type.equals(Category.TYPE.EXPENSE.toString())){
+			ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
+			return findCategoryByType(cats, categoryName, allCats, type);
 		}
 		return null;
 	}
 	
-	private Category findCategory(HttpSession session, String type, String categoryName){
-
-		if(type.equals(Category.TYPE.INCOME.toString())){
-			ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("incomeCategories");
-			return findCategoryByType(cats, categoryName);
+	private void pushIntoFilteredDateArrayList(List<CashFlow> cashflow, ArrayList<CashFlow> filtereddata, boolean checked, Date fromDate, Date toDate, Category cat){
+		
+		for(CashFlow i : cashflow){
+			if(checked){
+				if(i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
+					filtereddata.add(i);
+					continue;
+				}
+				if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
+					filtereddata.add(i);
+				}
+			}
+			else{
+				if(i.getCategory().equals(cat) && i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
+					filtereddata.add(i);
+					continue;
+				}
+				if(i.getCategory().equals(cat) && i.getDate().after(fromDate) && i.getDate().before(toDate)){
+					filtereddata.add(i);
+				}
+			}
 		}
-		else if(type.equals(Category.TYPE.EXPENSE.toString())){
-			ArrayList<Category> cats = (ArrayList<Category>) session.getAttribute("expenseCategories");
-			return findCategoryByType(cats, categoryName);
-		}
-		return null;
 	}
 	
 	// login controller
@@ -377,49 +413,8 @@ public class UserController {
 				if(budget != null && UserDAO.getInstance().getAllUsers().get(username).getBudgets().containsKey(budget.getName())){
 					ArrayList<CashFlow> result = new ArrayList<>();
 					
-					// check all incomes
-					for(CashFlow i : budget.getIncomes()){
-						if(checked){
-							if(i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
-								result.add(i);
-								continue;
-							}
-							if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
-								result.add(i);
-							}
-						}
-						else{
-							if(i.getCategory().equals(cat) && i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
-								result.add(i);
-								continue;
-							}
-							if(i.getCategory().equals(cat) && i.getDate().after(fromDate) && i.getDate().before(toDate)){
-								result.add(i);
-							}
-						}
-					}
-					
-					// check all expenses
-					for(CashFlow i : budget.getExpenses()){
-						if(checked){
-							if(i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
-								result.add(i);
-								continue;
-							}
-							if(i.getDate().after(fromDate) && i.getDate().before(toDate)){
-								result.add(i);
-							}
-						}
-						else{
-							if(i.getCategory().equals(cat) && i.getDate().compareTo(fromDate) >= 0 && i.getDate().compareTo(toDate) <= 0){
-								result.add(i);
-								continue;
-							}
-							if(i.getCategory().equals(cat) && i.getDate().after(fromDate) && i.getDate().before(toDate)){
-								result.add(i);
-							}
-						}
-					}
+					pushIntoFilteredDateArrayList(budget.getIncomes(), result, checked, fromDate, toDate, cat);
+					pushIntoFilteredDateArrayList(budget.getExpenses(), result, checked, fromDate, toDate, cat);
 					
 					if(!result.isEmpty()){
 						session.setAttribute("filteredData", result);
