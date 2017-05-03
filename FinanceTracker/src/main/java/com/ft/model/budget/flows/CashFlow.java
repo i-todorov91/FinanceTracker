@@ -1,6 +1,7 @@
 package com.ft.model.budget.flows;
 
 import java.sql.Date;
+import java.text.DecimalFormat;
 
 import com.ft.model.util.Validator;
 import com.ft.model.util.exceptions.InvalidCashFlowException;
@@ -45,7 +46,7 @@ public abstract class CashFlow implements Comparable<CashFlow>{
 	}
 
 	public double getQuantity() {
-		return quantity;
+		return Double.parseDouble(new DecimalFormat("#.00").format(quantity));
 	}
 
 	public Date getDate() {

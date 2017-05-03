@@ -3,6 +3,7 @@ package com.ft.model.util;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -204,7 +205,7 @@ public class PdfCreator {
         	type = info.keySet().iterator().next();
             sum = info.get(type).keySet().iterator().next();
             table = info.get(type).get(sum);
-            document.add(new Paragraph(type + ": " + sum + " lv."));
+            document.add(new Paragraph(type + ": " + Double.parseDouble(new DecimalFormat("#.00").format(sum)) + " lv."));
 
             document.add(table);
             document.add(new Paragraph(" "));
