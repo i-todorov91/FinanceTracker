@@ -28,13 +28,18 @@ public class PdfCleanerThread extends Thread {
 					File file = pdfs[i];
 					long lastModified = (now - file.lastModified());
 					if (lastModified >= DELETE_TIME) {
-						file.delete();
+						try {
+							file.delete();
+						} catch (Exception e) {
+							System.out.println("PdfCleanerThread: deletion of " + file.getName() + " failed.");
+							continue;
+						}
 						System.out.println(file.getName() + " deleted!");
 					}
 				}
 			}
 			try {
-				Thread.sleep(SLEEP_TIME); //1 day
+				Thread.sleep(SLEEP_TIME);
 			} catch (InterruptedException e) {
 				System.out.println("PdfCleanerThread: interupted.");
 				break;
