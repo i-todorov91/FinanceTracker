@@ -42,6 +42,11 @@
 				</div>
 			</c:if>
 		</c:if>
+		<c:if test="${sessionScope.register == false}">
+				<div class="alert-register alert-dismissible alert-danger-register">
+					<h1> User already exists!</h1>
+				</div>
+		</c:if>
 		<form:form action="register" method="post" id="register-form" commandName="userRegister">
 			<div id="errorDiv" class="alert-register alert-dismissible alert-danger-register"><form:errors path="*"/></div>
 			<div class="login-box animated fadeInUp register-box">

@@ -452,12 +452,10 @@ public class UserController {
 		
 		if(session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged")){
 			session.invalidate();
-			return new ModelAndView("redirect:/login", "userRegister", new User());
+			return new ModelAndView("redirect: /login", "userRegister", new User());
 		}
 		
-		if(session.getAttribute("register") != null){
-			session.setAttribute("register", null);
-		}
+		session.removeAttribute("register");
 		return new ModelAndView("register", "userRegister", new User());
 	}
 	

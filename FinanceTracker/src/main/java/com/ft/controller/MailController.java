@@ -29,10 +29,10 @@ public class MailController {
 				EmailSender.getInstance().contactUs(nameFromUser, emailFromUser, subjectFromUser, messageFromUser);
 			} catch (MessagingException e) {
 				System.out.println("MailController: " + e.getMessage());
-				return "error";
+				return "error500";
 			} catch (Exception e) {
 				System.out.println("MailController -> unexpected error: " + e.getMessage());
-				return "error";
+				return "error500";
 			}
 			if (session.getAttribute("logged") == null || !(Boolean)session.getAttribute("logged")) {
 				return "redirect: index.html";
