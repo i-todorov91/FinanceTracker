@@ -51,7 +51,7 @@ public class Budget {
 	}
 	
 	public double getBalance() {
-		return balance;
+		return Double.parseDouble(new DecimalFormat("#.00").format(balance));
 	}
 	
 	public long getId(){
